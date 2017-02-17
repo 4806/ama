@@ -1,0 +1,20 @@
+
+## Hidden Files
+
+.*
+
+## Temporary Files
+
+*~
+
+
+## Java
+
+lib/*
+target/*
+*.class
+
+## Database
+
+*.db
+
