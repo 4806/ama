@@ -6,9 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-/**
- * Created by Cameron on 27/02/2017.
- */
 @Entity
 public class Ama {
 

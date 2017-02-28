@@ -13,9 +13,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Cameron on 27/02/2017.
- */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class TestPersistence {

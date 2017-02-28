@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.User;
 
-/**
- * Created by Cameron on 27/02/2017.
- */
-public class TestAMA {
+public class TestAma {
 
     @Test
     public void testGetAmaTitle() throws Exception {
