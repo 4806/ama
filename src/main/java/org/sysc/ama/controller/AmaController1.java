@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.HashMap;
 
 @RestController
-public class AMAController {
+public class AmaController {
 
     private Integer amaId = 0;
 
