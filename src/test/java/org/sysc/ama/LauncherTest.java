@@ -1,28 +1,12 @@
 package org.sysc.ama;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class LauncherTest extends TestCase {
+public class LauncherTest {
 
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public LauncherTest (String testName) {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(LauncherTest.class);
-    }
-
-    public void testAlwaysPass() {
+    @Test
+    public void alwaysPass () {
         assertTrue(true);
     }
 }
