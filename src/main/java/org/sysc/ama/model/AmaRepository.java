@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface AmaRepository extends CrudRepository<Ama, Long> {
 
-    List<Ama> findById(Long id);
+    Ama findById(Long id);
 
 }

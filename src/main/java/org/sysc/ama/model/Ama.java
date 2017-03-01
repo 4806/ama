@@ -13,6 +13,10 @@ public class Ama {
     @GeneratedValue
     private Long id;
 
+    // TODO Remove cascade
+    // It should be a precondition to creating an AMA that the given
+    // user exists. If a user does not exist then there should be an
+    // error.
     @OneToOne(cascade = { CascadeType.ALL })
     private User subject;
 

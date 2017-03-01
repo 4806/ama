@@ -30,8 +30,9 @@ public class TestPersistence {
 
         entityManager.persist(ama);
         entityManager.flush();
-        List<Ama> amas = this.amaRepo.findById((long)1);
-        Ama persistedAma = amas.get(0);
+
+        Ama persistedAma = this.amaRepo.findById((long)1);
+
         assertEquals("Test AMA", persistedAma.getTitle());
         assertEquals( true, persistedAma.isPublic());
         assertEquals(user.getId(), ama.getSubject().getId());
