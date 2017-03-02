@@ -20,6 +20,9 @@ public class TestPersistence {
     @Autowired
     private AmaRepository amaRepo;
 
+	@Autowired
+	private UserRepository userRepo;
+	
     @Autowired
     private TestEntityManager entityManager;
 
@@ -28,6 +31,7 @@ public class TestPersistence {
         User user = new User("TestUser");
         Ama ama = new Ama("Test AMA", user, true);
 
+		entityManager.persist(user);
         entityManager.persist(ama);
         entityManager.flush();
 
