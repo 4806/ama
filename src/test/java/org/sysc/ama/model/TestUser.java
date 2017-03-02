@@ -11,9 +11,6 @@ import javax.validation.Validator;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by cameronblanchard on 3/2/2017.
- */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class TestUser {
