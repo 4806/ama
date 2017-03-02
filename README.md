@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/4806/ama.svg?token=MPuUxtfuLzmhXtay93BR&branch=master)](https://travis-ci.com/4806/ama)
 
-##Project Description
+## Project Description
 
 The purpose of this project is to create an Ask-Me-Anything (AMA) tool. This tool will allow a user to 
 create a new AMA. This AMA can be configured with options such as the deadline for submitting questions,
@@ -16,10 +16,10 @@ question or asked their own question will be notified when those questions are a
 notified when answers to an AMA are posted by 'following' that AMA. Once an AMA has been closed, it is 
 archived and remains searchable.  
 
-To vote and ask questions, a user must create a profile. They will be able to view their profile to see a 
-history of their interactions, such as upvoting or asking questions. Users can view other user profiles to see past activity,
-and can 'follow' them to be notifified when that user creates an AMA. Users will have various ways to sort
-AMAs, such as most recent,most questions asked, or AMAs created by 'Most Followed' users.
+To vote and ask questions, a user must create a profile. They will be able to view their profile to see which
+AMAs they have liked or created, and which other users they follow. Users can view other user profiles to see
+past activity, and can 'follow' them to be notifified when that user creates an AMA. Users will have various 
+ways to sort AMAs, such as most recent, most questions asked, or AMAs created by 'Most Followed' users.
 
    
 ## Project BackLog
