@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class TestPersistence {
+public class PersistenceTest {
 
     @Autowired
     private AmaRepository amaRepo;
