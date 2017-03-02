@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class TestUser {
+public class UserTest {
 
     @Autowired
     private UserRepository userRepo;
