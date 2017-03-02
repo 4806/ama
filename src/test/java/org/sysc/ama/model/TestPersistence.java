@@ -25,7 +25,7 @@ public class TestPersistence {
 
     @Test
     public void testPersistAma() throws Exception {
-        User user = new User();
+        User user = new User("TestUser");
         Ama ama = new Ama("Test AMA", user, true);
 
         entityManager.persist(ama);

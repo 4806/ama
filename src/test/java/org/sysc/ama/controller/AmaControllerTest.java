@@ -34,7 +34,7 @@ public class AmaControllerTest {
 
     @Before
     public void before () {
-        this.testUser = new User();
+        this.testUser = new User("TestUser");
         userRepo.save(this.testUser);
     }
 
