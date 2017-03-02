@@ -15,19 +15,23 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class TestPersistence {
+public class PersistenceTest {
 
     @Autowired
     private AmaRepository amaRepo;
 
+	@Autowired
+	private UserRepository userRepo;
+	
     @Autowired
     private TestEntityManager entityManager;
 
     @Test
     public void testPersistAma() throws Exception {
-        User user = new User();
+        User user = new User("TestUser");
         Ama ama = new Ama("Test AMA", user, true);
 
+		entityManager.persist(user);
         entityManager.persist(ama);
         entityManager.flush();
 
