@@ -4,7 +4,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+
+import java.util.Date;
 
 @Entity
 public class Ama {
@@ -13,20 +15,24 @@ public class Ama {
     @GeneratedValue
     private Long id;
 
-    // TODO Remove cascade
-    // It should be a precondition to creating an AMA that the given
-    // user exists. If a user does not exist then there should be an
-    // error.
-    @OneToOne(cascade = { CascadeType.ALL })
+    @ManyToOne
     private User subject;
 
     private boolean isPublic;
     private String title;
+    private Date created;
+    private Date updated;
+
+    public Ama () {
+        this("", null, false);
+    }
 
     public Ama(String title, User subject, boolean isPublic) {
         this.title = title;
         this.subject = subject;
         this.isPublic = isPublic;
+        this.created = new Date();
+        this.updated = new Date();
     }
 
     public Long getId(){
@@ -59,5 +65,17 @@ public class Ama {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date getCreated () {
+        return this.created;
+    }
+
+    public void setUpdated (Date updated) {
+        this.updated = updated;
+    }
+
+    public Date getUpdated () {
+        return this.updated;
     }
 }

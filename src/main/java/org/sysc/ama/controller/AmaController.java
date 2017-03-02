@@ -2,14 +2,20 @@ package org.sysc.ama.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.AmaRepository;
 import org.sysc.ama.model.User;
 import org.sysc.ama.model.UserRepository;
+
+import java.util.List;
 
 @RestController
 public class AmaController {
@@ -63,6 +69,25 @@ public class AmaController {
         amaRepo.save(ama);
 
         return ama;
+    }
+
+
+    @GetMapping("/ama/list")
+    public List<Ama> list (
+            @RequestParam("page") Integer page,
+            @RequestParam("limit") Integer limit,
+            @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
+            @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
+        ) {
+        // TODO Ensure user has permission to view AMAs
+        List<Ama> results;
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+        PageRequest request = new PageRequest(page, limit, sort);
+
+        results = amaRepo.findAllByIsPublic(true, request);
+        return results;
+
+
     }
 
 
