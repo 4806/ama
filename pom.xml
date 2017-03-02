@@ -121,6 +121,11 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<testResources>
+        	<testResource>
+            	<directory>src/main/resources</directory>
+        	</testResource>
+    	</testResources>
 
 	</build>
 
