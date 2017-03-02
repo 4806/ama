@@ -18,3 +18,10 @@ target/*
 
 *.db
 
+
+# Node
+
+node*
+reports*
+node_modules*
+
