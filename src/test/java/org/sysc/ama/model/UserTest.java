@@ -34,7 +34,7 @@ public class TestUser {
     }
 
     @Test(expected = javax.persistence.PersistenceException.class)
-    public void userNameMustBeUnique() throws Exception {
+    public void testUserNameMustBeUnique() throws Exception {
         User user = new User("TestUser");
         User user2 = new User("TestUser");
         entityManager.persist(user);
