@@ -12,11 +12,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.sysc.ama.model.User;
 import org.sysc.ama.model.UserRepository;
 
 import javax.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,5 +67,21 @@ public class UserControllerTest {
     public void testUserNameMayNotStartWithNumber () throws Exception {
         mockMvc.perform(post("/user/create").param("name", "1user"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testViewUserProfileEndpointExists() throws Exception {
+        User testUser = new User("TestUser");
+        userRepo.save(testUser);
+        mockMvc.perform(get("/user/1/"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("TestUser"))
+            .andExpect(jsonPath("$.id").isNumber());
+    }
+
+    @Test
+    public void testViewUserProfileReturns404IfUserDoesNotExist() throws Exception {
+        mockMvc.perform(get("/user/20/"))
+                .andExpect(status().isNotFound());
     }
 }
