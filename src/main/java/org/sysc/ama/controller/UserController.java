@@ -47,6 +47,17 @@ public class UserController {
         return user;
     }
 
+    @DeleteMapping("/{id}")
+    public User remove ( @PathVariable(value="id") Long id) {
+        User user = userRepo.findById(id);
+        if (user == null)
+            throw new EntityNotFoundException();
+
+        userRepo.delete(user.getId());
+
+        return user;
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
