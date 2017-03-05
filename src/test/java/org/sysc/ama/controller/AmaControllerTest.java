@@ -40,17 +40,24 @@ public class AmaControllerTest {
 
     private User testUser;
 
+    private Ama amaFoo;
+    private Ama amaBar;
+    private Ama amaBaz;
+
     @Before
     public void before () {
         this.testUser = new User("TestUser");
 
-        userRepo.save(this.testUser);
+        this.amaFoo = new Ama("Foo", this.testUser, true);
+        delay(2);
+        this.amaBar = new Ama("Bar", this.testUser, true);
+        delay(2);
+        this.amaBaz = new Ama("Baz", this.testUser, true);
 
-        amaRepo.save(new Ama("Foo", this.testUser, true));
-        delay(2);
-        amaRepo.save(new Ama("Bar", this.testUser, true));
-        delay(2);
-        amaRepo.save(new Ama("Baz", this.testUser, true));
+        userRepo.save(this.testUser);
+        amaRepo.save(this.amaFoo);
+        amaRepo.save(this.amaBar);
+        amaRepo.save(this.amaBaz);
     }
 
     @Test
@@ -96,6 +103,20 @@ public class AmaControllerTest {
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].title").value("Bar"))
             .andExpect(jsonPath("$[1].title").value("Baz"));
+    }
+
+
+    @Test
+    public void testDeleteExistingAma () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("Foo"));
+    }
+
+    @Test
+    public void testDeleteAmaDoesNotExist () throws Exception {
+        mockMvc.perform(delete("/ama/100"))
+            .andExpect(status().isNotFound());
     }
 
     public void delay (int time) {
