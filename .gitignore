@@ -25,3 +25,4 @@ node*
 reports*
 node_modules*
 
+/target/
