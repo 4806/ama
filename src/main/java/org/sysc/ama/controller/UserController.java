@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User view ( @PathVariable(value="id") Long id) {
+    public User get ( @PathVariable(value="id") Long id) {
         User user = userRepo.findById(id);
         if (user == null)
             throw new EntityNotFoundException();
