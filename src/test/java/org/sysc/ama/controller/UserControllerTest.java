@@ -73,7 +73,7 @@ public class UserControllerTest {
     public void testViewUserProfileEndpointExists() throws Exception {
         User testUser = new User("TestUser");
         userRepo.save(testUser);
-        mockMvc.perform(get("/user/1/"))
+        mockMvc.perform(get("/user/" + testUser.getId() + "/"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("TestUser"))
             .andExpect(jsonPath("$.id").isNumber());
