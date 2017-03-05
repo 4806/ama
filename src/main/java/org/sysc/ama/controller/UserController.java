@@ -38,6 +38,15 @@ public class UserController {
         return user;
     }
 
+    @GetMapping("/{id}")
+    public User view ( @PathVariable(value="id") Long id) {
+        User user = userRepo.findById(id);
+        if (user == null)
+            throw new EntityNotFoundException();
+
+        return user;
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
