@@ -41,17 +41,31 @@ public class AmaControllerTest {
 
     private User testUser;
 
+    private Ama amaFoo;
+    private Ama amaBar;
+    private Ama amaBaz;
+
     @Before
     public void before () {
         this.testUser = new User("TestUser");
 
-        userRepo.save(this.testUser);
+        // Note About Delay
+        //
+        // When an AMA is created it receives a created timestamp that is accurate to the
+        // nearest millisecond. In order to properly test sorting by time, an artificial
+        // delay of 2 milliseconds has been added between the creation of these test AMAs.
+        // This will guarantee the order of the AMAs when sorting by created dates.
 
-        amaRepo.save(new Ama("Foo", this.testUser, true));
+        this.amaFoo = new Ama("Foo", this.testUser, true);
         delay(2);
-        amaRepo.save(new Ama("Bar", this.testUser, true));
+        this.amaBar = new Ama("Bar", this.testUser, true);
         delay(2);
-        amaRepo.save(new Ama("Baz", this.testUser, true));
+        this.amaBaz = new Ama("Baz", this.testUser, true);
+
+        userRepo.save(this.testUser);
+        amaRepo.save(this.amaFoo);
+        amaRepo.save(this.amaBar);
+        amaRepo.save(this.amaBaz);
     }
 
     @Test
@@ -99,6 +113,25 @@ public class AmaControllerTest {
             .andExpect(jsonPath("$[1].title").value("Baz"));
     }
 
+
+    @Test
+    public void testDeleteExistingAma () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("Foo"));
+    }
+
+    @Test
+    public void testDeleteAmaDoesNotExist () throws Exception {
+        mockMvc.perform(delete("/ama/100"))
+            .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Sleeps the current process for the given number of milliseconds
+     *
+     * @param time - The duration to sleep the process
+     */
     public void delay (int time) {
         try {
             Thread.sleep(time);
