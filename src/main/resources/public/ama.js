@@ -19,19 +19,19 @@ var createAmaForm = {
 				click : function() {
 					if (this.getParentView().validate()) {
 						this.getTopParentView().hide();
-						var params=$$("create_ama_form").getValues()
+						var params=$$("create_ama_form").getValues();
 						params.userId=webix.storage.cookie.get("userId");
 						webix.ajax().post("/ama/create",params
 								).then(
-								function(result) {
+								function() {
 									refresh();
 								}).fail(function(xhr) {
-							response = JSON.parse(xhr.response);
+							var response = JSON.parse(xhr.response);
 							webix.message({
-								type : 'error',
+								type : "error",
 								text : response.message
 							});
-						})
+						});
 					} else {
 						webix.message({
 							type : "error",
@@ -87,18 +87,18 @@ webix.ready(function() {
 				value : "New AMA",
 				width : 70,
 				click : function() {
-					showForm("win1")
+					showForm("win1");
 				}				
 			} ]
 		}]
 	});
 	
 	// check if the user is already in the cookie
-	userId=webix.storage.cookie.get("userId");
+	var userId=webix.storage.cookie.get("userId");
 	if(!userId) {
 		// if user doesn't exist create one
 		webix.ajax().post("/user/create",{name:"Foo"}).then(function(user){ 
-			webix.storage.cookie.put('userId', user.json().id);
+			webix.storage.cookie.put("userId", user.json().id);
 		});
 	}
 });
