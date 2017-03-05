@@ -48,6 +48,13 @@ public class AmaControllerTest {
     public void before () {
         this.testUser = new User("TestUser");
 
+        // Note About Delay
+        //
+        // When an AMA is created it receives a created timestamp that is accurate to the
+        // nearest millisecond. In order to properly test sorting by time, an artificial
+        // delay of 2 milliseconds has been added between the creation of these test AMAs.
+        // This will guarantee the order of the AMAs when sorting by created dates.
+
         this.amaFoo = new Ama("Foo", this.testUser, true);
         delay(2);
         this.amaBar = new Ama("Bar", this.testUser, true);
@@ -119,6 +126,11 @@ public class AmaControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    /**
+     * Sleeps the current process for the given number of milliseconds
+     *
+     * @param time - The duration to sleep the process
+     */
     public void delay (int time) {
         try {
             Thread.sleep(time);
