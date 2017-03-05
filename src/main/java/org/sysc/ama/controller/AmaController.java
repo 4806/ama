@@ -24,26 +24,16 @@ public class AmaController {
     @Autowired
     private UserRepository userRepo;
 
-    @PostMapping("/create")
+    @Autowired
+    private UserController userController;
+
+    @PostMapping("")
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
             @RequestParam("public") Boolean isPublic
         ) {
-        User user = userRepo.findById(userId);
-
-        // TODO Add check for case where user is not found
-        // In this case there should be a `400 Bad Request` error with a body reporting that
-        // the user was not found.
-        //
-        // Example:
-        //
-        // ```json
-        // {
-        //      "error"     : true,
-        //      "message"   : "The user identity provided does not exist"
-        // }
-        // ```
+        User user = userController.get(userId);
 
         Ama ama = new Ama(title, user, isPublic);
 
