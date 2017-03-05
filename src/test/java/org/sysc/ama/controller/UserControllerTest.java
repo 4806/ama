@@ -19,6 +19,8 @@ import javax.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,6 +84,22 @@ public class UserControllerTest {
     @Test
     public void testViewUserProfileReturns404IfUserDoesNotExist() throws Exception {
         mockMvc.perform(get("/user/20/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteUserEndpointExists() throws Exception {
+        User testUser = new User("TestUser");
+        userRepo.save(testUser);
+        mockMvc.perform(delete("/user/" + testUser.getId()))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/user/" + testUser.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteUserReturns404IfUserDoesNotExist() throws Exception {
+        mockMvc.perform(delete("/user/20/"))
                 .andExpect(status().isNotFound());
     }
 }
