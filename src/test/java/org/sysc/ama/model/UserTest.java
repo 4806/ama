@@ -1,10 +1,13 @@
 package org.sysc.ama.model;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.Validator;
@@ -13,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserTest {
 
     @Autowired
@@ -29,7 +33,8 @@ public class UserTest {
         entityManager.persist(user);
         entityManager.flush();
 
-        User persistedUser = this.userRepo.findById((long)0);
+        User persistedUser = this.userRepo.findById(user.getId());
+
 
         assertEquals("TestUser", persistedUser.getName());
     }

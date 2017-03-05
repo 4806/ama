@@ -38,19 +38,23 @@ public class UserController {
         return user;
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public List<FieldError> processValidationError(ConstraintViolationException ex) {
-        List<FieldError> errors = new ArrayList<FieldError>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-        {
-            String propertyPath = violation.getPropertyPath().toString();
-            String message = violation.getMessage();
-            errors.add(new FieldError("name",propertyPath,
+    @GetMapping("/{id}")
+    public User get ( @PathVariable(value="id") Long id) {
+        User user = userRepo.findById(id);
+        if (user == null)
+            throw new EntityNotFoundException();
 
-                    "Invalid "+ propertyPath + "(" + message + ")"));
-        }
-        return errors;
+        return user;
+    }
+
+    @DeleteMapping("/{id}")
+    public User delete ( @PathVariable(value="id") Long id) {
+        User user = userRepo.findById(id);
+        if (user == null)
+            throw new EntityNotFoundException();
+
+        userRepo.delete(user.getId());
+
+        return user;
     }
 }

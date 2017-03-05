@@ -1,9 +1,6 @@
 package org.sysc.ama.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +15,7 @@ import org.sysc.ama.model.UserRepository;
 import java.util.List;
 
 @RestController
+@RequestMapping("/ama")
 public class AmaController {
 
     @Autowired
@@ -26,26 +24,16 @@ public class AmaController {
     @Autowired
     private UserRepository userRepo;
 
-    @PostMapping("/ama/create")
+    @Autowired
+    private UserController userController;
+
+    @PostMapping("")
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
             @RequestParam("public") Boolean isPublic
         ) {
-        User user = userRepo.findById(userId);
-
-        // TODO Add check for case where user is not found
-        // In this case there should be a `400 Bad Request` error with a body reporting that
-        // the user was not found.
-        //
-        // Example:
-        //
-        // ```json
-        // {
-        //      "error"     : true,
-        //      "message"   : "The user identity provided does not exist"
-        // }
-        // ```
+        User user = userController.get(userId);
 
         Ama ama = new Ama(title, user, isPublic);
 
@@ -72,7 +60,7 @@ public class AmaController {
     }
 
 
-    @GetMapping("/ama/list")
+    @GetMapping("/list")
     public List<Ama> list (
             @RequestParam("page") Integer page,
             @RequestParam("limit") Integer limit,
@@ -87,9 +75,34 @@ public class AmaController {
         results = amaRepo.findAllByIsPublic(true, request);
         return results;
 
-
     }
 
+
+    @DeleteMapping("/{id}")
+    public Ama delete (@PathVariable("id") Long id) {
+        Ama ama = amaRepo.findById(id);
+
+        if (ama == null) {
+            throw new EntityNotFoundException();
+        }
+
+        // TODO Ensure that the current user has the required authorization for this delete
+        // If the user does not have the correct authorization, then `401 Unauthorized` error
+        // should be returned
+        //
+        // Example:
+        //
+        // ```json
+        // {
+        //      "error"     : true,
+        //      "message"   : "The given user is not authorized to delete this AMA"
+        // }
+        //
+        // ```
+        amaRepo.delete(id);
+
+        return ama;
+    }
 
 }
 
