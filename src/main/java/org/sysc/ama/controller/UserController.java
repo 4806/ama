@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public User remove ( @PathVariable(value="id") Long id) {
+    public User delete ( @PathVariable(value="id") Long id) {
         User user = userRepo.findById(id);
         if (user == null)
             throw new EntityNotFoundException();
