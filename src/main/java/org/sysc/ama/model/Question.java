@@ -27,6 +27,8 @@ public class Question {
     @NotEmpty
     private String body;
 
+    private boolean edited;
+
     @ManyToOne
     private Ama ama;
 
@@ -37,10 +39,15 @@ public class Question {
         this.ama    = ama;
         this.body   = body;
         this.created = new Date();
+        this.edited = false;
     }
 
     public Long getId () {
         return this.id;
+    }
+
+    public boolean isEdited () {
+        return this.edited;
     }
 
     public User getAuthor () {
@@ -51,11 +58,16 @@ public class Question {
         return this.created;
     }
 
+    public Ama getAma () {
+        return this.ama;
+    }
+
     public String getBody () {
         return this.body;
     }
 
     public void setBody (String body) {
+        this.edited = true;
         this.body = body;
     }
 

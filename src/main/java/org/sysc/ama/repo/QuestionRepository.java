@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Date;
 
 import org.sysc.ama.model.Question;
+import org.sysc.ama.model.Ama;
 
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 

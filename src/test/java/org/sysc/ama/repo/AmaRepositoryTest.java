@@ -1,4 +1,4 @@
-package org.sysc.ama.model;
+package org.sysc.ama.repo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,18 +13,18 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-import org.sysc.ama.repo.AmaRepository;
-import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.model.User;
+import org.sysc.ama.model.Ama;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class PersistenceTest {
+public class AmaRepositoryTest {
 
     @Autowired
     private AmaRepository amaRepo;
 
-	@Autowired
-	private UserRepository userRepo;
+    @Autowired
+    private UserRepository userRepo;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -34,7 +34,7 @@ public class PersistenceTest {
         User user = new User("TestUser");
         Ama ama = new Ama("Test AMA", user, true);
 
-		entityManager.persist(user);
+        entityManager.persist(user);
         entityManager.persist(ama);
         entityManager.flush();
 

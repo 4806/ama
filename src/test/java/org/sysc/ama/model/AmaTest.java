@@ -3,8 +3,6 @@ package org.sysc.ama.model;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.sysc.ama.model.Ama;
-import org.sysc.ama.model.User;
 
 public class AmaTest {
 
