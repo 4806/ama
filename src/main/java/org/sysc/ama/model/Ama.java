@@ -1,6 +1,5 @@
 package org.sysc.ama.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,11 +22,9 @@ public class Ama {
     private Date created;
     private Date updated;
 
-    public Ama () {
-        this("", null, false);
-    }
+    public Ama () {}
 
-    public Ama(String title, User subject, boolean isPublic) {
+    public Ama (String title, User subject, boolean isPublic) {
         this.title = title;
         this.subject = subject;
         this.isPublic = isPublic;
@@ -37,10 +34,6 @@ public class Ama {
 
     public Long getId(){
         return this.id;
-    }
-
-    public void setId(Long id){
-        this.id = id;
     }
 
     public boolean isPublic() {

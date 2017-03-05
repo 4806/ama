@@ -20,8 +20,9 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import org.sysc.ama.model.User;
 import org.sysc.ama.model.Ama;
-import org.sysc.ama.model.UserRepository;
-import org.sysc.ama.model.AmaRepository;
+
+import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.repo.AmaRepository;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc

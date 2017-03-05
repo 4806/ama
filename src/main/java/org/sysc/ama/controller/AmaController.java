@@ -11,9 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import org.sysc.ama.model.Ama;
-import org.sysc.ama.model.AmaRepository;
 import org.sysc.ama.model.User;
-import org.sysc.ama.model.UserRepository;
+import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.repo.AmaRepository;
 
 import java.util.List;
 

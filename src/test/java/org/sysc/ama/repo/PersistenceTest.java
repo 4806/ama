@@ -13,6 +13,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+import org.sysc.ama.repo.AmaRepository;
+import org.sysc.ama.repo.UserRepository;
+
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class PersistenceTest {
@@ -22,7 +25,7 @@ public class PersistenceTest {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
     @Autowired
     private TestEntityManager entityManager;
 
