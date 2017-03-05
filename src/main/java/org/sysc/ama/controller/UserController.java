@@ -42,6 +42,7 @@ public class UserController {
         log.debug("Got user ["+user+"]");
     	userRepo.save(user);
     	log.debug("saved user ["+user+"]");
+
         return user;
     }
 
