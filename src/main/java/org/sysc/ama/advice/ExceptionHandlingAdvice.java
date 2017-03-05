@@ -1,4 +1,4 @@
-package org.sysc.ama.controller;
+package org.sysc.ama.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
-public class GlobalExceptionHandlingAdvice {
+public class ExceptionHandlingAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
