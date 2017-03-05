@@ -27,7 +27,7 @@ public class AmaController {
     @Autowired
     private UserController userController;
 
-    @PostMapping("/")
+    @PostMapping("")
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
