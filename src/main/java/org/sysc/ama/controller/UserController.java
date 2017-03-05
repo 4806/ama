@@ -46,20 +46,4 @@ public class UserController {
 
         return user;
     }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public List<FieldError> processValidationError(ConstraintViolationException ex) {
-        List<FieldError> errors = new ArrayList<FieldError>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-        {
-            String propertyPath = violation.getPropertyPath().toString();
-            String message = violation.getMessage();
-            errors.add(new FieldError("name",propertyPath,
-
-                    "Invalid "+ propertyPath + "(" + message + ")"));
-        }
-        return errors;
-    }
 }
