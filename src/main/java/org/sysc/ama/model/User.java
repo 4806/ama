@@ -1,10 +1,12 @@
 package org.sysc.ama.model;
 
-import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+
 import javax.validation.constraints.Pattern;
 
 @Entity

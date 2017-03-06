@@ -6,16 +6,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.sysc.ama.model.Ama;
-import org.sysc.ama.model.User;
-import org.sysc.ama.model.UserRepository;
 
 import javax.transaction.Transactional;
+
 import javax.validation.*;
 import javax.validation.constraints.Pattern;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.sysc.ama.model.User;
+import org.sysc.ama.repo.UserRepository;
 
 @RestController
 @RequestMapping("/user")
