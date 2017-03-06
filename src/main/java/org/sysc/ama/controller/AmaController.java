@@ -85,11 +85,7 @@ public class AmaController {
 
     @DeleteMapping("/{id}")
     public Ama delete (@PathVariable("id") Long id) {
-        Ama ama = amaRepo.findById(id);
-
-        if (ama == null) {
-            throw new EntityNotFoundException();
-        }
+        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
 
         // TODO Ensure that the current user has the required authorization for this delete
         // If the user does not have the correct authorization, then `401 Unauthorized` error
@@ -111,9 +107,9 @@ public class AmaController {
 
     @GetMapping("/{id}")
     public Ama viewAma ( @PathVariable("id") Long id ) {
-        Ama ama = amaRepo.findById(id);
+        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
         if ( ama == null ) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("ama");
         }
         return ama;
     }
@@ -123,11 +119,8 @@ public class AmaController {
                                  @RequestParam("userId") Long userId,
                                  @RequestParam("body") String body
         ){
-        Ama ama = amaRepo.findById(amaId);
-        User user = userRepo.findById(userId);
-        if ( (ama == null) || (user == null) ) {
-            throw new EntityNotFoundException();
-        }
+        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
+        User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user"));
 
         Question q = new Question(user, ama, body);
 
@@ -143,13 +136,10 @@ public class AmaController {
                                         @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
     ) {
 
-        Ama ama = amaRepo.findById(id);
+        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
         PageRequest request = new PageRequest(page, limit, sort);
 
-        if (ama == null) {
-            throw new EntityNotFoundException();
-        }
         return questionRepo.findByAma(ama, request);
     }
 
