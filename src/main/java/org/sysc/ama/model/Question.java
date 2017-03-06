@@ -24,6 +24,8 @@ public class Question {
     @Past
     private Date created;
 
+    private Date updated;
+
     @NotEmpty
     private String body;
 
@@ -39,6 +41,7 @@ public class Question {
         this.ama    = ama;
         this.body   = body;
         this.created = new Date();
+        this.updated = new Date();
         this.edited = false;
     }
 
@@ -69,6 +72,14 @@ public class Question {
     public void setBody (String body) {
         this.edited = true;
         this.body = body;
+    }
+
+    public void setUpdated (Date updated) {
+        this.updated = updated;
+    }
+
+    public Date getUpdated () {
+        return this.updated;
     }
 
 }
