@@ -55,7 +55,7 @@ var Ama = (function() {
 	return {
 		showForm:showForm,
 		createAmaForm:createAmaForm		
-	}
+	};
 })();
 
 // Setup page when DOM is ready
