@@ -1,0 +1,8 @@
+*~
+*.swp
+*/build/*
+*/bin/*
+*/lib/*
+*/node_modules/*
+**/*.bundle.js
+**/bundle.js

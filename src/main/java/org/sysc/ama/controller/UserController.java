@@ -1,5 +1,7 @@
 package org.sysc.ama.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,7 @@ import org.sysc.ama.repo.UserRepository;
 @RequestMapping("/user")
 public class UserController {
 
+	Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UserRepository userRepo;
 
@@ -36,7 +39,9 @@ public class UserController {
 
     @PostMapping("/create")
     public User create( User user,  BindingResult result) {
-        userRepo.save(user);
+        log.debug("Got user ["+user+"]");
+    	userRepo.save(user);
+    	log.debug("saved user ["+user+"]");
         return user;
     }
 
