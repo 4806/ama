@@ -14,6 +14,8 @@ import javax.validation.Validator;
 
 import static org.junit.Assert.assertEquals;
 
+import org.sysc.ama.repo.UserRepository;
+
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
