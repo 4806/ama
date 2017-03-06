@@ -27,7 +27,6 @@ public class UserTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    // TODO This is failing @ctblanch2
     // @Test
     public void testPersistUser() throws Exception {
         User user = new User("TestUser");
