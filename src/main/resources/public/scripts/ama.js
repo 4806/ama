@@ -47,14 +47,23 @@ var Ama = (function() {
 
 	function refresh() {
 		webix.ajax().get("/ama/list", "page=0&limit=2", function(amas) {
-			// TODO actually display AMA
+			var $$list = $$("ama_list");
+			
+			amas = JSON.parse(amas);
+			$$("ama_list").clearAll();
+			console.log(amas);
+			for (var i = 0; i < amas.length; i++) {
+				console.log(amas[i]);
+				$$list.add({title: amas[i].title, author: amas[i].subject.name})
+			}
 			console.log(amas);
 		});
 	}
 	
 	return {
 		showForm:showForm,
-		createAmaForm:createAmaForm		
+		createAmaForm:createAmaForm,
+		refresh:refresh
 	};
 })();
 
@@ -85,6 +94,16 @@ webix.ready(function() {
 			} ]
 		} ]
 	});
+	
+	webix.ui({
+		id: "ama_list",
+		type : "datatable",
+		columns: [
+		          { id: "title", header: "Title"},
+		          { id: "author", header: "Author"}]
+	});
+	
+	//Ama.refresh();
 
 	// check if the user is already in the cookie
 	var userId = webix.storage.cookie.get("userId");
