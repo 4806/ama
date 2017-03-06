@@ -1,4 +1,12 @@
 var Ama = (function() {
+
+	var amas = new webix.DataCollection({
+		url : "/ama/list?page=0&limit=10",
+		map : {
+			author : "#subject.name#"
+		}
+	});
+
 	var createAmaForm = {
 		view : "form",
 		id : "create_ama_form",
@@ -19,8 +27,8 @@ var Ama = (function() {
 					this.getTopParentView().hide();
 					var params = $$("create_ama_form").getValues();
 					params.userId = webix.storage.cookie.get("userId");
-					webix.ajax().post("/ama", params).then(function() {
-						refresh();
+					webix.ajax().post("/ama", params).then(function(result) {
+						amas.add(result.json());
 					}).fail(function(xhr) {
 						var response = JSON.parse(xhr.response);
 						webix.message({
@@ -46,24 +54,28 @@ var Ama = (function() {
 	}
 
 	function refresh() {
-		webix.ajax().get("/ama/list", "page=0&limit=2", function(amas) {
+		webix.ajax().get("/ama/list", "page=0&limit=10", function(amas) {
 			var $$list = $$("ama_list");
-			
+			console.log($$list)
 			amas = JSON.parse(amas);
 			$$("ama_list").clearAll();
 			console.log(amas);
 			for (var i = 0; i < amas.length; i++) {
 				console.log(amas[i]);
-				$$list.add({title: amas[i].title, author: amas[i].subject.name})
+				$$list.add({
+					title : amas[i].title,
+					author : amas[i].subject.name
+				})
 			}
 			console.log(amas);
 		});
 	}
-	
+
 	return {
-		showForm:showForm,
-		createAmaForm:createAmaForm,
-		refresh:refresh
+		showForm : showForm,
+		createAmaForm : createAmaForm,
+		refresh : refresh,
+		amas : amas
 	};
 })();
 
@@ -92,18 +104,31 @@ webix.ready(function() {
 					Ama.showForm("win1");
 				}
 			} ]
+		}, {
+			id : "ama_list",
+			view : "datatable",
+			columns : [ {
+				id : "title"
+			}, {
+				id : "author"
+			} ],
+			on : {
+				onBeforeLoad : function() {
+					this.showOverlay("Loading...");
+				},
+				onAfterLoad : function() {
+					this.hideOverlay();
+					if (!this.count()) {
+						this.showOverlay("There are no AMAs");
+					}
+				}
+			}
 		} ]
 	});
-	
-	webix.ui({
-		id: "ama_list",
-		type : "datatable",
-		columns: [
-		          { id: "title", header: "Title"},
-		          { id: "author", header: "Author"}]
-	});
-	
-	//Ama.refresh();
+
+	$$("ama_list").sync(Ama.amas);
+
+	// Ama.refresh();
 
 	// check if the user is already in the cookie
 	var userId = webix.storage.cookie.get("userId");
