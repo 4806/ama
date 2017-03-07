@@ -108,9 +108,6 @@ public class AmaController {
     @GetMapping("/{id}")
     public Ama viewAma ( @PathVariable("id") Long id ) {
         Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
-        if ( ama == null ) {
-            throw new EntityNotFoundException("ama");
-        }
         return ama;
     }
 
