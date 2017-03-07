@@ -1,5 +1,7 @@
 package org.sysc.ama.advice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,6 +18,11 @@ import java.util.List;
 
 @ControllerAdvice
 public class ExceptionHandlingAdvice {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Before
+
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
