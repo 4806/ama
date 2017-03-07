@@ -56,7 +56,6 @@ var Ama = (function() {
 	function refresh() {
 		webix.ajax().get("/ama/list", "page=0&limit=10", function(amas) {
 			var $$list = $$("ama_list");
-			console.log($$list)
 			amas = JSON.parse(amas);
 			$$("ama_list").clearAll();
 			console.log(amas);
@@ -65,7 +64,7 @@ var Ama = (function() {
 				$$list.add({
 					title : amas[i].title,
 					author : amas[i].subject.name
-				})
+				});
 			}
 			console.log(amas);
 		});
