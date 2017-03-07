@@ -127,10 +127,9 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>test</arguments>
+                            <arguments>${npm.test}</arguments>
                         </configuration>
                     </execution>
-
                </executions>
 
             </plugin>
@@ -144,6 +143,36 @@
         </testResources>
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>npm-test</id>
+            <activation>
+                <os>
+                    <family>!windows</family>
+                </os>
+            </activation>
+
+            <properties>
+                <npm.test>test</npm.test>
+            </properties>
+
+       </profile>
+
+        <profile>
+            <id>npm-test-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+
+            <properties>
+                <npm.test>run test:windows</npm.test>
+            </properties>
+
+       </profile>
+    </profiles>
 
     <repositories>
 
