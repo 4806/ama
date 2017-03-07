@@ -1,6 +1,5 @@
 package org.sysc.ama.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.NotEmpty;

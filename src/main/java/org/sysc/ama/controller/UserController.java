@@ -40,11 +40,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User create( User user,  BindingResult result) {
-        log.debug("Got user ["+user+"]");
-    	userRepo.save(user);
-    	log.debug("saved user ["+user+"]");
 
+    public User create( @RequestParam(value="name") String name, @RequestParam(value="password", defaultValue="") String password) {
+        System.out.println(name);
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+
+        userRepo.save(user);
         return user;
     }
 
