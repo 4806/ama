@@ -4,7 +4,7 @@ var Ama = (function() {
 		url : "/ama/list?page=0&limit=10",
 		map : {
 			author : "#subject.name#"
-		}
+		} 
 	});
 
 	var createAmaForm = {
@@ -29,11 +29,11 @@ var Ama = (function() {
 					params.userId = webix.storage.cookie.get("userId");
 					webix.ajax().post("/ama", params).then(function(result) {
 						amas.add(result.json());
+						amas.sort("id","desc");
 					}).fail(function(xhr) {
-						var response = JSON.parse(xhr.response);
 						webix.message({
 							type : "error",
-							text : response.message
+							text : xhr.response
 						});
 					});
 				} else {
@@ -79,25 +79,29 @@ var Ama = (function() {
 
 // Setup page when DOM is ready
 webix.ready(function() {
-	var viewAmAWindow = {
+	webix.ui( {
 		view : "window",
 		id : "AMAWindow",
 		fullscreen : true,
 		head : {
+
 			view : "toolbar",
 			margin : -4,
 			cols : [ {
-				view : "label",
-				name : "Title"
-			}, {
 				view : "icon",
 				icon : "arrow-left",
+				label : "Back",
 				click : function() {
 					$$("AMAWindow").hide();
 				}
+			}, {
+				view : "label",
+				name : "Title"
 			} ]
-		}
-	};
+		},
+		body : webix.copy(Ama.createAmaForm)
+	});
+
 
 	// Create the modal window to create AMAs
 	webix.ui({
@@ -119,6 +123,7 @@ webix.ready(function() {
 					$$("WinCreateAMA").hide();
 				}
 			} ]
+			
 		},
 		body : webix.copy(Ama.createAmaForm)
 	});
@@ -152,6 +157,9 @@ webix.ready(function() {
 					if (!this.count()) {
 						this.showOverlay("There are no AMAs");
 					}
+				},
+				onItemClick: function(id){
+					Ama.showForm("AMAWindow");
 				}
 			}
 		} ]
