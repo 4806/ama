@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import org.sysc.ama.model.Ama;
+import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
+import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 
@@ -23,6 +25,9 @@ public class AmaController {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private QuestionRepository questionRepo;
 
     @Autowired
     private UserController userController;
@@ -102,6 +107,50 @@ public class AmaController {
         amaRepo.delete(id);
 
         return ama;
+    }
+
+    @GetMapping("/{id}")
+    public Ama viewAma ( @PathVariable("id") Long id ) {
+        Ama ama = amaRepo.findById(id);
+        if ( ama == null ) {
+            throw new EntityNotFoundException();
+        }
+        return ama;
+    }
+
+    @PostMapping("/{amaId}/question")
+    public Question addQuestion (@PathVariable("amaId") Long amaId,
+                                 @RequestParam("userId") Long userId,
+                                 @RequestParam("body") String body
+        ){
+        Ama ama = amaRepo.findById(amaId);
+        User user = userRepo.findById(userId);
+        if ( (ama == null) || (user == null) ) {
+            throw new EntityNotFoundException();
+        }
+
+        Question q = new Question(user, ama, body);
+
+        questionRepo.save(q);
+        return q;
+    }
+
+    @GetMapping("/{id}/questions")
+    public List<Question> viewQuestions(@PathVariable("id") Long id,
+                                        @RequestParam("page") Integer page,
+                                        @RequestParam("limit") Integer limit,
+                                        @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
+                                        @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
+    ) {
+
+        Ama ama = amaRepo.findById(id);
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+        PageRequest request = new PageRequest(page, limit, sort);
+
+        if (ama == null) {
+            throw new EntityNotFoundException();
+        }
+        return questionRepo.findByAma(ama, request);
     }
 
 }

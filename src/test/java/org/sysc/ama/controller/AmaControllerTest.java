@@ -127,6 +127,46 @@ public class AmaControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void testAddQuestionToAma () throws Exception {
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                            .param("body", "What is the meaning of life?")
+                            .param("userId", this.testUser.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("What is the meaning of life?"))
+                .andExpect(jsonPath("$.ama.id").value(this.amaFoo.getId()));
+    }
+
+
+    @Test
+    public void testViewAma () throws Exception {
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(this.amaFoo.getId()));
+    }
+
+    @Test
+    public void testViewQuestions () throws Exception {
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()));
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "Is that a hippo?")
+                .param("userId", this.testUser.getId().toString()));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
+                            .param("page", "0")
+                            .param("limit", "2")
+                            .param("sort", "updated"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].body").value("Is that a hippo?"))
+                .andExpect(jsonPath("$[1].body").value("What is the meaning of life?"));
+    }
+
     /**
      * Sleeps the current process for the given number of milliseconds
      *
