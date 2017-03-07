@@ -159,8 +159,6 @@ webix.ready(function() {
 
 	$$("ama_list").sync(Ama.amas);
 
-	// Ama.refresh();
-
 	// check if the user is already in the cookie
 	var userId = webix.storage.cookie.get("userId");
 	if (!userId) {
