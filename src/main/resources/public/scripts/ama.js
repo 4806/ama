@@ -25,9 +25,10 @@ var Ama = (function() {
 			click : function() {
 				if (this.getParentView().validate()) {
 					this.getTopParentView().hide();
-					var params = $$("create_ama_form").getValues();
+					var params = this.getParentView().getValues();
 					params.userId = webix.storage.cookie.get("userId");
 					webix.ajax().post("/ama", params).then(function(result) {
+						console.log(result.json());
 						amas.add(result.json());
 						amas.sort("id","desc");
 					}).fail(function(xhr) {
@@ -53,33 +54,16 @@ var Ama = (function() {
 		$$winId.getBody().focus();
 	}
 
-	function refresh() {
-		webix.ajax().get("/ama/list", "page=0&limit=10", function(amas) {
-			var $$list = $$("ama_list");
-			amas = JSON.parse(amas);
-			$$("ama_list").clearAll();
-			console.log(amas);
-			for (var i = 0; i < amas.length; i++) {
-				console.log(amas[i]);
-				$$list.add({
-					title : amas[i].title,
-					author : amas[i].subject.name
-				});
-			}
-		});
-	}
-
 	return {
 		showForm : showForm,
 		createAmaForm : createAmaForm,
-		refresh : refresh,
 		amas : amas
 	};
 })();
 
 // Setup page when DOM is ready
 webix.ready(function() {
-	webix.ui( {
+	var amaWindow={
 		view : "window",
 		id : "AMAWindow",
 		fullscreen : true,
@@ -100,11 +84,12 @@ webix.ready(function() {
 			} ]
 		},
 		body : webix.copy(Ama.createAmaForm)
-	});
+	};
 
 
 	// Create the modal window to create AMAs
-	webix.ui({
+
+	var modalWindow = {
 		view : "window",
 		id : "WinCreateAMA",
 		width : 300,
@@ -126,45 +111,59 @@ webix.ready(function() {
 			
 		},
 		body : webix.copy(Ama.createAmaForm)
-	});
-	// create the toolbar
-	webix.ui({
-		type : "line",
-		rows : [ {
-			view : "toolbar",
-			elements : [ {
-				view : "button",
-				value : "New AMA",
-				width : 70,
-				click : function() {
-					Ama.showForm("WinCreateAMA");
-				}
-			} ]
-		}, {
-			id : "ama_list",
-			view : "datatable",
-			columns : [ {
-				id : "title"
-			}, {
-				id : "author"
-			} ],
-			on : {
-				onBeforeLoad : function() {
-					this.showOverlay("Loading...");
-				},
-				onAfterLoad : function() {
-					this.hideOverlay();
-					if (!this.count()) {
-						this.showOverlay("There are no AMAs");
-					}
-				},
-				onItemClick: function(id){
-					Ama.showForm("AMAWindow");
-				}
+	};
+
+	var newAmaButton = {
+		view : "toolbar",
+		elements : [ {
+			view : "button",
+			value : "New AMA",
+			width : 70,
+			click : function() {
+				Ama.showForm("WinCreateAMA");
 			}
 		} ]
-	});
+	};
 
+	var listAma = {
+		id : "ama_list",
+		view : "datatable",
+		columns : [ 
+			{id : "title"}, 
+			{id : "author"}
+		],
+		on : {
+			onBeforeLoad : function() {
+				this.showOverlay("Loading...");
+			},
+			onAfterLoad : function() {
+				this.hideOverlay();
+				if (!this.count()) {
+					this.showOverlay("There are no AMAs");
+				}
+			},
+			onItemClick: function(id){
+				Ama.showForm("AMAWindow");
+			}
+		}
+	};
+
+	var toolBar = {
+		type : "line",
+		rows : [ newAmaButton, listAma]
+	};
+	
+	// Create the modal window to create AMAs
+	webix.ui(modalWindow);
+	
+	// create the toolbar
+	webix.ui(toolBar);
+	
+	// create window to display an AMA
+	webix.ui(amaWindow);
+	
+
+	// sync the ama list with the
 	$$("ama_list").sync(Ama.amas);
 
 	// check if the user is already in the cookie
@@ -177,4 +176,8 @@ webix.ready(function() {
 			webix.storage.cookie.put("userId", user.json().id);
 		});
 	}
+
 });
+
+
+
