@@ -27,10 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/", "/user/create", "login").permitAll()
+                    .antMatchers( "/user/create").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
+                .loginPage("/login")
+                .permitAll()
                     .and()
                 .logout()
                     .permitAll();
@@ -46,8 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user").password("password").roles("USER");
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/user/create");
-//    }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/scripts/**");
+    }
 }

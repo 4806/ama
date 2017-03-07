@@ -19,11 +19,6 @@ import java.util.List;
 @ControllerAdvice
 public class ExceptionHandlingAdvice {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Before
-
-
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

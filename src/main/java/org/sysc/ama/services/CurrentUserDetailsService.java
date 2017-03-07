@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.sysc.ama.controller.EntityNotFoundException;
 import org.sysc.ama.model.User;
-import org.sysc.ama.model.UserRepository;
+import org.sysc.ama.repo.UserRepository;
 
 @Service
 @Component
@@ -18,7 +18,8 @@ public class CurrentUserDetailsService implements UserDetailsService {
 
     @Override
     public CurrentUser loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepo.findByName(name);
+        System.out.println(name);
+        User user = userRepo.findByName(name).orElseThrow(()->new EntityNotFoundException("user"));
         if (user == null){
             throw new UsernameNotFoundException("User with name " + name);
         }
