@@ -88,8 +88,6 @@ webix.ready(function() {
 	
 	// create the toolbar
 	webix.ui(toolBar);
-	
-	//webix.ui(amaContainer);
 
 	//sync the ama list with the 
 	$$("ama_list").sync(Ama.amas);
@@ -118,16 +116,6 @@ var modalWindow = {
 	head : " New AMA",
 	body : webix.copy(Ama.createAmaForm)
 }
-
-//var amaComponent = {
-//	view : "component",
-//	id : "win2",
-//	width : 150,
-//	position : "center",
-//	modal : true,
-//	head : "List AMAs",
-//	body : "List AMAs"
-//}
 
 var newAmaButton = {
 		view : "toolbar",
