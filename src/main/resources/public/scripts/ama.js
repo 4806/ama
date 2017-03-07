@@ -66,7 +66,6 @@ var Ama = (function() {
 					author : amas[i].subject.name
 				});
 			}
-			console.log(amas);
 		});
 	}
 
@@ -80,6 +79,26 @@ var Ama = (function() {
 
 // Setup page when DOM is ready
 webix.ready(function() {
+	var viewAmAWindow = {
+		view : "window",
+		id : "AMAWindow",
+		fullscreen : true,
+		head : {
+			view : "toolbar",
+			margin : -4,
+			cols : [ {
+				view : "label",
+				name : "Title"
+			}, {
+				view : "icon",
+				icon : "arrow-left",
+				click : function() {
+					$$("AMAWindow").hide();
+				}
+			} ]
+		}
+	};
+
 	// Create the modal window to create AMAs
 	webix.ui({
 		view : "window",
