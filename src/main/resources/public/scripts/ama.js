@@ -84,11 +84,24 @@ webix.ready(function() {
 	// Create the modal window to create AMAs
 	webix.ui({
 		view : "window",
-		id : "win1",
+		id : "WinCreateAMA",
 		width : 300,
 		position : "center",
 		modal : true,
-		head : " New AMA",
+		head : {
+			view : "toolbar",
+			margin : -4,
+			cols : [ {
+				view : "label",
+				label : "New AMA"
+			}, {
+				view : "icon",
+				icon : "times-circle",
+				click : function() {
+					$$("WinCreateAMA").hide();
+				}
+			} ]
+		},
 		body : webix.copy(Ama.createAmaForm)
 	});
 	// create the toolbar
@@ -101,7 +114,7 @@ webix.ready(function() {
 				value : "New AMA",
 				width : 70,
 				click : function() {
-					Ama.showForm("win1");
+					Ama.showForm("WinCreateAMA");
 				}
 			} ]
 		}, {
