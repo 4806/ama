@@ -47,18 +47,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User get ( @PathVariable(value="id") Long id) {
-        User user = userRepo.findById(id);
-        if (user == null)
-            throw new EntityNotFoundException();
+        User user = userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("user"));
 
         return user;
     }
 
     @DeleteMapping("/{id}")
     public User delete ( @PathVariable(value="id") Long id) {
-        User user = userRepo.findById(id);
-        if (user == null)
-            throw new EntityNotFoundException();
+        User user = userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("user"));
 
         userRepo.delete(user.getId());
 
