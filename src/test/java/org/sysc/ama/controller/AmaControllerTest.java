@@ -152,18 +152,21 @@ public class AmaControllerTest {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()));
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "Is that a hippo?")
-                .param("userId", this.testUser.getId().toString()));
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
                             .param("page", "0")
                             .param("limit", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.body == \"Is that a hippo?\")]").exists())
-                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists());
+                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists())
+                .andReturn();
     }
 
     /**
