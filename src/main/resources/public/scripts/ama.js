@@ -84,14 +84,14 @@ var Ama = (function() {
 // Setup page when DOM is ready
 webix.ready(function() {
 	var modalWindow = {
-			view : "window",
-			id : "win1",
-			width : 300,
-			position : "center",
-			modal : true,
-			head : " New AMA",
-			body : webix.copy(Ama.createAmaForm)
-		}
+		view : "window",
+		id : "win1",
+		width : 300,
+		position : "center",
+		modal : true,
+		head : " New AMA",
+		body : webix.copy(Ama.createAmaForm)
+	};
 
 	var newAmaButton = {
 		view : "toolbar",
