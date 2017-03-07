@@ -45,6 +45,53 @@ var Ama = (function() {
 			}
 		} ]
 	};
+	
+	var modalWindow = {
+			view : "window",
+			id : "win1",
+			width : 300,
+			position : "center",
+			modal : true,
+			head : " New AMA",
+			body : webix.copy(Ama.createAmaForm)
+		}
+
+	var newAmaButton = {
+			view : "toolbar",
+			elements : [ {
+				view : "button",
+				value : "New AMA",
+				width : 70,
+				click : function() {
+					Ama.showForm("win1");
+				}
+			}]
+		}
+
+	var listAma = {
+		id : "ama_list",
+		view : "datatable",
+		columns : [ 
+			{id : "title"}, 
+			{id : "author"}
+		],
+		on : {
+			onBeforeLoad : function() {
+				this.showOverlay("Loading...");
+			},
+			onAfterLoad : function() {
+				this.hideOverlay();
+				if (!this.count()) {
+					this.showOverlay("There are no AMAs");
+				}
+			}
+		}
+	}
+
+	var toolBar = {
+		type : "line",
+		rows : [ newAmaButton, listAma]
+	}
 
 	function showForm(winId, node) {
 		var $$winId = $$(winId);
@@ -61,7 +108,7 @@ var Ama = (function() {
 	
 	function listAmas(amas) {
 		var $$list = $$("ama_list");
-		console.log($$list)
+
 		amas = JSON.parse(amas);
 		$$("ama_list").clearAll();
 		for (var i = 0; i < amas.length; i++) {
@@ -69,7 +116,7 @@ var Ama = (function() {
 			$$list.add({
 				title : amas[i].title,
 				author : amas[i].subject.name
-			})
+			});
 		}
 	}
 
@@ -107,51 +154,5 @@ webix.ready(function() {
 
 });
 
-var modalWindow = {
-	view : "window",
-	id : "win1",
-	width : 300,
-	position : "center",
-	modal : true,
-	head : " New AMA",
-	body : webix.copy(Ama.createAmaForm)
-}
-
-var newAmaButton = {
-		view : "toolbar",
-		elements : [ {
-			view : "button",
-			value : "New AMA",
-			width : 70,
-			click : function() {
-				Ama.showForm("win1");
-			}
-		} ]
-	}
-
-var listAma = {
-	id : "ama_list",
-	view : "datatable",
-	columns : [ 
-		{id : "title"}, 
-		{id : "author"}
-	],
-	on : {
-		onBeforeLoad : function() {
-			this.showOverlay("Loading...");
-		},
-		onAfterLoad : function() {
-			this.hideOverlay();
-			if (!this.count()) {
-				this.showOverlay("There are no AMAs");
-			}
-		}
-	}
-}
-
-var toolBar = {
-	type : "line",
-	rows : [ newAmaButton, listAma]
-}
 
 
