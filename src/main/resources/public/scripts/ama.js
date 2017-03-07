@@ -53,9 +53,6 @@ var Ama = (function() {
 		});
 		
 		var ama = amas.getItem(id);
-		function deleteAma(id){
-			aelrt
-		}
 		var questionViewer = {
 			view : "dataview",
 			id : "questions",
