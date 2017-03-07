@@ -106,7 +106,7 @@ public class AmaController {
     }
 
     @GetMapping("/{id}")
-    public Ama viewAma ( @PathVariable("id") Long id ) {
+    public Ama view ( @PathVariable("id") Long id ) {
         Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
         return ama;
     }
@@ -124,6 +124,27 @@ public class AmaController {
         questionRepo.save(q);
         return q;
     }
+
+    @DeleteMapping("/{amaId}/question/{id}")
+    public Question deleteQuestion(@PathVariable("amaId") Long amId,
+                                   @PathVariable("id") Long id
+        ){
+
+        Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
+        questionRepo.delete(id);
+
+        return question;
+    }
+
+    @GetMapping("/{amaId}/question/{id}")
+    public Question viewQuestion(@PathVariable("amaId") Long amId,
+                                   @PathVariable("id") Long id
+    ){
+
+        Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
+        return question;
+    }
+
 
     @GetMapping("/{id}/questions")
     public List<Question> viewQuestions(@PathVariable("id") Long id,
