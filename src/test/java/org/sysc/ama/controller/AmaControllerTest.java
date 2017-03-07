@@ -160,11 +160,10 @@ public class AmaControllerTest {
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
                             .param("page", "0")
-                            .param("limit", "2")
-                            .param("sort", "updated"))
+                            .param("limit", "2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].body").value("Is that a hippo?"))
-                .andExpect(jsonPath("$[1].body").value("What is the meaning of life?"));
+                .andExpect(jsonPath("$[?(@.body == \"Is that a hippo?\")]").exists())
+                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists());
     }
 
     /**
