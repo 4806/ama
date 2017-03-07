@@ -38,7 +38,7 @@ public class AmaRepositoryTest {
         entityManager.persist(ama);
         entityManager.flush();
 
-        Ama persistedAma = this.amaRepo.findById((long)1);
+        Ama persistedAma = this.amaRepo.findById((long)1).get();
 
         assertEquals("Test AMA", persistedAma.getTitle());
         assertEquals( true, persistedAma.isPublic());

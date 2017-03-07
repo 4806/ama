@@ -34,7 +34,7 @@ public class UserTest {
         entityManager.persist(user);
         entityManager.flush();
 
-        User persistedUser = this.userRepo.findById(user.getId());
+        User persistedUser = this.userRepo.findById(user.getId()).get();
 
 
         assertEquals("TestUser", persistedUser.getName());

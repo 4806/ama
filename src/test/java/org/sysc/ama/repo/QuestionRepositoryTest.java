@@ -43,6 +43,6 @@ public class QuestionRepositoryTest {
 
         questionRepo.save(q);
 
-        assertEquals(questionRepo.findById(q.getId()), q);
+        assertEquals(questionRepo.findById(q.getId()).get(), q);
     }
 }

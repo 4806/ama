@@ -1,11 +1,13 @@
 package org.sysc.ama.advice;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.sysc.ama.controller.EntityNotFoundException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -29,5 +31,12 @@ public class ExceptionHandlingAdvice {
                     "Invalid "+ propertyPath + "(" + message + ")"));
         }
         return errors;
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> processValidationError(EntityNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND ).body("Bad Request: No " + ex.getEntityName() +
+                " exists with that id");
     }
 }
