@@ -1,7 +1,15 @@
 var Ama = (function() {
+
+	var amas = new webix.DataCollection({
+		url : "/ama/list?page=0&limit=10",
+		map : {
+			author : "#subject.name#"
+		}
+	});
+
 	var createAmaForm = {
 		view : "form",
-		id : "create_ama_form",
+		id : "create-ama-form",
 		elements : [ {
 			view : "text",
 			label : "Title",
@@ -17,15 +25,16 @@ var Ama = (function() {
 			click : function() {
 				if (this.getParentView().validate()) {
 					this.getTopParentView().hide();
-					var params = $$("create_ama_form").getValues();
+					var params = this.getParentView().getValues();
 					params.userId = webix.storage.cookie.get("userId");
-					webix.ajax().post("/ama", params).then(function() {
-						refresh();
+					webix.ajax().post("/ama", params).then(function(result) {
+
+						amas.add(result.json());
+						amas.sort("id", "desc");
 					}).fail(function(xhr) {
-						var response = JSON.parse(xhr.response);
 						webix.message({
 							type : "error",
-							text : response.message
+							text : xhr.response
 						});
 					});
 				} else {
@@ -38,6 +47,139 @@ var Ama = (function() {
 		} ]
 	};
 
+	function viewAma(id) {
+		
+		var questions = new webix.DataCollection({
+			url : "/ama/" + id + "/questions?page=0&limit=10",
+			scheme:{
+		        $init:function(obj){
+		            obj.created = (new Date(obj.created)).toLocaleString(); 
+		        }
+			},
+		});
+
+		var ama = amas.getItem(id);
+		var questionViewer = {
+			view : "dataview",
+			id : "questions",
+			template : "Created Date: #created# <br/> #body#",
+			type : {
+				height : "100",
+				width : "auto"
+			},
+			xCount : 1,
+			yCount : 10
+		};
+
+		var createQuestionForm = {
+			view : "form",
+			id : "create-question-form",
+			elements : [
+					{
+						view : "textarea",
+						label : "Body",
+						name : "body",
+						required : true
+					},
+					{
+						view : "button",
+						label : "Create",
+						click : function() {
+							if (this.getParentView().validate()) {
+								this.getTopParentView().hide();
+								var params = this.getParentView().getValues();
+								params.userId = webix.storage.cookie
+										.get("userId");
+								webix.ajax().post("/ama/" + id + "/question",
+										params).then(function(result) {
+									questions.add(result.json());
+									questions.sort("id", "desc");
+								}).fail(function(xhr) {
+									webix.message({
+										type : "error",
+										text : xhr.response
+									});
+								});
+							} else {
+								webix.message({
+									type : "error",
+									text : "Body can't be empty"
+								});
+							}
+						}
+					} ]
+		};
+
+		var modalWindow = {
+			view : "window",
+			id : "win-create-question",
+			width : 400,
+			position : "center",
+			modal : true,
+			head : {
+				view : "toolbar",
+				margin : -4,
+				cols : [ {
+					view : "label",
+					label : "New Question"
+				}, {
+					view : "icon",
+					icon : "times-circle",
+					click : function() {
+						$$("WinCreateQuestion").hide();
+					}
+				} ]
+
+			},
+			body : webix.copy(createQuestionForm)
+		};
+
+		var toolbar = {
+			view : "toolbar",
+			cols : [ {
+				view : "button",
+				id : "create",
+				value : "Create Question",
+				width : 150,
+				align : "left",
+				click : function() {
+					Ama.showForm("win-create-question");
+				}
+			} ]
+		};
+
+		var window = new webix.ui({
+			view : "window",
+			id : "ama-window",
+			fullscreen : true,
+			head : {
+
+				view : "toolbar",
+				margin : -4,
+				cols : [ {
+					view : "icon",
+					icon : "arrow-left",
+					label : "Back",
+					click : function() {
+						$$("ama-window").hide();
+					}
+				}, {
+					view : "label",
+					label : ama.title,
+					align : "center"
+
+				} ]
+			},
+			body : {
+				rows : [ toolbar, questionViewer ]
+			}
+		});
+
+		webix.ui(modalWindow);
+		$$("questions").sync(questions);
+		window.show();
+	}
+
 	function showForm(winId, node) {
 		var $$winId = $$(winId);
 		$$winId.getBody().clear();
@@ -45,46 +187,95 @@ var Ama = (function() {
 		$$winId.getBody().focus();
 	}
 
-	function refresh() {
-		webix.ajax().get("/ama/list", "page=0&limit=2", function(amas) {
-			// TODO actually display AMA
-			console.log(amas);
-		});
-	}
-	
 	return {
-		showForm:showForm,
-		createAmaForm:createAmaForm		
+		showForm : showForm,
+		createAmaForm : createAmaForm,
+		amas : amas,
+		viewAma : viewAma
 	};
 })();
 
 // Setup page when DOM is ready
 webix.ready(function() {
+
 	// Create the modal window to create AMAs
-	webix.ui({
+
+	var modalWindow = {
 		view : "window",
-		id : "win1",
+		id : "win-create-ama",
 		width : 300,
 		position : "center",
 		modal : true,
-		head : " New AMA",
-		body : webix.copy(Ama.createAmaForm)
-	});
-	// create the toolbar
-	webix.ui({
-		type : "line",
-		rows : [ {
+		head : {
 			view : "toolbar",
-			elements : [ {
-				view : "button",
-				value : "New AMA",
-				width : 70,
+			margin : -4,
+			cols : [ {
+				view : "label",
+				label : "New AMA"
+			}, {
+				view : "icon",
+				icon : "times-circle",
 				click : function() {
-					Ama.showForm("win1");
+					$$("win-create-ama").hide();
 				}
 			} ]
+
+		},
+		body : webix.copy(Ama.createAmaForm)
+	};
+
+	var newAmaButton = {
+		view : "toolbar",
+		elements : [ {
+			view : "button",
+			value : "New AMA",
+			width : 70,
+			click : function() {
+				Ama.showForm("win-create-ama");
+			}
 		} ]
-	});
+	};
+
+	var listAma = {
+		id : "ama-list",
+		view : "datatable",
+		columns : [ {
+			id : "title",
+			header : "Title",
+			fillspace : 1
+		}, {
+			id : "author",
+			header : "Author"
+		} ],
+		on : {
+			onBeforeLoad : function() {
+				this.showOverlay("Loading...");
+			},
+			onAfterLoad : function() {
+				this.hideOverlay();
+				if (!this.count()) {
+					this.showOverlay("There are no AMAs");
+				}
+			},
+			onItemClick : function(id) {
+				Ama.viewAma(id);
+			}
+		}
+	};
+
+	var toolBar = {
+		type : "line",
+		rows : [ newAmaButton, listAma ]
+	};
+
+	// Create the modal window to create AMAs
+	webix.ui(modalWindow);
+
+	// create the toolbar
+	webix.ui(toolBar);
+
+	// sync the ama list with the
+	$$("ama-list").sync(Ama.amas);
 
 	// check if the user is already in the cookie
 	var userId = webix.storage.cookie.get("userId");
@@ -96,4 +287,5 @@ webix.ready(function() {
 			webix.storage.cookie.put("userId", user.json().id);
 		});
 	}
+
 });

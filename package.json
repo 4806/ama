@@ -26,6 +26,5 @@
   "scripts": {
     "test": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && ./node_modules/.bin/karma start karma.conf.js",
     "test:windows": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && call ./node_modules/.bin/karma start karma.conf.js"
-
   }
 }
