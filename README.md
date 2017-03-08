@@ -27,14 +27,14 @@ A list of current issues in the project backlog can be found [here](https://gith
 
 ## Deployment
 
-The app is deployed using Heroku to https://sysc4806-ama.herokuapp.com/
+The app is deployed using Heroku to http://sysc4806-ama.herokuapp.com/
 
 ## Next Milestone
 
 This iteration introduced AMAs and questions to the system. However, there is currently no notion of a user
 or any security within the system. The next iteration will focus on adding this feature including a user
 login, user profile and user sessions. The specific use cases for the next milestone are listed below. Once
-the user has been created then the use cases for creating questions and AMAs will be updated to that only
+the user has been created then the use cases for creating questions and AMAs will be updated so that only
 logged in users can create them and are then the author of the question or AMA.
 
 #### User Creation
@@ -53,7 +53,6 @@ The AMA site visitor now has an account and is an AMA user
 2. The visitor enters some basic account information and chooses a unique name
 3. The visitor accepts the terms of the ama site
 4. The visitor receives a confirmation that their account has been created
-
 
 #### User Login
 
@@ -86,6 +85,22 @@ The AMA user is no longer logged in
 
 1. The user clicks the "Logout" button
 2. The user receives confirmation that they have been logged out
+
+#### Answer AMA Question
+
+###### Precondition
+
+The AMA subject has created an AMA and questions have been asked
+
+###### Postcondition
+
+The AMA subject has answered a question on their AMA
+
+###### Description
+
+1. The AMA subject selects a question to answer
+2. The AMA subject types an answer to the question and presses "submit"
+3. The AMA subject's answer is now available to everyone viewing the AMA
 
 
 
