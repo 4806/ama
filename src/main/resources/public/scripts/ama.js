@@ -49,7 +49,6 @@ var Ama = (function() {
 
 	function viewAma(id) {
 		
-		var format = webix.Date.dateToStr("%d %m %Y %h:%i:%s");
 		var questions = new webix.DataCollection({
 			url : "/ama/" + id + "/questions?page=0&limit=10",
 			scheme:{
