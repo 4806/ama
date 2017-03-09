@@ -53,7 +53,19 @@ var Ama = (function() {
 			url : "/ama/" + id + "/questions?page=0&limit=10",
 			scheme:{
 		        $init:function(obj){
-		            obj.created = (new Date(obj.created)).toLocaleString(); 
+		            obj.created = (new Date(obj.created)).toLocaleString();
+		            obj.icon = {
+							view : "icon",
+							icon : "trash-0",
+							click : function() {
+								webix.ajax().del("/ama/"+id+"/question/"+obj.id).fail(function(xhr){
+									webix.message({
+										type : "error",
+										text : xhr.response
+									});
+								});
+							}
+						} 
 		        }
 			},
 		});
