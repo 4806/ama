@@ -10,8 +10,7 @@ import org.sysc.ama.model.User;
 import org.sysc.ama.repo.UserRepository;
 
 
-@Service
-@Component
+@Service("userDetailsService")
 public class CurrentUserDetailsService implements UserDetailsService {
 
     @Autowired
