@@ -3,8 +3,8 @@ function submit(){
 }
 
 function signUp() {
-    formVals = $$("loginForm").getValues();
-    params = {}
+    var formVals = $$("loginForm").getValues();
+    var params = {};
     params.name = formVals.username;
     params.password = formVals.password;
 
