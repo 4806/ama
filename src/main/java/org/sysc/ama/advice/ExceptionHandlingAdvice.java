@@ -27,10 +27,10 @@ public class ExceptionHandlingAdvice {
         for (ConstraintViolation<?> violation : ex.getConstraintViolations())
         {
             String propertyPath = violation.getPropertyPath().toString();
-            String message = violation.getMessage();
+            String message = violation.getMessage()  + " Invalid value is: " + violation.getInvalidValue();
             errors.add(new FieldError("name",propertyPath,
 
-                    "Invalid "+ propertyPath + "(" + message + ")"));
+                    "Invalid "+ propertyPath + "(" + message + ")" ));
         }
         return errors;
     }

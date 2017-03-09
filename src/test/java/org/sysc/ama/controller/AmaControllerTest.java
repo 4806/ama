@@ -1,5 +1,6 @@
 package org.sysc.ama.controller;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -152,18 +153,54 @@ public class AmaControllerTest {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()));
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "Is that a hippo?")
-                .param("userId", this.testUser.getId().toString()));
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
                             .param("page", "0")
                             .param("limit", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.body == \"Is that a hippo?\")]").exists())
-                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists());
+                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists())
+                .andReturn();
+    }
+
+    @Test
+    public void testViewQuestion () throws Exception {
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("What is the meaning of life?"));
+    }
+
+    @Test
+    public void testDeleteQuestion () throws Exception {
+
+        MvcResult result =  mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
+
+        Integer id = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("What is the meaning of life?"));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
+                .param("page", "0")
+                .param("limit", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
     }
 
     /**

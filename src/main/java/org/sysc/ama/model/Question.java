@@ -9,6 +9,10 @@ import javax.persistence.ManyToOne;
 
 import javax.validation.constraints.Past;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -40,7 +44,9 @@ public class Question {
         this.author = author;
         this.ama    = ama;
         this.body   = body;
-        this.created = new Date();
+        //After running into msny issues during testing, it appears that if we use the default Date() constructor,
+        //the @Past constraint on created date is sometimes violated. The default constructor is deprecated (
+        this.created = Date.from(Instant.now().minusMillis(1));
         this.updated = new Date();
         this.edited = false;
     }

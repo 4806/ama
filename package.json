@@ -18,16 +18,13 @@
   "devDependencies": {
     "jasmine": "^2.5.2",
     "jshint": "^2.9.3",
-    "if-env": "^1.0.0",
     "karma": "^1.3.0",
     "karma-coverage": "^1.1.1",
     "karma-jasmine": "^1.0.2",
     "karma-phantomjs-launcher": "^1.0.2"
   },
   "scripts": {
-    "test" : "if-env OS=Windows_NT && npm run test:windows || npm run test:other",
-    "test:windows": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && call ./node_modules/.bin/karma start karma.conf.js",
-    "test:other": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && ./node_modules/.bin/karma start karma.conf.js"
-
+    "test": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && ./node_modules/.bin/karma start karma.conf.js",
+    "test:windows": "./node_modules/.bin/jshint src/main/resources/ src/test/javascript && call ./node_modules/.bin/karma start karma.conf.js"
   }
 }
