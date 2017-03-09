@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.sysc.ama.model.User;
 import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.services.CurrentUser;
 
 @RestController
 @RequestMapping("/user")
@@ -37,10 +38,6 @@ public class UserController {
     {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
-    }
-
-    public User getCurrentUserLogin() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
     }
 
     @PostMapping("/create")

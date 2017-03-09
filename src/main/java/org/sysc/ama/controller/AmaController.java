@@ -2,6 +2,7 @@ package org.sysc.ama.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,9 @@ public class AmaController {
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
-            @RequestParam("public") Boolean isPublic
+            @RequestParam("public") Boolean isPublic,
+            @AuthenticationPrincipal User user
         ) {
-        User user = userController.getCurrentUserLogin();
 
         Ama ama = new Ama(title, user, isPublic);
 
