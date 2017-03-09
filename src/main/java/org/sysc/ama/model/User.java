@@ -35,10 +35,10 @@ public class User {
 
     public User() {
         this.role = Role.USER;
-        //Default constructor for Spring
     }
 
     public User(String name) {
+        this();
         this.name = name;
     }
 

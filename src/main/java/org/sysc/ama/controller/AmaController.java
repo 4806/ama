@@ -40,7 +40,7 @@ public class AmaController {
             @RequestParam("userId") Long userId,
             @RequestParam("public") Boolean isPublic
         ) {
-        User user = userController.get(userId);
+        User user = userController.getCurrentUserLogin();
 
         Ama ama = new Ama(title, user, isPublic);
 
@@ -119,7 +119,7 @@ public class AmaController {
                                  @RequestParam("body") String body
         ){
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user"));
+        User user = userController.getCurrentUserLogin();
 
         Question q = new Question(user, ama, body);
 

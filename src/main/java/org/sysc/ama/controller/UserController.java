@@ -39,10 +39,13 @@ public class UserController {
         validator = validatorFactory.getValidator();
     }
 
-    @PostMapping("/create")
+    public User getCurrentUserLogin() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
+    }
 
+    @PostMapping("/create")
+    // TODO: When the UI no longer attempts to create users without passwords, remove the default empty password value
     public User create( @RequestParam(value="name") String name, @RequestParam(value="password", defaultValue="") String password) {
-        System.out.println(name);
         User user = new User();
         user.setName(name);
         user.setPassword(password);
