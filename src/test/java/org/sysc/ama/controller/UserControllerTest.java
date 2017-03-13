@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,6 +39,7 @@ public class UserControllerTest {
     private UserRepository userRepo;
 
     @Test
+    @WithMockUser
     public void testCreateEndpointExists () throws Exception {
         mockMvc.perform(post("/user/create").param("name", "TestUser"))
                 .andExpect(status().isOk())
@@ -46,18 +48,21 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testUserNameMustNotBeEmpty () throws Exception {
         mockMvc.perform(post("/user/create").param("name", ""))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithMockUser
     public void testUserNameMustBeAlphanumeric () throws Exception {
         mockMvc.perform(post("/user/create").param("name", "asd?asdasd"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithMockUser
     public void testUserNameMayContainUnderscores () throws Exception {
         mockMvc.perform(post("/user/create").param("name", "test_user"))
                 .andExpect(status().isOk())
@@ -66,12 +71,14 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testUserNameMayNotStartWithNumber () throws Exception {
         mockMvc.perform(post("/user/create").param("name", "1user"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithMockUser
     public void testViewUserProfileEndpointExists() throws Exception {
         User testUser = new User("TestUser");
         userRepo.save(testUser);
@@ -82,12 +89,14 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testViewUserProfileReturns404IfUserDoesNotExist() throws Exception {
         mockMvc.perform(get("/user/20/"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithMockUser
     public void testDeleteUserEndpointExists() throws Exception {
         User testUser = new User("TestUser");
         userRepo.save(testUser);
@@ -98,6 +107,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testDeleteUserReturns404IfUserDoesNotExist() throws Exception {
         mockMvc.perform(delete("/user/20/"))
                 .andExpect(status().isNotFound());
