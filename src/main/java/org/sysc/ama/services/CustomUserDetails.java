@@ -9,11 +9,11 @@ import java.util.Collection;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.sysc.ama.model.User;
 
-public class CurrentUser extends org.springframework.security.core.userdetails.User {
+public class CustomUserDetails extends org.springframework.security.core.userdetails.User {
 
     private User user;
 
-    public CurrentUser(User user) {
+    public CustomUserDetails(User user) {
         super(user.getName(), user.getPasswordHash(), AuthorityUtils.createAuthorityList(user.getRole().toString()));
         this.user = user;
     }

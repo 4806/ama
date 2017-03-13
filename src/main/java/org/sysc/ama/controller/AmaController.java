@@ -1,7 +1,5 @@
 package org.sysc.ama.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +14,7 @@ import org.sysc.ama.model.User;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
-import org.sysc.ama.services.CurrentUser;
+import org.sysc.ama.services.CustomUserDetails;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class AmaController {
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
             @RequestParam("public") Boolean isPublic,
-            @AuthenticationPrincipal CurrentUser user
+            @AuthenticationPrincipal CustomUserDetails user
         ) {
         Ama ama = new Ama(title, user.getUser(), isPublic);
 
