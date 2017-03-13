@@ -34,7 +34,10 @@ public class User {
     private Long id;
 
     public User() {
+
         this.role = Role.USER;
+        this.passwordHash = "";
+
     }
 
     public User(String name) {

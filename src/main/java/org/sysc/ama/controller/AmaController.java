@@ -43,7 +43,6 @@ public class AmaController {
             @RequestParam("public") Boolean isPublic,
             @AuthenticationPrincipal CurrentUser user
         ) {
-        System.out.println(user.getUser().getName());
         Ama ama = new Ama(title, user.getUser(), isPublic);
 
         // TODO Check that AMA title and user pair is unique
