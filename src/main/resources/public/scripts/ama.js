@@ -93,7 +93,7 @@ var Ama = (function() {
 					webix.confirm("Are you sure you want to delete this?",
 							function(action) {
 								if (action === true) {
-									questions.remove(id)
+									questions.remove(id);
 								}
 							});
 				}
