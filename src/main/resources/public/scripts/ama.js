@@ -58,7 +58,6 @@ var Ama = (function() {
 			},
 			on: {
 					"onBeforeDelete": function(questionId){
-						console.log(questionId);
 						webix.ajax().del("/ama/"+id+"/question/"+questionId).fail(function(xhr){
 							webix.message({
 								type : "error",
@@ -75,7 +74,7 @@ var Ama = (function() {
 			view : "dataview",
 			id : "questions",
 			template : function(obj){ 
-				var display="Created Date: "+obj.created
+				var display="Created Date: "+obj.created;
 					// TODO add check if user created question
 					display+=removeIcon;
 
