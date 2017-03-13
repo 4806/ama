@@ -41,7 +41,7 @@ webix.ready(function() {
         ]
     });
 
-    if (window.location.search.indexOf('?error') > -1) {
-        webix.message('Invalid Credentials');
+    if (window.location.search.indexOf("?error") > -1) {
+        webix.message("Invalid Credentials");
     }
 });
