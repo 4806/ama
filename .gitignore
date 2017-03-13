@@ -25,4 +25,6 @@ node*
 reports*
 node_modules*
 
+*.log
+*.json
 /target/
