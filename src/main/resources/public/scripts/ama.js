@@ -126,7 +126,7 @@ var Ama = (function() {
 					view : "icon",
 					icon : "times-circle",
 					click : function() {
-						$$("WinCreateQuestion").hide();
+						$$("win-create-question").hide();
 					}
 				} ]
 
