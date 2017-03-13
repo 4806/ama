@@ -24,7 +24,7 @@ var AmaLogin = (function () {
     return {
         submit: submit,
         signUp: signUp
-    }
+    };
 })();
 
 webix.ready(function() {
@@ -37,11 +37,11 @@ webix.ready(function() {
             { view: "text", label: "Username", name: "username" },
             { view: "text", label: "Password", name: "password", type: "password" },
             { view: "button", value: "Login", width: 150, align: "center", click: AmaLogin.submit },
-            { view: "button", value: "Sign Up", width: 150, align: "center", click: AmaLogin.signUp }
+            { view: "button", value: "Sign Up", width: 150, align: "center", click: AmaLogin.signUp}
         ]
     });
 
     if (window.location.search.indexOf('?error') > -1) {
-        webix.message("Invalid Credentials");
+        webix.message('Invalid Credentials');
     }
 });
