@@ -1,5 +1,6 @@
 package org.sysc.ama.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.sysc.ama.model.User;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
+import org.sysc.ama.services.CustomUserDetails;
 
 import java.util.List;
 
@@ -36,11 +38,10 @@ public class AmaController {
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam("userId") Long userId,
-            @RequestParam("public") Boolean isPublic
+            @RequestParam("public") Boolean isPublic,
+            @AuthenticationPrincipal CustomUserDetails user
         ) {
-        User user = userController.get(userId);
-
-        Ama ama = new Ama(title, user, isPublic);
+        Ama ama = new Ama(title, user.getUser(), isPublic);
 
         // TODO Check that AMA title and user pair is unique
         // If the Ama is not unique then an error must be returned. This error should be a
@@ -114,10 +115,10 @@ public class AmaController {
     @PostMapping("/{amaId}/question")
     public Question addQuestion (@PathVariable("amaId") Long amaId,
                                  @RequestParam("userId") Long userId,
-                                 @RequestParam("body") String body
+                                 @RequestParam("body") String body,
+                                 @AuthenticationPrincipal User user
         ){
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user"));
 
         Question q = new Question(user, ama, body);
 
