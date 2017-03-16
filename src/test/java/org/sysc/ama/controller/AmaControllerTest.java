@@ -24,9 +24,11 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
 import org.sysc.ama.model.Ama;
 
+import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 
@@ -47,22 +49,27 @@ public class AmaControllerTest {
     @Autowired
     private AmaRepository amaRepo;
 
+    @Autowired
+    private QuestionRepository questionRepo;
+
     private User testUser;
 
     private Ama amaFoo;
     private Ama amaBar;
     private Ama amaBaz;
 
+    private Question fooQuestion;
+
     @PostConstruct
     public void init() {
-        User user = new User("Default");
-        this.userRepo.save(user);
+        this.testUser = new User("TestUser");
+        this.userRepo.save(this.testUser);
+
+        this.userRepo.save(new User("BadUser"));
     }
 
     @Before
     public void before () {
-        this.testUser = new User("TestUser");
-
         // Note About Delay
         //
         // When an AMA is created it receives a created timestamp that is accurate to the
@@ -76,14 +83,15 @@ public class AmaControllerTest {
         delay(2);
         this.amaBaz = new Ama("Baz", this.testUser, true);
 
-        userRepo.save(this.testUser);
         amaRepo.save(this.amaFoo);
         amaRepo.save(this.amaBar);
         amaRepo.save(this.amaBaz);
+        this.fooQuestion = new Question(this.testUser, this.amaFoo, "Don't avoid the question");
+        questionRepo.save(this.fooQuestion);
     }
 
     @Test
-    @WithUserDetails("Default")
+    @WithUserDetails("TestUser")
     public void testCreateEndpointExists () throws Exception {
         mockMvc.perform(post("/ama?userId=" + this.testUser.getId() + "&title=Foo&public=true"))
                 .andExpect(status().isOk())
@@ -226,6 +234,29 @@ public class AmaControllerTest {
                 .param("limit", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testAddAnswer () throws Exception {
+        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
+        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
+                .param("body", "No clue"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.body").value("No clue"));
+    }
+
+    @Test
+    @WithUserDetails("BadUser")
+    public void testOnlyAmaSubjectCanAnswerQuestion () throws Exception {
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answer")
+                .param("body", "No clue"))
+                .andExpect(status().isForbidden());
     }
 
     /**

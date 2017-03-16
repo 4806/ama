@@ -1,5 +1,6 @@
 package org.sysc.ama.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import org.sysc.ama.model.Ama;
+import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
 import org.sysc.ama.repo.QuestionRepository;
@@ -162,5 +164,15 @@ public class AmaController {
         return questionRepo.findByAma(ama, request);
     }
 
+    @PostMapping("/{amaId}/question/{questionId}/answer")
+    @PreAuthorize("#ama.subject.id == principal.user.id")
+    public Answer answerQuestion(@PathVariable("amaId") Ama ama,
+                                   @PathVariable("questionId") Question question,
+                                   @RequestParam("body") String body,
+                                   @AuthenticationPrincipal CustomUserDetails principal)
+    {
+        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
+        return answer;
+    }
 }
 
