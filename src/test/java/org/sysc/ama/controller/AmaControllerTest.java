@@ -259,24 +259,6 @@ public class AmaControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @Test
-    @WithUserDetails("BadUser")
-    public void testGetAnswerToQuestion () throws Exception {
-        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
-                .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()))
-                .andReturn();
-        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
-
-        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
-                .param("body", "No clue"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("No clue"));
-
-        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answers"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[?(@.body == \"No clue\")]").exists());
-    }
 
     /**
      * Sleeps the current process for the given number of milliseconds
