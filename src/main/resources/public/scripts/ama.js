@@ -6,7 +6,7 @@ var Ama = (function (Ama) {
             author : "#subject.name#",
             icon : "<span class='fa-trash-o webix_icon'></span>"
         },
-        
+
         on : {
             onBeforeDelete : function deleteAma (id) {
 	            webix.ajax().del("/ama/" + id)
@@ -26,47 +26,6 @@ var Ama = (function (Ama) {
             text : xhr.response
         });
     }
-
-    var createAmaForm = {
-        view : "form",
-        id : "create-ama-form",
-        elements : [ {
-            view : "text",
-            label : "Title",
-            name : "title",
-            required : true
-        }, {
-            view : "checkbox",
-            label : "Public",
-            name : "public"
-        }, {
-            view : "button",
-            label : "Create",
-            click : function() {
-                if (this.getParentView().validate()) {
-                    this.getTopParentView().hide();
-                    var params = this.getParentView().getValues();
-                    params.userId = webix.storage.cookie.get("userId");
-                    webix.ajax().post("/ama", params).then(function(result) {
-
-                        amas.add(result.json());
-                        amas.sort("id", "desc");
-                    }).fail(function(xhr) {
-                        webix.message({
-                            type : "error",
-                            text : xhr.response
-                        });
-                    });
-                } else {
-                    webix.message({
-                        type : "error",
-                        "text" : "Title can't be empty"
-                    });
-                }
-            }
-        } ]
-    };
-
     function viewAma(id) {
 
         var questions = new window.Question.List({
@@ -126,9 +85,9 @@ var Ama = (function (Ama) {
     }
 
     Ama.showForm = showForm;
-    Ama.createAmaForm = createAmaForm;
     Ama.amas = amas;
     Ama.viewAma = viewAma;
+    Ama.onError = onError;
     return Ama;
 }(window.Ama || {}));
 
@@ -158,7 +117,14 @@ webix.ready(function() {
             } ]
 
         },
-        body : webix.copy(Ama.createAmaForm)
+        body : new Ama.Create({
+            onCreate: function (result) {
+                Ama.amas.add(result.json());
+                Ama.amas.sort("id", "desc");
+            },
+            onError : Ama.onError
+        }).form()
+
     };
 
     var newAmaButton = {
@@ -209,7 +175,7 @@ webix.ready(function() {
         	},
         	"title" : function(e, id) {
         		Ama.viewAma(id);
-        	}        	
+        	}
         }
     };
 
