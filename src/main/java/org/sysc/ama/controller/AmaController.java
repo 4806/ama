@@ -1,5 +1,6 @@
 package org.sysc.ama.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,8 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import org.sysc.ama.model.Ama;
+import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
+import org.sysc.ama.repo.AnswerRepository;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
@@ -30,6 +33,9 @@ public class AmaController {
 
     @Autowired
     private QuestionRepository questionRepo;
+
+    @Autowired
+    private AnswerRepository answerRepo;
 
     @Autowired
     private UserController userController;
@@ -101,6 +107,9 @@ public class AmaController {
         // }
         //
         // ```
+        for (Question q : questionRepo.findByAma(ama)){
+            questionRepo.delete(q);
+        }
         amaRepo.delete(id);
 
         return ama;
@@ -162,5 +171,16 @@ public class AmaController {
         return questionRepo.findByAma(ama, request);
     }
 
+    @PostMapping("/{amaId}/question/{questionId}/answer")
+    @PreAuthorize("#ama.subject.id == principal.user.id")
+    public Answer answerQuestion(@PathVariable("amaId") Ama ama,
+                                   @PathVariable("questionId") Question question,
+                                   @RequestParam("body") String body,
+                                   @AuthenticationPrincipal CustomUserDetails principal)
+    {
+        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
+        answerRepo.save(answer);
+        return answer;
+    }
 }
 
