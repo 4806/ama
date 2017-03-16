@@ -7,6 +7,13 @@ var Ama = (function() {
         }
     });
 
+    function onError (xhr) {
+        webix.message({
+            type : "error",
+            text : xhr.response
+        });
+    }
+
     var createAmaForm = {
         view : "form",
         id : "create-ama-form",
@@ -49,26 +56,10 @@ var Ama = (function() {
 
     function viewAma(id) {
 
-        var questions = new webix.DataCollection({
-            url : "/ama/" + id + "/questions?page=0&limit=10",
-            scheme : {
-                $init : function(obj) {
-                    obj.created = (new Date(obj.created)).toLocaleString();
-                }
-            },
-            on : {
-                "onBeforeDelete" : function(questionId) {
-                    webix.ajax().del("/ama/" + id + "/question/" + questionId)
-                        .fail(function(xhr) {
-                            webix.message({
-                                type : "error",
-                                text : xhr.response
-                            });
-                        });
-                }
-            }
+        var questions = new window.Question.List({
+            ama : amas.getItem(id),
+            onError : onError
         });
-
         var ama = amas.getItem(id);
 
         var modalWindow = {
@@ -97,7 +88,8 @@ var Ama = (function() {
                 onCreate : function(result) {
                     questions.add(result.json());
                     questions.sort("id", "desc");
-                }
+                },
+                onError : onError
             }).form()
         };
 
@@ -156,7 +148,7 @@ var Ama = (function() {
         });
 
         webix.ui(modalWindow);
-        $$("questions").sync(questions);
+        $$("questions").sync(questions.data);
         amaWindow.show();
     }
 

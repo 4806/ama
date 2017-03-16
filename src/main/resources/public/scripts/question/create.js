@@ -4,6 +4,7 @@ window.Question = (function (Question) {
         opts = opts || {};
         this.ama = opts.ama || {};
         this.onCreate = opts.onCreate || function () {};
+        this.onError  = opts.onError || function () {};
     }
 
 
@@ -16,13 +17,8 @@ window.Question = (function (Question) {
             params.userId = webix.storage.cookie.get('userId');
 
             webix.ajax().post('/ama/' + this.ama.id + '/question', params)
-                .then(this.onCreate)
-                .fail(function(xhr) {
-                    webix.message({
-                        type : 'error',
-                        text : xhr.response
-                    });
-                });
+                .then(this.onCreate.bind(this))
+                .fail(this.onError.bind(this));
 
         } else {
             webix.message({
