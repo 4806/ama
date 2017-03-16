@@ -211,7 +211,7 @@ public class AmaControllerTest {
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("Don't avoid the question?"));
+                .andExpect(jsonPath("$.body").value("Don't avoid the question"));
     }
 
     @Test

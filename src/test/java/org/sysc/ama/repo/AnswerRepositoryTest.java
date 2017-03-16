@@ -43,7 +43,7 @@ public class AnswerRepositoryTest {
         questionRepo.save(q);
 
         Answer answer = new Answer(subject, ama, q, "Because");
-
+        answerRepo.save(answer);
         assertEquals(answerRepo.findById(answer.getId()).get(), answer);
     }
 }
