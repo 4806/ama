@@ -93,7 +93,7 @@ public class AmaControllerTest {
     @Test
     @WithUserDetails("TestUser")
     public void testCreateEndpointExists () throws Exception {
-        mockMvc.perform(post("/ama?userId=" + this.testUser.getId() + "&title=Foo&public=true"))
+        mockMvc.perform(post("/ama?title=Foo&public=true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.public").value("true"))
                 .andExpect(jsonPath("$.title").value("Foo"))
