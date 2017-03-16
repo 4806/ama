@@ -2,8 +2,8 @@ window.Ama = (function (Ama) {
 
     function View (opts) {
         opts = opts || {};
-        this.id = opts.id;
-        this.title = opts.title;
+        this.ama = opts.ama || {};
+        this.onCreate = opts.onCreate || {};
         this.questions = new window.Question.List(this);
     }
 /*
@@ -11,16 +11,8 @@ window.Ama = (function (Ama) {
         questions.add(result.json());
         questions.sort('id', 'desc');
     }
-
-    function(event, id) {
-        webix.confirm('Are you sure you want to delete this?',
-        function(action) {
-            if (action === true) {
-                questions.remove(id);
-            }
-        });
-    }
 */
+
     View.prototype.view = function () {
         return {
             view        : 'window',
@@ -46,7 +38,13 @@ window.Ama = (function (Ama) {
                 ]
             },
             body : {
-                rows : [ toolbar, this.questions.data ]
+                rows : [
+                    toolbar.call(this),
+                    new window.Question.View({
+                        ama : this.ama,
+                        onDelete : onDelete.bind(this)
+                    }).view()
+                ]
             }
         };
     };
@@ -60,13 +58,21 @@ window.Ama = (function (Ama) {
                 value : 'Create Question',
                 width : 150,
                 align : 'left',
-                click : function() {
-                    Ama.showForm('win-create-question');
-                }
+                click : this.onCreate
             } ]
         };
 
     }
+
+    function onDelete (event, id) {
+        webix.confirm('Are you sure you want to delete this?',
+        function(action) {
+            if (action === true) {
+                this.questions.remove(id);
+            }
+        }.bind(this));
+    }
+
 /*
     function questionDialog () {
         return {

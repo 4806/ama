@@ -1,4 +1,4 @@
-var Ama = (function() {
+var Ama = (function (Ama) {
 
     var amas = new webix.DataCollection({
         url : "/ama/list?page=0&limit=10",
@@ -60,7 +60,6 @@ var Ama = (function() {
             ama : amas.getItem(id),
             onError : onError
         });
-        var ama = amas.getItem(id);
 
         var modalWindow = {
             view : "window",
@@ -93,59 +92,13 @@ var Ama = (function() {
             }).form()
         };
 
-        var toolbar = {
-            view : "toolbar",
-            cols : [ {
-                view : "button",
-                id : "create",
-                value : "Create Question",
-                width : 150,
-                align : "left",
-                click : function() {
-                    Ama.showForm("win-create-question");
-                }
-            } ]
-        };
-
-        var amaWindow = new webix.ui({
-            view : "window",
-            id : "ama-window",
-            fullscreen : true,
-            head : {
-
-                view : "toolbar",
-                margin : -4,
-                cols : [ {
-                    view : "icon",
-                    icon : "arrow-left",
-                    label : "Back",
-                    click : function() {
-                        $$("ama-window").hide();
-                    }
-                }, {
-                    view : "label",
-                    label : ama.title,
-                    align : "center"
-
-                } ]
-            },
-            body : {
-                rows : [
-                    toolbar,
-                    new window.Question.View({
-                        ama : amas.getItem(id),
-                        onDelete : function (event, id) {
-                            webix.confirm("Are you sure you want to delete this?",
-                                function (action) {
-                                    if (action === true) {
-                                        questions.remove(id);
-                                    }
-                           });
-                        }
-                    }).view()
-                ]
+        var amaWindow = new webix.ui(new Ama.View({
+            ama : amas.getItem(id),
+            onCreate : function() {
+                Ama.showForm("win-create-question");
             }
-        });
+
+        }).view());
 
         webix.ui(modalWindow);
         $$("questions").sync(questions.data);
@@ -159,13 +112,12 @@ var Ama = (function() {
         $$winId.getBody().focus();
     }
 
-    return {
-        showForm : showForm,
-        createAmaForm : createAmaForm,
-        amas : amas,
-        viewAma : viewAma
-    };
-})();
+    Ama.showForm = showForm;
+    Ama.createAmaForm = createAmaForm;
+    Ama.amas = amas;
+    Ama.viewAma = viewAma;
+    return Ama;
+}(window.Ama || {}));
 
 // Setup page when DOM is ready
 webix.ready(function() {
