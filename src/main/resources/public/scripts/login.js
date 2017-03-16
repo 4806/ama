@@ -5,10 +5,11 @@ var AmaLogin = (function () {
     }
 
     function signUp() {
-        var formVals = $$("loginForm").getValues();
-        var params = {};
-        params.name = formVals.username;
-        params.password = formVals.password;
+        var formVals    = $$("loginForm").getValues(),
+            params      = {
+                name        : formVals.username,
+                password    : formVals.password
+            };
 
         webix.ajax().post("/user/create", params).then(function() {
             submit();
