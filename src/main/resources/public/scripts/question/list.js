@@ -1,7 +1,9 @@
 window.Question = (function (Question) {
 
-    function List (ama) {
-        this.ama = ama;
+    function List (opts) {
+        opts = opts || {};
+        this.ama = opts.ama || {};
+        this.onError = opts.onError || function () {};
         this.data = new webix.DataCollection({
             url : '/ama/' + this.ama.id + '/questions?page=0&limit=10',
             scheme : {
@@ -29,12 +31,7 @@ window.Question = (function (Question) {
 
     function deleteQuestion (id) {
         webix.ajax().del('/ama/' + this.ama.id + '/question/' + id)
-            .fail(function(xhr) {
-                webix.message({
-                    type : 'error',
-                    text : xhr.response
-                });
-            });
+            .fail(this.onError.bind(this));
     }
 
 
