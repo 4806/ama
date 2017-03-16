@@ -3,7 +3,20 @@ var Ama = (function() {
     var amas = new webix.DataCollection({
         url : "/ama/list?page=0&limit=10",
         map : {
-            author : "#subject.name#"
+            author : "#subject.name#",
+            icon : "<span class='fa-trash-o webix_icon'></span>"
+        },
+        
+        on : {
+            onBeforeDelete : function deleteAma (id) {
+	            webix.ajax().del('/ama/' + id)
+	                .fail(function(xhr) {
+	                    webix.message({
+	                        type : 'error',
+	                        text : xhr.response
+	                    });
+	                });
+            }
         }
     });
 
@@ -222,11 +235,18 @@ webix.ready(function() {
         columns : [ {
             id : "title",
             header : "Title",
-            fillspace : 1
+            fillspace : 1,
+            template : "<div class='title'>#title#</div>"
         }, {
             id : "author",
-            header : "Author"
-        } ],
+            header : "Author",
+            template : "<div class='author'>#author#</div>"
+        },
+        {
+        	id : "icon",
+        	header : "",
+        	template : "<div class='icon'>#icon#</div>"
+        }],
         on : {
             onBeforeLoad : function() {
                 this.showOverlay("Loading...");
@@ -236,10 +256,16 @@ webix.ready(function() {
                 if (!this.count()) {
                     this.showOverlay("There are no AMAs");
                 }
-            },
-            onItemClick : function(id) {
-                Ama.viewAma(id);
             }
+        },
+        onClick : {
+        	"icon" : function(e, id) {
+        		Ama.amas.remove(id);
+        		return false;
+        	},
+        	"title" : function(e, id) {
+        		Ama.viewAma(id);
+        	}        	
         }
     };
 
