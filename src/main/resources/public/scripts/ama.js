@@ -48,27 +48,56 @@ var Ama = (function() {
 	};
 
 	function viewAma(id) {
-		
+
 		var questions = new webix.DataCollection({
 			url : "/ama/" + id + "/questions?page=0&limit=10",
-			scheme:{
-		        $init:function(obj){
-		            obj.created = (new Date(obj.created)).toLocaleString(); 
-		        }
+			scheme : {
+				$init : function(obj) {
+					obj.created = (new Date(obj.created)).toLocaleString();
+				}
 			},
+			on : {
+				"onBeforeDelete" : function(questionId) {
+					webix.ajax().del("/ama/" + id + "/question/" + questionId)
+							.fail(function(xhr) {
+								webix.message({
+									type : "error",
+									text : xhr.response
+								});
+							});
+				}
+			}
 		});
 
 		var ama = amas.getItem(id);
+		var removeIcon = "<span class='fa-trash-o webix_icon top_right'></span>";
 		var questionViewer = {
 			view : "dataview",
 			id : "questions",
-			template : "Created Date: #created# <br/> #body#",
+			template : function(obj) {
+				var display = "Created Date: " + obj.created;
+				// TODO add check if user created question
+				display += removeIcon;
+
+				display += "<br/> " + obj.body;
+				return display;
+			},
 			type : {
 				height : "100",
 				width : "auto"
 			},
 			xCount : 1,
-			yCount : 10
+			yCount : 10,
+			onClick : {
+				"fa-trash-o" : function(event, id) {
+					webix.confirm("Are you sure you want to delete this?",
+							function(action) {
+								if (action === true) {
+									questions.remove(id);
+								}
+							});
+				}
+			}
 		};
 
 		var createQuestionForm = {
