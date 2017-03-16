@@ -9,10 +9,10 @@ var Ama = (function() {
         
         on : {
             onBeforeDelete : function deleteAma (id) {
-	            webix.ajax().del('/ama/' + id)
+	            webix.ajax().del("/ama/" + id)
 	                .fail(function(xhr) {
 	                    webix.message({
-	                        type : 'error',
+	                        type : "error",
 	                        text : xhr.response
 	                    });
 	                });
