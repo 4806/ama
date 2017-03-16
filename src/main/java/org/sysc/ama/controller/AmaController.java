@@ -107,6 +107,9 @@ public class AmaController {
         // }
         //
         // ```
+        for (Question q : questionRepo.findByAma(ama)){
+            questionRepo.delete(q);
+        }
         amaRepo.delete(id);
 
         return ama;

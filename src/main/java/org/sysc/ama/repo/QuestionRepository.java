@@ -15,5 +15,6 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     Optional<Question> findById(Long id);
 
     List<Question> findByAma(Ama ama, Pageable request);
+    List<Question> findByAma(Ama ama);
 
 }
