@@ -77,14 +77,6 @@ var Ama = (function (Ama) {
         amaWindow.show();
     }
 
-    function showForm(winId, node) {
-        var $$winId = $$(winId);
-        $$winId.getBody().clear();
-        $$winId.show(node);
-        $$winId.getBody().focus();
-    }
-
-    Ama.showForm = showForm;
     Ama.amas = amas;
     Ama.viewAma = viewAma;
     Ama.onError = onError;
@@ -94,39 +86,15 @@ var Ama = (function (Ama) {
 // Setup page when DOM is ready
 webix.ready(function() {
 
-    // Create the modal window to create AMAs
-
-    var modalWindow = {
-        view : "window",
-        id : "win-create-ama",
-        width : 300,
-        position : "center",
-        modal : true,
-        head : {
-            view : "toolbar",
-            margin : -4,
-            cols : [ {
-                view : "label",
-                label : "New AMA"
-            }, {
-                view : "icon",
-                icon : "times-circle",
-                click : function() {
-                    $$("win-create-ama").hide();
-                }
-            } ]
-
+    var modalWindow = new Ama.Window({
+        onCreate : function (result) {
+            Ama.amas.add(result.json());
+            Ama.amas.sort("id", "desc");
         },
-        body : new Ama.Create({
-            onCreate: function (result) {
-                Ama.amas.add(result.json());
-                Ama.amas.sort("id", "desc");
-            },
-            onError : Ama.onError
-        }).form()
+        onError : Ama.onError
+    }).view();
 
-    };
-
+    // Create the modal window to create AMAs
     var newAmaButton = {
         view : "toolbar",
         elements : [ {
