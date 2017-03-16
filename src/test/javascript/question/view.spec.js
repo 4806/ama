@@ -11,7 +11,9 @@ describe('Question View', function () {
             body    : 'What?'
         };
 
-        this.view = new window.Question.View(this.ama);
+        this.view = new window.Question.View({
+            ama : this.ama
+        });
     });
 
     it('Creates a representation of a question', function () {

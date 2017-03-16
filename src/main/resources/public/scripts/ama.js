@@ -70,35 +70,6 @@ var Ama = (function() {
         });
 
         var ama = amas.getItem(id);
-        var removeIcon = "<span class='fa-trash-o webix_icon top_right'></span>";
-        var questionViewer = {
-            view : "dataview",
-            id : "questions",
-            template : function(obj) {
-                var display = "Created Date: " + obj.created;
-                // TODO add check if user created question
-                display += removeIcon;
-
-                display += "<br/> " + obj.body;
-                return display;
-            },
-            type : {
-                height : "100",
-                width : "auto"
-            },
-            xCount : 1,
-            yCount : 10,
-            onClick : {
-                "fa-trash-o" : function(event, id) {
-                    webix.confirm("Are you sure you want to delete this?",
-                        function(action) {
-                            if (action === true) {
-                                questions.remove(id);
-                            }
-                        });
-                }
-            }
-        };
 
         var createQuestionForm = {
             view : "form",
@@ -177,7 +148,7 @@ var Ama = (function() {
             } ]
         };
 
-        var window = new webix.ui({
+        var amaWindow = new webix.ui({
             view : "window",
             id : "ama-window",
             fullscreen : true,
@@ -200,13 +171,26 @@ var Ama = (function() {
                 } ]
             },
             body : {
-                rows : [ toolbar, questionViewer ]
+                rows : [
+                    toolbar,
+                    new window.Question.View({
+                        ama : amas.getItem(id),
+                        onDelete : function (event, id) {
+                            webix.confirm("Are you sure you want to delete this?",
+                                function (action) {
+                                    if (action === true) {
+                                        questions.remove(id);
+                                    }
+                           });
+                        }
+                    }).view()
+                ]
             }
         });
 
         webix.ui(modalWindow);
         $$("questions").sync(questions);
-        window.show();
+        amaWindow.show();
     }
 
     function showForm(winId, node) {

@@ -1,9 +1,10 @@
 window.Question = (function (Question) {
     var removeIcon = '<span class="fa-trash-o webix_icon top_right"></span>';
 
-    function View (ama) {
-        this.ama = ama;
-        this.onDelete = function () {};
+    function View (opts) {
+        opts = opts || {};
+        this.ama = opts.ama;
+        this.onDelete = opts.onDelete || function () {};
     }
 
     View.prototype.repr = function (obj) {
