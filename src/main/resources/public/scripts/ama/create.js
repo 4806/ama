@@ -1,7 +1,8 @@
 window.Ama = (function (Ama) {
 
-    function Create () {
-        this.onCreate = function () {};
+    function Create (opts) {
+        opts = opts || {};
+        this.onCreate = opts.onCreate || function () {};
     }
 
     Create.prototype.create = function () {

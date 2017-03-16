@@ -1,9 +1,10 @@
 window.Ama = (function (Ama) {
 
-    function View (id, title) {
-        this.id = id;
-        this.title = title;
-        this.questions = new window.Questions.List(this);
+    function View (opts) {
+        opts = opts || {};
+        this.id = opts.id;
+        this.title = opts.title;
+        this.questions = new window.Question.List(this);
     }
 /*
     function(result) {
@@ -45,7 +46,7 @@ window.Ama = (function (Ama) {
                 ]
             },
             body : {
-                rows : [ toolbar, new window.Question.List(this).form() ]
+                rows : [ toolbar, this.questions.data ]
             }
         };
     };
@@ -95,10 +96,6 @@ window.Ama = (function (Ama) {
         };
     }
 */
-
-    //webix.ui(questionDialog());
-    //$$('questions').sync(questions);
-//    new webix.ui(new View().view()).show();
 
     Ama.View = View;
     return Ama;
