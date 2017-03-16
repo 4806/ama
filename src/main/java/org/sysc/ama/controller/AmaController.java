@@ -37,7 +37,7 @@ public class AmaController {
     @PostMapping("")
     public Ama create (
             @RequestParam("title") String title,
-            @RequestParam("userId") Long userId,
+            @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
             @AuthenticationPrincipal CustomUserDetails user
         ) {
