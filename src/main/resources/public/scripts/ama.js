@@ -107,45 +107,15 @@ webix.ready(function() {
         } ]
     };
 
-    var listAma = {
-        id : "ama-list",
-        view : "datatable",
-        columns : [ {
-            id : "title",
-            header : "Title",
-            fillspace : 1,
-            template : "<div class='title'>#title#</div>"
-        }, {
-            id : "author",
-            header : "Author",
-            template : "<div class='author'>#author#</div>"
+    var listAma = new Ama.List({
+        onDelete : function (e, id) {
+            Ama.amas.remove(id);
+            return false;
         },
-        {
-        	id : "icon",
-        	header : "",
-        	template : "<div class='icon'>#icon#</div>"
-        }],
-        on : {
-            onBeforeLoad : function() {
-                this.showOverlay("Loading...");
-            },
-            onAfterLoad : function() {
-                this.hideOverlay();
-                if (!this.count()) {
-                    this.showOverlay("There are no AMAs");
-                }
-            }
-        },
-        onClick : {
-        	"icon" : function(e, id) {
-        		Ama.amas.remove(id);
-        		return false;
-        	},
-        	"title" : function(e, id) {
-        		Ama.viewAma(id);
-        	}
+        onView : function(e, id) {
+            Ama.viewAma(id);
         }
-    };
+    }).view();
 
     var toolBar = {
         type : "line",
