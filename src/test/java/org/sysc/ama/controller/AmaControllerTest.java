@@ -209,9 +209,9 @@ public class AmaControllerTest {
                 .param("body", "What is the meaning of life?")
                 .param("userId", this.testUser.getId().toString()));
 
-        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/1"))
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("What is the meaning of life?"));
+                .andExpect(jsonPath("$.body").value("Don't avoid the question?"));
     }
 
     @Test

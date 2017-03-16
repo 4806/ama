@@ -13,6 +13,7 @@ import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
+import org.sysc.ama.repo.AnswerRepository;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
@@ -32,6 +33,9 @@ public class AmaController {
 
     @Autowired
     private QuestionRepository questionRepo;
+
+    @Autowired
+    private AnswerRepository answerRepo;
 
     @Autowired
     private UserController userController;
@@ -172,6 +176,7 @@ public class AmaController {
                                    @AuthenticationPrincipal CustomUserDetails principal)
     {
         Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
+        answerRepo.save(answer);
         return answer;
     }
 }
