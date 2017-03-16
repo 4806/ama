@@ -1,8 +1,9 @@
 window.Question = (function (Question) {
 
-    function Create (ama) {
-        this.ama = ama;
-        this.onCreate = function () {};
+    function Create (opts) {
+        opts = opts || {};
+        this.ama = opts.ama || {};
+        this.onCreate = opts.onCreate || function () {};
     }
 
 
@@ -11,7 +12,7 @@ window.Question = (function (Question) {
 
         if (el.validate()) {
             el.getTopParentView().hide();
-            params = this.getParentView().getValues();
+            params = el.getValues();
             params.userId = webix.storage.cookie.get('userId');
 
             webix.ajax().post('/ama/' + this.ama.id + '/question', params)

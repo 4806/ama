@@ -71,45 +71,6 @@ var Ama = (function() {
 
         var ama = amas.getItem(id);
 
-        var createQuestionForm = {
-            view : "form",
-            id : "create-question-form",
-            elements : [
-                {
-                    view : "textarea",
-                    label : "Body",
-                    name : "body",
-                    required : true
-                },
-                {
-                    view : "button",
-                    label : "Create",
-                    click : function() {
-                        if (this.getParentView().validate()) {
-                            this.getTopParentView().hide();
-                            var params = this.getParentView().getValues();
-                            params.userId = webix.storage.cookie
-                                .get("userId");
-                            webix.ajax().post("/ama/" + id + "/question",
-                                params).then(function(result) {
-                                    questions.add(result.json());
-                                    questions.sort("id", "desc");
-                                }).fail(function(xhr) {
-                                    webix.message({
-                                        type : "error",
-                                        text : xhr.response
-                                    });
-                                });
-                        } else {
-                            webix.message({
-                                type : "error",
-                                text : "Body can't be empty"
-                            });
-                        }
-                    }
-                } ]
-        };
-
         var modalWindow = {
             view : "window",
             id : "win-create-question",
@@ -131,7 +92,13 @@ var Ama = (function() {
                 } ]
 
             },
-            body : webix.copy(createQuestionForm)
+            body : new window.Question.Create({
+                ama : amas.getItem(id),
+                onCreate : function(result) {
+                    questions.add(result.json());
+                    questions.sort("id", "desc");
+                }
+            }).form()
         };
 
         var toolbar = {
