@@ -6,12 +6,6 @@ window.Ama = (function (Ama) {
         this.onCreate = opts.onCreate || {};
         this.questions = new window.Question.List(this);
     }
-/*
-    function(result) {
-        questions.add(result.json());
-        questions.sort('id', 'desc');
-    }
-*/
 
     View.prototype.view = function () {
         return {
@@ -32,7 +26,7 @@ window.Ama = (function (Ama) {
                     },
                     {
                         view : 'label',
-                        label : this.title,
+                        label : this.ama.title,
                         align : 'center'
                     }
                 ]
@@ -72,36 +66,6 @@ window.Ama = (function (Ama) {
             }
         }.bind(this));
     }
-
-/*
-    function questionDialog () {
-        return {
-            view     : 'window',
-            id       : 'win-create-question',
-            width    : 400,
-            position : 'center',
-            modal    : true,
-            head     : {
-                view     : 'toolbar',
-                margin   : -4,
-                cols     : [
-                    {
-                        view  : 'label',
-                        label : 'New Question'
-                    },
-                    {
-                        view  : 'icon',
-                        icon  : 'times-circle',
-                        click : function() {
-                            $$('win-create-question').hide();
-                        }
-                    }
-                ]
-            },
-            body : new window.Question.Create().form()
-        };
-    }
-*/
 
     Ama.View = View;
     return Ama;
