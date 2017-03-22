@@ -279,7 +279,7 @@ public class AmaControllerTest {
     public void testAnswerQuestionThatDoesNotExist () throws Exception {
         mockMvc.perform(post("/ama/56/question/123/answer")
                 .param("body", "No clue"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     /**
