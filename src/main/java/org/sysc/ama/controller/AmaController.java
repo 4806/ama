@@ -188,7 +188,14 @@ public class AmaController {
     public Question upvoteQuestion (@PathVariable("amaId") Ama ama,
                                     @PathVariable("questionId") Question question,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
-        question.upvote();
+
+        User voter = principal.getUser();
+
+        if (question.hasVoted(voter)) {
+            throw new UserHasVotedException(voter);
+        }
+
+        question.upVote(voter);
         questionRepo.save(question);
         return question;
     }
@@ -196,10 +203,17 @@ public class AmaController {
 
     @PostMapping("/{amaId}/question/{questionId}/downvote")
     @PreAuthorize("#question.author.id != principal.user.id")
-    public Question downvoteQuestion (@PathVariable("amaId") Ama ama,
+    public Question downvoteQuestion(@PathVariable("amaId") Ama ama,
                                     @PathVariable("questionId") Question question,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
-        question.downvote();
+
+        User voter = principal.getUser();
+
+        if (question.hasVoted(voter)) {
+            throw new UserHasVotedException(voter);
+        }
+
+        question.downVote(voter);
         questionRepo.save(question);
         return question;
     }

@@ -45,32 +45,37 @@ public class QuestionTest {
     public void testUpvoteQuestion () {
         Question q = new Question(this.author, this.ama, "Who are you?");
 
-        assertEquals(q.getUpvotes(), 0);
-        q.upvote();
-        assertEquals(q.getUpvotes(), 1);
-
-
-        for (int i = 1; i < 100; i++) {
-            q.upvote();
-        }
-
-        assertEquals(q.getUpvotes(), 100);
+        assertEquals(q.getUpVotes(), 0);
+        q.upVote(this.amaSubject);
+        assertEquals(q.getUpVotes(), 1);
     }
 
     @Test
     public void testDownvoteQuestion () {
         Question q = new Question(this.author, this.ama, "This is not a question");
 
-        assertEquals(q.getDownvotes(), 0);
-        q.downvote();
-        assertEquals(q.getDownvotes(), 1);
-
-
-        for (int i = 1; i < 100; i++) {
-            q.downvote();
-        }
-
-        assertEquals(q.getDownvotes(), 100);
+        assertEquals(q.getDownVotes(), 0);
+        q.downVote(this.amaSubject);
+        assertEquals(q.getDownVotes(), 1);
     }
+
+    @Test
+    public void testHasVotedAfterUpvote () {
+        Question q = new Question(this.author, this.ama, "What is your name?");
+
+        q.upVote(this.amaSubject);
+        assertTrue(q.hasVoted(this.amaSubject));
+        assertFalse(q.hasVoted(this.author));
+    }
+
+    @Test
+    public void testHasVotedAfterDownvote () {
+        Question q = new Question(this.author, this.ama, "Bad question");
+
+        q.downVote(this.amaSubject);
+        assertTrue(q.hasVoted(this.amaSubject));
+        assertFalse(q.hasVoted(this.author));
+    }
+
 
 }

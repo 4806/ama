@@ -41,8 +41,10 @@ public class Post {
         this.author = author;
         this.ama    = ama;
         this.body   = body;
-        //After running into msny issues during testing, it appears that if we use the default Date() constructor,
-        //the @Past constraint on created date is sometimes violated. The default constructor is deprecated (
+
+        // After running into many issues during testing, it appears that if we use the default Date() constructor,
+        // the @Past constraint on created date is sometimes violated. The default constructor is deprecated
+
         this.created = Date.from(Instant.now().minusMillis(1));
         this.updated = new Date();
         this.edited = false;
