@@ -40,4 +40,37 @@ public class QuestionTest {
         assertTrue(afterCreated.after(q.getCreated()));
     }
 
+
+    @Test
+    public void testUpvoteQuestion () {
+        Question q = new Question(this.author, this.ama, "Who are you?");
+
+        assertEquals(q.getUpvotes(), 0);
+        q.upvote();
+        assertEquals(q.getUpvotes(), 1);
+
+
+        for (int i = 1; i < 100; i++) {
+            q.upvote();
+        }
+
+        assertEquals(q.getUpvotes(), 100);
+    }
+
+    @Test
+    public void testDownvoteQuestion () {
+        Question q = new Question(this.author, this.ama, "This is not a question");
+
+        assertEquals(q.getDownvotes(), 0);
+        q.downvote();
+        assertEquals(q.getDownvotes(), 1);
+
+
+        for (int i = 1; i < 100; i++) {
+            q.downvote();
+        }
+
+        assertEquals(q.getDownvotes(), 100);
+    }
+
 }
