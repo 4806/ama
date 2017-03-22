@@ -20,6 +20,7 @@ import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.services.CustomUserDetails;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/ama")
@@ -180,6 +181,14 @@ public class AmaController {
     {
         Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
         answerRepo.save(answer);
+        return answer;
+    }
+
+    @GetMapping("/{amaId}/question/{questionId}/answers")
+    public Answer viewAnswer(@PathVariable("amaId") Ama ama,
+                              @PathVariable("questionId") Question question
+    ){
+        Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
         return answer;
     }
 }
