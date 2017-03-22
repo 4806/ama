@@ -3,9 +3,10 @@ window.Ama = (function (Ama) {
         opts = opts || {};
         this.id =opts.id || "";
         this.title =opts.title || "";
+        this.body = opts.body || {};
      }
 
-    Form.prototype.foo= function() {
+    Dialog.prototype.view= function() {
         return {
             view: "window",
             id: this.id,
@@ -21,26 +22,17 @@ window.Ama = (function (Ama) {
                 }, {
                     view: "icon",
                     icon: "times-circle",
-                    click: function () {
+                    click: (function () {
                         $$(this.id).hide();
-                    }
+                    }).bind(this)
                 }]
 
             },
-            body: this.body;
-
-                new window.Question.Create({
-                ama: amas.getItem(id),
-                onCreate: function (result) {
-                    questions.add(result.json());
-                    questions.sort("id", "desc");
-                },
-                onError: onError
-            }).form()
+            body: this.body
         };
-    }
+    };
 
-    Ama.showForm = function (winId, node) {
+    Ama.showDialog = function (winId, node) {
         var $$winId = $$(winId);
         $$winId.getBody().clear();
         $$winId.show(node);

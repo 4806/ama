@@ -33,27 +33,9 @@ var Ama = (function (Ama) {
             onError : onError
         });
 
-        var modalWindow = {
-            view : "window",
+        var modalWindow =new Ama.Dialog({
             id : "win-create-question",
-            width : 400,
-            position : "center",
-            modal : true,
-            head : {
-                view : "toolbar",
-                margin : -4,
-                cols : [ {
-                    view : "label",
-                    label : "New Question"
-                }, {
-                    view : "icon",
-                    icon : "times-circle",
-                    click : function() {
-                        $$("win-create-question").hide();
-                    }
-                } ]
-
-            },
+            title: "New Question",
             body : new window.Question.Create({
                 ama : amas.getItem(id),
                 onCreate : function(result) {
@@ -62,12 +44,12 @@ var Ama = (function (Ama) {
                 },
                 onError : onError
             }).form()
-        };
+        }).view();
 
         var amaWindow = new webix.ui(new Ama.View({
             ama : amas.getItem(id),
             onCreate : function() {
-                Ama.showForm("win-create-question");
+                Ama.showDialog("win-create-question");
             }
 
         }).view());
@@ -102,7 +84,7 @@ webix.ready(function() {
             value : "New AMA",
             width : 70,
             click : function() {
-                Ama.showForm("win-create-ama");
+                Ama.showDialog("win-create-ama");
             }
         } ]
     };
@@ -131,15 +113,5 @@ webix.ready(function() {
     // sync the ama list with the
     $$("ama-list").sync(Ama.amas);
 
-    // check if the user is already in the cookie
-    var userId = webix.storage.cookie.get("userId");
-    if (!userId) {
-        // if user doesn't exist create one
-        webix.ajax().post("/user/create", {
-            name : "Foo"
-        }).then(function(user) {
-            webix.storage.cookie.put("userId", user.json().id);
-        });
-    }
 
 });
