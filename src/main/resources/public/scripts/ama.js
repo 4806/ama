@@ -52,7 +52,6 @@ var Ama = (function (Ama) {
                         $$("win-create-question").hide();
                     }
                 } ]
-
             },
             body : new window.Question.Create({
                 ama : amas.getItem(id),
@@ -85,7 +84,7 @@ var Ama = (function (Ama) {
 
 // Setup page when DOM is ready
 webix.ready(function() {
-
+	
     var modalWindow = new Ama.Window({
         onCreate : function (result) {
             Ama.amas.add(result.json());
@@ -125,6 +124,9 @@ webix.ready(function() {
     // Create the modal window to create AMAs
     webix.ui(modalWindow);
 
+    // Create the logout toolbar
+    AmaLogout.displayToolbar();
+    
     // create the toolbar
     webix.ui(toolBar);
 
