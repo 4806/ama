@@ -91,8 +91,7 @@ public class AmaController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("#ama.subject.id == principal.user.id")
-    public Ama delete (@PathVariable("id") Ama ama,
-                       @AuthenticationPrincipal CustomUserDetails principal) {
+    public Ama delete (@PathVariable("id") Ama ama) {
 
         for (Question q : questionRepo.findByAma(ama)){
             questionRepo.delete(q);
