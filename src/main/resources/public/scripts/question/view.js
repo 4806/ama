@@ -1,6 +1,7 @@
 window.Question = (function (Question) {
     var removeIcon = '<span class="fa-trash-o webix_icon float_right"></span>';
-    var answerButton = '<input class="webixtype_form webix_el_button float_right ans_bttn" type="button" value="Answer Question">';
+    var answerButton = '<input class="webixtype_form webix_el_button float_right ans_bttn" type="button"' +
+        ' value="Answer Question">';
 
     function View (opts) {
         opts = opts || {};
@@ -27,10 +28,7 @@ window.Question = (function (Question) {
             xCount : 1,
             yCount : 10,
             onClick : {
-                'fa-trash-o' : this.onDelete.bind(this),
-                'ans_bttn'   : function(id){
-
-                }
+                'fa-trash-o' : this.onDelete.bind(this)
             }
         };
     };

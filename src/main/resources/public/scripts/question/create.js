@@ -29,7 +29,7 @@ window.Question = function (Question) {
     };
 
     Create.prototype.form = function () {
-        return Ama.createForm('create-question-form', "Ask", this.create.bind(this));
+        return window.Ama.createForm('create-question-form', 'Ask', this.create.bind(this));
     };
 
     Question.Create = Create;
