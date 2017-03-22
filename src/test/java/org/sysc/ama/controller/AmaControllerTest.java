@@ -150,6 +150,13 @@ public class AmaControllerTest {
     }
 
     @Test
+    @WithUserDetails("BadUser")
+    public void testDeleteAmaUnauthorized () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser("TestUser")
     public void testDeleteAmaDoesNotExist () throws Exception {
         mockMvc.perform(delete("/ama/100"))
@@ -234,6 +241,14 @@ public class AmaControllerTest {
                 .param("limit", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
+    }
+
+
+    @Test
+    @WithUserDetails("BadUser")
+    public void testDeleteQuestionUnauthorized () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
+                .andExpect(status().isForbidden());
     }
 
     @Test

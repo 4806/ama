@@ -89,28 +89,15 @@ public class AmaController {
 
     }
 
-
     @DeleteMapping("/{id}")
-    public Ama delete (@PathVariable("id") Long id) {
-        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
+    @PreAuthorize("#ama.subject.id == principal.user.id")
+    public Ama delete (@PathVariable("id") Ama ama,
+                       @AuthenticationPrincipal CustomUserDetails principal) {
 
-        // TODO Ensure that the current user has the required authorization for this delete
-        // If the user does not have the correct authorization, then `401 Unauthorized` error
-        // should be returned
-        //
-        // Example:
-        //
-        // ```json
-        // {
-        //      "error"     : true,
-        //      "message"   : "The given user is not authorized to delete this AMA"
-        // }
-        //
-        // ```
         for (Question q : questionRepo.findByAma(ama)){
             questionRepo.delete(q);
         }
-        amaRepo.delete(id);
+        amaRepo.delete(ama);
 
         return ama;
     }
@@ -136,13 +123,11 @@ public class AmaController {
     }
 
     @DeleteMapping("/{amaId}/question/{id}")
-    public Question deleteQuestion(@PathVariable("amaId") Long amId,
-                                   @PathVariable("id") Long id
+    @PreAuthorize("(#question.author.id == principal.user.id) || (#ama.subject.id == principal.user.id)")
+    public Question deleteQuestion(@PathVariable("amaId") Ama ama,
+                                   @PathVariable("id") Question question
         ){
-
-        Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
-        questionRepo.delete(id);
-
+        questionRepo.delete(question);
         return question;
     }
 
