@@ -159,12 +159,13 @@ public class AmaController {
     }
 
     @PostMapping("/{amaId}/question/{questionId}/answer")
-    @PreAuthorize("#ama.subject.id == principal.user.id")
+    @PreAuthorize("#ama != null && #ama.subject.id == principal.user.id")
     public Answer answerQuestion(@PathVariable("amaId") Ama ama,
                                    @PathVariable("questionId") Question question,
                                    @RequestParam("body") String body,
                                    @AuthenticationPrincipal CustomUserDetails principal)
-    {Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
+    {
+        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
         answerRepo.save(answer);
         return answer;
     }
