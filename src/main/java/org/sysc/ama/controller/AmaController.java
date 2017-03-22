@@ -97,7 +97,7 @@ public class AmaController {
                        @AuthenticationPrincipal CustomUserDetails principal) {
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        if (ama.getSubject().getId() == principal.getId()){
+        if (ama.getSubject().getId() != principal.getId()){
             throw new UnauthorizedAccessException("Only the user who created an AMA may delete it");
         }
 
@@ -130,10 +130,17 @@ public class AmaController {
     }
 
     @DeleteMapping("/{amaId}/question/{id}")
-    @PreAuthorize("(#question.author.id == principal.user.id) || (#ama.subject.id == principal.user.id)")
-    public Question deleteQuestion(@PathVariable("amaId") Ama ama,
-                                   @PathVariable("id") Question question
+    public Question deleteQuestion(@PathVariable("amaId") Long amaId,
+                                   @PathVariable("id") Long questionId,
+                                   @AuthenticationPrincipal CustomUserDetails principal
         ){
+        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
+
+        if ((question.getAuthor().getId() != principal.getId()) && (ama.getSubject().getId() != principal.getId())){
+            throw new UnauthorizedAccessException("Only the author of a question or the AMA subject may delete the question");
+        }
+
         questionRepo.delete(question);
         return question;
     }

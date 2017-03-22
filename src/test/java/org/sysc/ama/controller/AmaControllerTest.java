@@ -53,6 +53,7 @@ public class AmaControllerTest {
     private QuestionRepository questionRepo;
 
     private User testUser;
+    private User secondaryUser;
 
     private Ama amaFoo;
     private Ama amaBar;
@@ -66,6 +67,8 @@ public class AmaControllerTest {
         this.userRepo.save(this.testUser);
 
         this.userRepo.save(new User("BadUser"));
+        this.secondaryUser = new User("SecondaryUser");
+        this.userRepo.save(this.secondaryUser);
     }
 
     @Before
@@ -86,7 +89,7 @@ public class AmaControllerTest {
         amaRepo.save(this.amaFoo);
         amaRepo.save(this.amaBar);
         amaRepo.save(this.amaBaz);
-        this.fooQuestion = new Question(this.testUser, this.amaFoo, "Don't avoid the question");
+        this.fooQuestion = new Question(this.secondaryUser, this.amaFoo, "Don't avoid the question");
         questionRepo.save(this.fooQuestion);
     }
 
@@ -222,8 +225,8 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
-    public void testDeleteQuestion () throws Exception {
+    @WithUserDetails("TestUser")
+    public void testDeleteQuestionAsAmaSubject () throws Exception {
 
         MvcResult result =  mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "What is the meaning of life?")
@@ -243,6 +246,14 @@ public class AmaControllerTest {
                 .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
     }
 
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDeleteQuestionAsAuthor () throws Exception {
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("Don't avoid the question"));
+    }
 
     @Test
     @WithUserDetails("BadUser")
