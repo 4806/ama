@@ -182,5 +182,28 @@ public class AmaController {
         answerRepo.save(answer);
         return answer;
     }
+
+    @PostMapping("/{amaId}/question/{questionId}/upvote")
+    @PreAuthorize("#question.author.id != principal.user.id")
+    public Question upvoteQuestion (@PathVariable("amaId") Ama ama,
+                                    @PathVariable("questionId") Question question,
+                                    @AuthenticationPrincipal CustomUserDetails principal) {
+        question.upvote();
+        questionRepo.save(question);
+        return question;
+    }
+
+
+    @PostMapping("/{amaId}/question/{questionId}/downvote")
+    @PreAuthorize("#question.author.id != principal.user.id")
+    public Question downvoteQuestion (@PathVariable("amaId") Ama ama,
+                                    @PathVariable("questionId") Question question,
+                                    @AuthenticationPrincipal CustomUserDetails principal) {
+        question.downvote();
+        questionRepo.save(question);
+        return question;
+    }
+
+
 }
 
