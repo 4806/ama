@@ -142,7 +142,7 @@ public class AmaControllerTest {
 
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testDeleteExistingAma () throws Exception {
         mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
             .andExpect(status().isOk())
@@ -157,7 +157,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testDeleteAmaDoesNotExist () throws Exception {
         mockMvc.perform(delete("/ama/100"))
             .andExpect(status().isNotFound());
@@ -274,6 +274,12 @@ public class AmaControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithUserDetails("BadUser")
+    public void testAnswerQuestionThatDoesNotExist () throws Exception {
+        mockMvc.perform(post("/ama/56/question/123/answer"))
+                .andExpect(status().isBadRequest());
+    }
 
     /**
      * Sleeps the current process for the given number of milliseconds

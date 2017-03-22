@@ -19,7 +19,10 @@ import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.services.CustomUserDetails;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/ama")
@@ -91,8 +94,8 @@ public class AmaController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("#ama.subject.id == principal.user.id")
-    public Ama delete (@PathVariable("id") Ama ama) {
-
+    public Ama delete (@PathVariable("id") Ama ama,
+                       @AuthenticationPrincipal CustomUserDetails principal) {
         for (Question q : questionRepo.findByAma(ama)){
             questionRepo.delete(q);
         }
@@ -109,7 +112,7 @@ public class AmaController {
 
     @PostMapping("/{amaId}/question")
     public Question addQuestion (@PathVariable("amaId") Long amaId,
-                                 @RequestParam("userId") Long userId,
+                                 @RequestParam(value="userId", defaultValue = "") Long userId,
                                  @RequestParam("body") String body,
                                  @AuthenticationPrincipal User user
         ){
@@ -161,8 +164,7 @@ public class AmaController {
                                    @PathVariable("questionId") Question question,
                                    @RequestParam("body") String body,
                                    @AuthenticationPrincipal CustomUserDetails principal)
-    {
-        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
+    {Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
         answerRepo.save(answer);
         return answer;
     }
