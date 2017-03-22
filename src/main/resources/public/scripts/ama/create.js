@@ -3,6 +3,7 @@ window.Ama = (function (Ama) {
     function Create (opts) {
         opts = opts || {};
         this.onCreate = opts.onCreate || function () {};
+        this.onError = opts.onError || function () {};
     }
 
     Create.prototype.create = function () {
@@ -15,13 +16,8 @@ window.Ama = (function (Ama) {
             params.userId = webix.storage.cookie.get('userId');
 
             webix.ajax().post('/ama', params)
-                .then(this.onCreate)
-                .fail(function (xhr) {
-                    webix.message({
-                        type : 'error',
-                        text : xhr.response
-                    });
-                });
+                .then(this.onCreate.bind(this))
+                .fail(this.onError.bind(this));
         } else {
             webix.message({ type : 'error', 'text' : 'Title cannot be empty' });
         }
