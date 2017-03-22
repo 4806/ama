@@ -17,7 +17,7 @@ window.Logout = (function (Logout) {
                             value : 'Logout',
                             width : 70,
                             click : this.onClick,
-                            css   : "right"
+                            css   : 'right'
                         }
                     ]
 
