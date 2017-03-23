@@ -1,6 +1,6 @@
 window.Question = (function (Question) {
-    var removeIcon = '<span class="fa-trash-o webix_icon float_right"></span>';
-    var answerButton = '<input class="webixtype_form webix_el_button float_right ans_bttn" type="button"' +
+    var removeIcon = '<span class="fa-trash-o webix_icon right"></span>';
+    var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn" type="button"' +
         ' value="Answer Question">';
 
     function View (opts) {
@@ -34,8 +34,8 @@ window.Question = (function (Question) {
         // TODO add check if user created question
         var template=  'Created Date: ' + obj.created +
             removeIcon + '<br/><span class="question">' + obj.body +'</span>';
-            if(!obj.answer){
-            	template +='<span class="answer"><br/><p>'+'Foo Bar'+'</p></span>';
+            if(obj.answer){
+            	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
             }else{
             	template += answerButton;
             }

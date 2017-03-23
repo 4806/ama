@@ -1,4 +1,4 @@
-window.Question = function (Question) {
+window.Question = (function (Question) {
 
     function Create(opts) {
         opts = opts || {};
@@ -35,4 +35,4 @@ window.Question = function (Question) {
 
     Question.Create = Create;
     return Question;
-}(window.Question || {});
+})(window.Question || {});
