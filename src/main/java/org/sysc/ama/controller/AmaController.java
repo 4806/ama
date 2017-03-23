@@ -19,7 +19,10 @@ import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.services.CustomUserDetails;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/ama")
@@ -89,28 +92,19 @@ public class AmaController {
 
     }
 
-
     @DeleteMapping("/{id}")
-    public Ama delete (@PathVariable("id") Long id) {
-        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
+    public Ama delete (@PathVariable("id") Long amaId,
+                       @AuthenticationPrincipal CustomUserDetails principal) {
+        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        // TODO Ensure that the current user has the required authorization for this delete
-        // If the user does not have the correct authorization, then `401 Unauthorized` error
-        // should be returned
-        //
-        // Example:
-        //
-        // ```json
-        // {
-        //      "error"     : true,
-        //      "message"   : "The given user is not authorized to delete this AMA"
-        // }
-        //
-        // ```
+        if (ama.getSubject().getId() != principal.getId()){
+            throw new UnauthorizedAccessException("Only the user who created an AMA may delete it");
+        }
+
         for (Question q : questionRepo.findByAma(ama)){
             questionRepo.delete(q);
         }
-        amaRepo.delete(id);
+        amaRepo.delete(ama);
 
         return ama;
     }
@@ -123,26 +117,30 @@ public class AmaController {
 
     @PostMapping("/{amaId}/question")
     public Question addQuestion (@PathVariable("amaId") Long amaId,
-                                 @RequestParam("userId") Long userId,
+                                 @RequestParam(value="userId", defaultValue = "") Long userId,
                                  @RequestParam("body") String body,
-                                 @AuthenticationPrincipal User user
+                                 @AuthenticationPrincipal CustomUserDetails principal
         ){
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-
-        Question q = new Question(user, ama, body);
+        Question q = new Question(principal.getUser(), ama, body);
 
         questionRepo.save(q);
         return q;
     }
 
     @DeleteMapping("/{amaId}/question/{id}")
-    public Question deleteQuestion(@PathVariable("amaId") Long amId,
-                                   @PathVariable("id") Long id
+    public Question deleteQuestion(@PathVariable("amaId") Long amaId,
+                                   @PathVariable("id") Long questionId,
+                                   @AuthenticationPrincipal CustomUserDetails principal
         ){
+        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
 
-        Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
-        questionRepo.delete(id);
+        if ((question.getAuthor().getId() != principal.getId()) && (ama.getSubject().getId() != principal.getId())){
+            throw new UnauthorizedAccessException("Only the author of a question or the AMA subject may delete the question");
+        }
 
+        questionRepo.delete(question);
         return question;
     }
 
@@ -172,14 +170,28 @@ public class AmaController {
     }
 
     @PostMapping("/{amaId}/question/{questionId}/answer")
-    @PreAuthorize("#ama.subject.id == principal.user.id")
-    public Answer answerQuestion(@PathVariable("amaId") Ama ama,
-                                   @PathVariable("questionId") Question question,
+    public Answer answerQuestion(@PathVariable("amaId") Long amaId,
+                                   @PathVariable("questionId") Long questionId,
                                    @RequestParam("body") String body,
                                    @AuthenticationPrincipal CustomUserDetails principal)
     {
+        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
+        Question question = questionRepo.findById(questionId).orElseThrow(()->new EntityNotFoundException("question"));
+
+        if (principal.getId() != ama.getSubject().getId()){
+            throw new UnauthorizedAccessException("Only the subject of an AMA may answer questions");
+        }
+
         Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
         answerRepo.save(answer);
+        return answer;
+    }
+
+    @GetMapping("/{amaId}/question/{questionId}/answers")
+    public Answer viewAnswer(@PathVariable("amaId") Ama ama,
+                              @PathVariable("questionId") Question question
+    ){
+        Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
         return answer;
     }
 }
