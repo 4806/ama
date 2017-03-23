@@ -1,7 +1,9 @@
-window.Question = (function(Question) {
-	var removeIcon = '<span class="fa-trash-o webix_icon right"></span>';
-	var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn"'+
-			 'type="button" value="Answer Question">';
+window.Question = (function (Question) {
+    var removeIcon = '<span class="fa-trash-o webix_icon right"></span>';
+    var upvoteIcon = '<span class="fa fa-arrow-circle-o-up webix_icon"></span>';
+    var downvoteIcon = '<span class="fa fa-arrow-circle-o-down webix_icon"></span>';
+    var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn"'+
+    	'type="button" value="Answer Question"></input>';
 
 	function View(opts) {
 		opts = opts || {};
@@ -18,7 +20,6 @@ window.Question = (function(Question) {
 
 	View.prototype.createAnswer = function() {
 		var params, el = $$('create-answer-form');
-
 		if (el.validate()) {
 			el.getTopParentView().hide();
 			params = el.getValues();
@@ -46,18 +47,19 @@ window.Question = (function(Question) {
 		$$('questions').data.updateItem(id, question);
 	}
 
-	View.prototype.repr = function(obj) {
-		// TODO add check if user created question
-		var template = 'Created Date: ' + obj.created + removeIcon +
-				'<br/><span class="question">' + obj.body + '</span>';
-		if (obj.answer) {
-			template += '<span class="answer"><br/><p>' + obj.answer.body +
-					'</p></span>';
-		} else {
-			template += answerButton;
-		}
-		return template;
-	};
+	View.prototype.repr = function (obj) {
+        // TODO add check if user created question
+        var template=  'Created Date: ' + obj.created +
+            removeIcon + '<br/><span class="question">' + obj.body +'</span>';
+            if(obj.answer){
+            	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
+            }else{
+            	template += answerButton;
+            }
+            template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
+            template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
+            return template;
+    };
 
 	View.prototype.view = function() {
 		return {
@@ -65,23 +67,36 @@ window.Question = (function(Question) {
 			id : 'questions',
 			template : this.repr.bind(this),
 			type : {
-				height : 200,
+				height : 300,
 				width : 'auto'
 			},
 			xCount : 1,
 			yCount : 10,
 			onClick : {
-				'fa-trash-o' : this.onDelete.bind(this),
-				'ans_bttn' : function(event, id) {
-					window.Ama.showDialog('win-create-answer');
-					$$('create-answer-form').setValues({
-						'id' : id
-					});
-				}
-			}
+                'fa-trash-o' : this.onDelete.bind(this),
+                'fa-arrow-circle-o-up' : (function(event,id) {
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote')
+                	.then(function(result) {
+                		var question = result.json();
+                		$$('questions').data.updateItem(question.id, question).refresh();
+                	}); 
+                }).bind(this),
+                'fa-arrow-circle-o-down' : (function(event,id) {
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote')
+                	.then(function(result) {
+                		var question = result.json();
+                		$$('questions').data.updateItem(question.id, question).refresh();
+                	});  
+                }).bind(this),
+                'ans_bttn' 	 : function(event,id) {
+                	window.Ama.showDialog('win-create-answer');
+                	$$('create-answer-form').setValues({'id':id});
+                }
+            }
 		};
 	};
 
 	Question.View = View;
 	return Question;
 }(window.Question || {}));
+
