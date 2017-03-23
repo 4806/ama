@@ -215,6 +215,26 @@ public class AmaControllerTest {
     }
 
     @Test
+    @WithUserDetails("TestUser")
+    public void testAnaswerIsIncludedWithQuestion () throws Exception {
+
+        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
+        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
+                .param("body", "No clue"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("No clue"));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + questionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.answer.body").value("No clue"));
+    }
+
+    @Test
     @WithMockUser("TestUser")
     public void testDeleteQuestion () throws Exception {
 
