@@ -30,7 +30,7 @@ describe('Question View', function () {
 
         expect(view.view).toEqual('dataview');
         expect(view.id).toEqual('questions');
-        expect(view.type).toEqual({ height : 100, width : 'auto' });
+        expect(view.type).toEqual({ height : 200, width : 'auto' });
     });
 
     it('Deletes a question', function () {
