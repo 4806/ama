@@ -140,6 +140,11 @@ public class AmaController {
             throw new UnauthorizedAccessException("Only the author of a question or the AMA subject may delete the question");
         }
 
+        Answer answer = answerRepo.findByQuestion(question).orElse(null);
+        if (answer != null){
+            answerRepo.delete(answer);
+        }
+
         questionRepo.delete(question);
         return question;
     }
