@@ -4,7 +4,7 @@ window.Ama = (function (Ama) {
         opts = opts || {};
         this.ama = opts.ama || {};
         this.onCreate = opts.onCreate || {};
-        this.questions = new window.Question.List(this);
+        this.questions = opts.questions||{};
     }
 
     View.prototype.view = function () {
