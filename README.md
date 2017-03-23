@@ -31,77 +31,98 @@ The app is deployed using Heroku to http://sysc4806-ama.herokuapp.com/
 
 ## Next Milestone
 
-This iteration introduced AMAs and questions to the system. However, there is currently no notion of a user
-or any security within the system. The next iteration will focus on adding this feature including a user
-login, user profile and user sessions. The specific use cases for the next milestone are listed below. Once
-the user has been created then the use cases for creating questions and AMAs will be updated so that only
-logged in users can create them and are then the author of the question or AMA.
+The next iteration of this application will be the final iteration. This will complete the AMA
+application. For this final iteration, users will be able to follow and unfollow other users.
+They will be provided with more advanced controls for searching AMAs and questions. Users will
+also have notifications for events such as receiving a question on one of their AMAs or for
+answers to their questions.
 
-#### User Creation
-
-###### Precondition
-
-An AMA site visitor currently does not have an account with this AMA site
-
-###### Postcondition
-
-The AMA site visitor now has an account and is an AMA user
-
-###### Description
-
-1. The visitor selects to create a new account with the system
-2. The visitor enters some basic account information and chooses a unique name
-3. The visitor accepts the terms of the ama site
-4. The visitor receives a confirmation that their account has been created
-
-#### User Login
+#### Follow User
 
 ###### Precondition
 
-The given visitor has an account and is not currently logged in
+The AMA user is logged in and is not currently following the desired user
 
 ###### Postcondition
 
-The given visitor is now logged into the system and has a user session
+The AMA user is now following another user
 
 ###### Description
 
-1. The visitor clicks to "Login" to the system
-2. The visitor enters their account name and password
-3. The visitor receives confirmation that they have logged in
+1. An AMA user selects to "follow" another AMA user
 
-
-#### User Logout
+#### Unfollow User
 
 ###### Precondition
 
-The AMA user is currently logged in
+The AMA user is logged in and is currently following the desired user
 
 ###### Postcondition
 
-The AMA user is no longer logged in
+The AMA user is no longer following the desired user
 
 ###### Description
 
-1. The user clicks the "Logout" button
-2. The user receives confirmation that they have been logged out
+1. The AMA user selects to "unfollow" a user they are following
 
-#### Answer AMA Question
+#### Set AMA Permissions
 
 ###### Precondition
 
-The AMA subject has created an AMA and questions have been asked
+An AMA Subject is logged in and has created an AMA
 
 ###### Postcondition
 
-The AMA subject has answered a question on their AMA
+Permissions have been added to an AMA
 
 ###### Description
 
-1. The AMA subject selects a question to answer
-2. The AMA subject types an answer to the question and presses "submit"
-3. The AMA subject's answer is now available to everyone viewing the AMA
+1. The AMA subject selects to make an AMA private
+2. The AMA subject allows specific users to view their AMA
+
+#### View User Profile
+
+###### Precondition
+
+The AMA user is logged in
+
+###### Postcondition
+
+The AMA user is viewing their profile
+
+###### Description
+
+1. The AMA user select to view their profile
+2. The AMA user is presented with their profile
 
 
+#### Notification for Question on AMA
+
+###### Precondition 
+
+An AMA subject has created an AMA
+
+###### Postcondition
+
+The AMA subject has a notification about a question
+
+###### Description
+
+1. An AMA user creates a question on an AMA subject's page
+
+#### Notification for Answered Question
+
+###### Precondition
+
+An AMA user has created a question
+
+###### Postcondition
+
+The AMA user has a new notification on their profile
+
+###### Description
+
+1. An AMA user creates a question
+2. An AMA subject answers their question
 
 
