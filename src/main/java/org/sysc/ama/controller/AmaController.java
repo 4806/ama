@@ -184,7 +184,7 @@ public class AmaController {
 
     @PostMapping("/{amaId}/question/{questionId}/upvote")
     @PreAuthorize("#question.author.id != principal.user.id")
-    public Question upvoteQuestion (@PathVariable("amaId") Ama ama,
+    public Question upVoteQuestion (@PathVariable("amaId") Ama ama,
                                     @PathVariable("questionId") Question question,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
 
@@ -202,7 +202,7 @@ public class AmaController {
 
     @PostMapping("/{amaId}/question/{questionId}/downvote")
     @PreAuthorize("#question.author.id != principal.user.id")
-    public Question downvoteQuestion(@PathVariable("amaId") Ama ama,
+    public Question downVoteQuestion(@PathVariable("amaId") Ama ama,
                                     @PathVariable("questionId") Question question,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
 
@@ -217,6 +217,16 @@ public class AmaController {
         return question;
     }
 
+
+    @DeleteMapping("/{amaId}/question/{questionId}/vote")
+    public Question deleteVote (@PathVariable("amaId") Ama ama,
+                                @PathVariable("questionId") Question question,
+                                @AuthenticationPrincipal CustomUserDetails principal) {
+
+        question.removeVote(principal.getUser());
+        questionRepo.save(question);
+        return question;
+    }
 
 }
 

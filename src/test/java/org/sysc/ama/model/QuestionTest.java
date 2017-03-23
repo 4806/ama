@@ -18,6 +18,9 @@ public class QuestionTest {
         this.author     = new User();
         this.amaSubject = new User();
         this.ama        = new Ama("Foo", this.amaSubject, true);
+
+        this.author.setId((long)1);
+        this.amaSubject.setId((long)2);
     }
 
     @Test
@@ -74,6 +77,7 @@ public class QuestionTest {
 
         q.downVote(this.amaSubject);
         assertTrue(q.hasVoted(this.amaSubject));
+        System.out.println("MEWM: " + q.hasVoted(this.author));
         assertFalse(q.hasVoted(this.author));
     }
 

@@ -13,7 +13,7 @@ public class Question extends Post {
     private static Integer DOWN_VOTE = 0;
 
     @ElementCollection
-    private Map<User, Integer> voters = new HashMap<User, Integer>();
+    private Map<Long, Integer> voters = new HashMap<Long, Integer>();
 
     private int upVotes;
     private int downVotes;
@@ -26,20 +26,20 @@ public class Question extends Post {
         this.downVotes = 0;
     }
 
-    public void setVoters (Map<User, Integer> voters) {
+    public void setVoters (Map<Long, Integer> voters) {
         this.voters = voters;
     }
 
     public void upVote (User user) {
         if (!this.hasVoted(user)) {
-            this.voters.put(user, Question.UP_VOTE);
+            this.voters.put(user.getId(), Question.UP_VOTE);
             this.upVotes++;
         }
     }
 
     public void downVote (User user) {
         if (!this.hasVoted(user)) {
-            this.voters.put(user, Question.DOWN_VOTE);
+            this.voters.put(user.getId(), Question.DOWN_VOTE);
             this.downVotes++;
         }
     }
@@ -53,15 +53,15 @@ public class Question extends Post {
     }
 
     public boolean hasVoted (User user) {
-        return this.voters.keySet().contains(user);
+        return this.voters.containsKey(user.getId());
     }
 
     public void removeVote (User user) {
         Integer vote;
 
         if (this.hasVoted(user)) {
-            vote = this.voters.get(user);
-            this.voters.remove(user);
+            vote = this.voters.get(user.getId());
+            this.voters.remove(user.getId());
 
             if (vote == Question.UP_VOTE) {
                 this.upVotes--;

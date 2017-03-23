@@ -266,7 +266,7 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("VotingUser")
-    public void testUpvoteQuestion () throws Exception {
+    public void testUpVoteQuestion () throws Exception {
         Question q = new Question(this.testUser, this.amaFoo, "Why?");
         this.questionRepo.save(q);
 
@@ -278,7 +278,7 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("TestUser")
-    public void testUpvoteSelfAuthoredQuestion () throws Exception {
+    public void testUpVoteSelfAuthoredQuestion () throws Exception {
         Question q = new Question(this.testUser, this.amaFoo, "Why?");
         this.questionRepo.save(q);
 
@@ -289,7 +289,7 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("VotingUser")
-    public void testDownvoteQuestion () throws Exception {
+    public void testDownVoteQuestion () throws Exception {
         Question q = new Question(this.testUser, this.amaFoo, "Why?");
         this.questionRepo.save(q);
 
@@ -301,7 +301,7 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("TestUser")
-    public void testDownvoteSelfAuthoredQuestion () throws Exception {
+    public void testDownVoteSelfAuthoredQuestion () throws Exception {
         Question q = new Question(this.testUser, this.amaFoo, "Why?");
         this.questionRepo.save(q);
 
@@ -309,6 +309,23 @@ public class AmaControllerTest {
             .andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithUserDetails("VotingUser")
+    public void testDeleteVote () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/vote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+    }
 
 
     /**
