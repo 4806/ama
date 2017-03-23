@@ -16,6 +16,14 @@ window.Question = (function (Question) {
         }).view());
     }
     
+    function upvote(event, id) {
+    	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote');   	
+    };
+    
+    function downvote(event, id) {
+    	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote');   	
+    };
+    
     View.prototype.createAnswer= function (event,id){
     	var params, el = $$('create-answer-form');
 
