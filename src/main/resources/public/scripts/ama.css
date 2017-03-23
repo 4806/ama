@@ -1,3 +1,10 @@
 .float_right{
     float: right;
 }
+.question{
+	font-style: italic;
+}
+.answer{
+	text-indent : 2%;
+	border-width : 1px; 
+}
