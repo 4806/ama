@@ -119,11 +119,10 @@ public class AmaController {
     public Question addQuestion (@PathVariable("amaId") Long amaId,
                                  @RequestParam(value="userId", defaultValue = "") Long userId,
                                  @RequestParam("body") String body,
-                                 @AuthenticationPrincipal User user
+                                 @AuthenticationPrincipal CustomUserDetails principal
         ){
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-
-        Question q = new Question(user, ama, body);
+        Question q = new Question(principal.getUser(), ama, body);
 
         questionRepo.save(q);
         return q;
