@@ -13,8 +13,6 @@ window.Ama = (function (Ama) {
             el.getTopParentView().hide();
 
             params = el.getValues();
-            params.userId = webix.storage.cookie.get('userId');
-
             webix.ajax().post('/ama', params)
                 .then(this.onCreate.bind(this))
                 .fail(this.onError.bind(this));

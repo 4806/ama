@@ -1,9 +1,24 @@
 window.Ama = (function (Ama) {
-    Ama.showForm = function (winId, node) {
-        var $$winId = $$(winId);
-        $$winId.getBody().clear();
-        $$winId.show(node);
-        $$winId.getBody().focus();
+
+    Ama.createForm = function (id, buttonName,onClick) {
+        return {
+            view: 'form',
+            id: id,
+            elements: [
+                {
+                    view: 'textarea',
+                    label: 'Body',
+                    name: 'body',
+                    required: true
+                },
+                {
+                    view: 'button',
+                    label: buttonName,
+                    click: onClick
+                }
+            ]
+        };
     };
+
     return Ama;
-} (window.Ama));
+}(window.Ama));
