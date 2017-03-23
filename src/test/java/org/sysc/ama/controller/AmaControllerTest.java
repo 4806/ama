@@ -53,6 +53,7 @@ public class AmaControllerTest {
     private QuestionRepository questionRepo;
 
     private User testUser;
+
     private User secondaryUser;
 
     private Ama amaFoo;
@@ -66,7 +67,9 @@ public class AmaControllerTest {
         this.testUser = new User("TestUser");
         this.userRepo.save(this.testUser);
 
+
         this.userRepo.save(new User("BadUser"));
+
         this.secondaryUser = new User("SecondaryUser");
         this.userRepo.save(this.secondaryUser);
     }
@@ -310,7 +313,71 @@ public class AmaControllerTest {
                 .param("body", "No clue"))
                 .andExpect(status().isNotFound());
     }
-  
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testUpVoteQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testUpVoteSelfAuthoredQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDownVoteQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/downvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(1));
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testDownVoteSelfAuthoredQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/downvote"))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDeleteVote () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/vote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+    }
+
+
     @Test
     @WithUserDetails("TestUser")
     public void testGetAnswer() throws Exception {

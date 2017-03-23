@@ -194,5 +194,58 @@ public class AmaController {
         Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
         return answer;
     }
+
+    @PostMapping("/{amaId}/question/{questionId}/upvote")
+    public Question upVoteQuestion (@PathVariable("amaId") Long amaId,
+                                    @PathVariable("questionId") Long questionId,
+                                    @AuthenticationPrincipal CustomUserDetails principal) {
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
+        User voter = principal.getUser();
+
+        if (question.getAuthor().getId() == principal.getId()){
+            throw new UnauthorizedAccessException("The author of a question may not vote on it");
+        }
+
+        if (question.hasVoted(voter)) {
+            throw new UserHasVotedException(voter);
+        }
+
+        question.upVote(voter);
+        questionRepo.save(question);
+        return question;
+    }
+
+
+    @PostMapping("/{amaId}/question/{questionId}/downvote")
+    public Question downVoteQuestion(@PathVariable("amaId") Long amaId,
+                                    @PathVariable("questionId") Long questionId,
+                                    @AuthenticationPrincipal CustomUserDetails principal) {
+
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
+        User voter = principal.getUser();
+
+        if (question.getAuthor().getId() == principal.getId()){
+            throw new UnauthorizedAccessException("The author of a question may not vote on it");
+        }
+
+        if (question.hasVoted(voter)) {
+            throw new UserHasVotedException(voter);
+        }
+
+        question.downVote(voter);
+        questionRepo.save(question);
+        return question;
+    }
+
+
+    @DeleteMapping("/{amaId}/question/{questionId}/vote")
+    public Question deleteVote (@PathVariable("amaId") Ama ama,
+                                @PathVariable("questionId") Question question,
+                                @AuthenticationPrincipal CustomUserDetails principal) {
+
+        question.removeVote(principal.getUser());
+        questionRepo.save(question);
+        return question;
+    }
 }
 
