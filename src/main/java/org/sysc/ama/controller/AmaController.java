@@ -196,12 +196,15 @@ public class AmaController {
     }
 
     @PostMapping("/{amaId}/question/{questionId}/upvote")
-    @PreAuthorize("#question.author.id != principal.user.id")
-    public Question upVoteQuestion (@PathVariable("amaId") Ama ama,
-                                    @PathVariable("questionId") Question question,
+    public Question upVoteQuestion (@PathVariable("amaId") Long amaId,
+                                    @PathVariable("questionId") Long questionId,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
-
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
         User voter = principal.getUser();
+
+        if (question.getAuthor().getId() == principal.getId()){
+            throw new UnauthorizedAccessException("The author of a question may not vote on it");
+        }
 
         if (question.hasVoted(voter)) {
             throw new UserHasVotedException(voter);
@@ -214,12 +217,16 @@ public class AmaController {
 
 
     @PostMapping("/{amaId}/question/{questionId}/downvote")
-    @PreAuthorize("#question.author.id != principal.user.id")
-    public Question downVoteQuestion(@PathVariable("amaId") Ama ama,
-                                    @PathVariable("questionId") Question question,
+    public Question downVoteQuestion(@PathVariable("amaId") Long amaId,
+                                    @PathVariable("questionId") Long questionId,
                                     @AuthenticationPrincipal CustomUserDetails principal) {
 
+        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
         User voter = principal.getUser();
+
+        if (question.getAuthor().getId() == principal.getId()){
+            throw new UnauthorizedAccessException("The author of a question may not vote on it");
+        }
 
         if (question.hasVoted(voter)) {
             throw new UserHasVotedException(voter);
