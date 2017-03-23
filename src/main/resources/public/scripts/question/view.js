@@ -17,14 +17,6 @@ window.Question = (function (Question) {
         }).view());
     }
     
-    function upvote(id) {
-    	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote');   	
-    };
-    
-    function downvote(id) {
-    	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote');   	
-    };
-    
     View.prototype.createAnswer= function (){
     	var params, el = $$('create-answer-form');
 
@@ -67,8 +59,12 @@ window.Question = (function (Question) {
             yCount : 10,
             onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
-                'fa-arrow-cirlce-o-up' : this,
-                'fa-arrow-cirlce-o-down' : this,
+                'fa-arrow-circle-o-up' : (function(event,id) {
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote'); 
+                }).bind(this),
+                'fa-arrow-circle-o-down' : (function(event,id) {
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote'); 
+                }).bind(this),
                 'ans_bttn' 	 : function(event,id) {
                 	window.Ama.showDialog('win-create-answer');
                 	$$('create-answer-form').setValues({'id':id});
