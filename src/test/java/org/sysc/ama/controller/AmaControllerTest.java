@@ -292,6 +292,17 @@ public class AmaControllerTest {
                 .param("body", "No clue"))
                 .andExpect(status().isNotFound());
     }
+  
+    @Test
+    @WithUserDetails("TestUser")
+    public void testGetAnswer() throws Exception {
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answer")
+                .param("body", "No clue"));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.body == \"No clue\")]").exists());
+    }
 
     /**
      * Sleeps the current process for the given number of milliseconds

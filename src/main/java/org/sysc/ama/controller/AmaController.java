@@ -186,5 +186,13 @@ public class AmaController {
         answerRepo.save(answer);
         return answer;
     }
+
+    @GetMapping("/{amaId}/question/{questionId}/answers")
+    public Answer viewAnswer(@PathVariable("amaId") Ama ama,
+                              @PathVariable("questionId") Question question
+    ){
+        Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
+        return answer;
+    }
 }
 
