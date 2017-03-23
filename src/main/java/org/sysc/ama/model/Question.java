@@ -3,64 +3,72 @@ package org.sysc.ama.model;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 @Entity
 public class Question extends Post {
 
-    @ElementCollection
-    private ArrayList<User> upVoters;
+    private static Integer UP_VOTE = 1;
+    private static Integer DOWN_VOTE = 0;
 
     @ElementCollection
-    private ArrayList<User> downVoters;
+    private Map<User, Integer> voters = new HashMap<User, Integer>();
+
+    private int upVotes;
+    private int downVotes;
 
     public Question () {}
 
     public Question (User user, Ama ama, String body) {
         super(user, ama, body);
-        this.upVoters = new ArrayList<User>();
-        this.downVoters = new ArrayList<User>();
+        this.upVotes = 0;
+        this.downVotes = 0;
     }
 
-    public List<User> getUpVoters () {
-        return this.upVoters;
-    }
-
-    public List<User> getDownVoters () {
-        return this.downVoters;
+    public void setVoters (Map<User, Integer> voters) {
+        this.voters = voters;
     }
 
     public void upVote (User user) {
         if (!this.hasVoted(user)) {
-            this.upVoters.add(user);
+            this.voters.put(user, Question.UP_VOTE);
+            this.upVotes++;
         }
     }
 
     public void downVote (User user) {
         if (!this.hasVoted(user)) {
-            this.downVoters.add(user);
+            this.voters.put(user, Question.DOWN_VOTE);
+            this.downVotes++;
         }
     }
 
     public int getUpVotes () {
-        return this.upVoters.size();
+        return this.upVotes;
     }
 
     public int getDownVotes () {
-        return this.downVoters.size();
+        return this.downVotes;
     }
 
     public boolean hasVoted (User user) {
-        return this.upVoters.contains(user) || this.downVoters.contains(user);
+        return this.voters.keySet().contains(user);
     }
 
     public void removeVote (User user) {
-        if (this.upVoters.contains(user)) {
-            this.upVoters.remove(user);
-        }
-        else if (this.downVoters.contains(user)) {
-            this.downVoters.remove(user);
+        Integer vote;
+
+        if (this.hasVoted(user)) {
+            vote = this.voters.get(user);
+            this.voters.remove(user);
+
+            if (vote == Question.UP_VOTE) {
+                this.upVotes--;
+            }
+            else {
+                this.downVotes--;
+            }
         }
     }
 

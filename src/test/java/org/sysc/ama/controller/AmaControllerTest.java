@@ -272,8 +272,8 @@ public class AmaControllerTest {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.upvotes").value(1))
-            .andExpect(jsonPath("$.downvotes").value(0));
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
     }
 
     @Test
@@ -295,8 +295,8 @@ public class AmaControllerTest {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/downvote"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.upvotes").value(0))
-            .andExpect(jsonPath("$.downvotes").value(1));
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(1));
     }
 
     @Test

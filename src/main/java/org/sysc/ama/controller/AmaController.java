@@ -141,8 +141,7 @@ public class AmaController {
         ){
 
         Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
-        questionRepo.delete(id);
-
+        questionRepo.delete(question);
         return question;
     }
 

@@ -42,7 +42,7 @@ public class QuestionTest {
 
 
     @Test
-    public void testUpvoteQuestion () {
+    public void testUpVoteQuestion () {
         Question q = new Question(this.author, this.ama, "Who are you?");
 
         assertEquals(q.getUpVotes(), 0);
@@ -51,7 +51,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testDownvoteQuestion () {
+    public void testDownVoteQuestion () {
         Question q = new Question(this.author, this.ama, "This is not a question");
 
         assertEquals(q.getDownVotes(), 0);
@@ -60,7 +60,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testHasVotedAfterUpvote () {
+    public void testHasVotedAfterUpVote () {
         Question q = new Question(this.author, this.ama, "What is your name?");
 
         q.upVote(this.amaSubject);
@@ -69,7 +69,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testHasVotedAfterDownvote () {
+    public void testHasVotedAfterDownVote () {
         Question q = new Question(this.author, this.ama, "Bad question");
 
         q.downVote(this.amaSubject);
@@ -77,5 +77,55 @@ public class QuestionTest {
         assertFalse(q.hasVoted(this.author));
     }
 
+
+    @Test
+    public void testRemoveUpVote () {
+        Question q = new Question(this.author, this.ama, "Wazzz Up?");
+
+        assertEquals(q.getUpVotes(), 0);
+
+        q.upVote(this.amaSubject);
+        assertEquals(q.getUpVotes(), 1);
+        assertTrue(q.hasVoted(this.amaSubject));
+
+        q.removeVote(this.amaSubject);
+        assertEquals(q.getUpVotes(), 0);
+        assertFalse(q.hasVoted(this.amaSubject));
+
+    }
+
+    @Test
+    public void testRemoveDownVote () {
+        Question q = new Question(this.author, this.ama, "Not a clue");
+
+        assertEquals(q.getDownVotes(), 0);
+
+        q.downVote(this.amaSubject);
+        assertEquals(q.getDownVotes(), 1);
+        assertTrue(q.hasVoted(this.amaSubject));
+
+        q.removeVote(this.amaSubject);
+        assertEquals(q.getDownVotes(), 0);
+        assertFalse(q.hasVoted(this.amaSubject));
+
+    }
+
+    @Test
+    public void testCanVoteAfterVoteRemoved () {
+        Question q = new Question(this.author, this.ama, "Is it raining?");
+
+        assertEquals(q.getUpVotes(), 0);
+        assertEquals(q.getDownVotes(), 0);
+
+        q.upVote(this.amaSubject);
+        assertEquals(q.getUpVotes(), 1);
+        assertEquals(q.getDownVotes(), 0);
+
+        q.removeVote(this.amaSubject);
+        q.downVote(this.amaSubject);
+        assertEquals(q.getUpVotes(), 0);
+        assertEquals(q.getDownVotes(), 1);
+
+    }
 
 }
