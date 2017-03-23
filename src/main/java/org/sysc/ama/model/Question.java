@@ -1,7 +1,10 @@
 package org.sysc.ama.model;
 
 import javax.persistence.ElementCollection;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -18,6 +21,11 @@ public class Question extends Post {
     private int upVotes;
     private int downVotes;
 
+    @OneToOne(mappedBy="question")
+    @JsonManagedReference
+    private Answer answer;
+
+
     public Question () {}
 
     public Question (User user, Ama ama, String body) {
@@ -29,6 +37,7 @@ public class Question extends Post {
     public void setVoters (Map<Long, Integer> voters) {
         this.voters = voters;
     }
+
 
     public void upVote (User user) {
         if (!this.hasVoted(user)) {
@@ -70,6 +79,15 @@ public class Question extends Post {
                 this.downVotes--;
             }
         }
+    }
+
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
     }
 
 }

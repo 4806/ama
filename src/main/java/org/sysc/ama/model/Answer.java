@@ -1,5 +1,7 @@
 package org.sysc.ama.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.OneToOne;
 public class Answer extends Post {
 
     @OneToOne
+    @JsonBackReference
     private Question question;
 
     public Answer () {}
