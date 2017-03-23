@@ -167,7 +167,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testAddQuestionToAma () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
@@ -180,7 +180,7 @@ public class AmaControllerTest {
 
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewAma () throws Exception {
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId()))
@@ -189,7 +189,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewQuestions () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
@@ -212,7 +212,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewQuestion () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
