@@ -1,9 +1,9 @@
 window.Question = (function (Question) {
     var removeIcon = '<span class="fa-trash-o webix_icon right"></span>';
-    var upvoteIcon = '<span class="fa fa-arrow-circle-o-up webix_icon">';
-    var downvoteIcon = '<span class="fa fa-arrow-circle-o-down webix_icon">';
+    var upvoteIcon = '<span class="fa fa-arrow-circle-o-up webix_icon"></span>';
+    var downvoteIcon = '<span class="fa fa-arrow-circle-o-down webix_icon"></span>';
     var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn"'+
-    	'type="button" value="Answer Question">';
+    	'type="button" value="Answer Question"></input>';
 
     function View (opts) {
         opts = opts || {};
@@ -42,7 +42,8 @@ window.Question = (function (Question) {
             }else{
             	template += answerButton;
             }
-            template += '<br/>' + upvoteIcon + downvoteIcon;
+            template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
+            template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
             return template;
     };
 
@@ -60,10 +61,18 @@ window.Question = (function (Question) {
             onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'fa-arrow-circle-o-up' : (function(event,id) {
-                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote'); 
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote')
+                	.then(function(result) {
+                		var question = result.json();
+                		$$('questions').data.updateItem(question.id, question).refresh();
+                	}); 
                 }).bind(this),
                 'fa-arrow-circle-o-down' : (function(event,id) {
-                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote'); 
+                	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote')
+                	.then(function(result) {
+                		var question = result.json();
+                		$$('questions').data.updateItem(question.id, question).refresh();
+                	});  
                 }).bind(this),
                 'ans_bttn' 	 : function(event,id) {
                 	window.Ama.showDialog('win-create-answer');
