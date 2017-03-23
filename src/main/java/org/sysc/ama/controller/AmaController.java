@@ -186,6 +186,9 @@ public class AmaController {
         if (principal.getId() != ama.getSubject().getId()){
             throw new UnauthorizedAccessException("Only the subject of an AMA may answer questions");
         }
+        if (question.getAnswer() != null){
+            answerRepo.delete(question.getAnswer());
+        }
 
         Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
         answerRepo.save(answer);
