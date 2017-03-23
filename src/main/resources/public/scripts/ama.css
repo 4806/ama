@@ -1,5 +1,6 @@
-.float_right{
+.right{
     float: right;
+    margin-right: 30px;
 }
 .question{
 	font-style: italic;
@@ -7,4 +8,3 @@
 .answer{
 	text-indent : 2%;
 	border-width : 1px; 
-}

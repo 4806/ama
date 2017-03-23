@@ -54,6 +54,8 @@ public class AmaControllerTest {
 
     private User testUser;
 
+    private User secondaryUser;
+
     private Ama amaFoo;
     private Ama amaBar;
     private Ama amaBaz;
@@ -65,7 +67,11 @@ public class AmaControllerTest {
         this.testUser = new User("TestUser");
         this.userRepo.save(this.testUser);
 
+
         this.userRepo.save(new User("BadUser"));
+
+        this.secondaryUser = new User("SecondaryUser");
+        this.userRepo.save(this.secondaryUser);
     }
 
     @Before
@@ -86,7 +92,7 @@ public class AmaControllerTest {
         amaRepo.save(this.amaFoo);
         amaRepo.save(this.amaBar);
         amaRepo.save(this.amaBaz);
-        this.fooQuestion = new Question(this.testUser, this.amaFoo, "Don't avoid the question");
+        this.fooQuestion = new Question(this.secondaryUser, this.amaFoo, "Don't avoid the question");
         questionRepo.save(this.fooQuestion);
     }
 
@@ -142,7 +148,7 @@ public class AmaControllerTest {
 
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testDeleteExistingAma () throws Exception {
         mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
             .andExpect(status().isOk())
@@ -150,14 +156,21 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("BadUser")
+    public void testDeleteAmaUnauthorized () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
     public void testDeleteAmaDoesNotExist () throws Exception {
         mockMvc.perform(delete("/ama/100"))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testAddQuestionToAma () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
@@ -170,7 +183,7 @@ public class AmaControllerTest {
 
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewAma () throws Exception {
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId()))
@@ -179,7 +192,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewQuestions () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
@@ -202,7 +215,7 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
+    @WithUserDetails("TestUser")
     public void testViewQuestion () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
@@ -215,9 +228,27 @@ public class AmaControllerTest {
     }
 
     @Test
-    @WithMockUser("TestUser")
-    public void testDeleteQuestion () throws Exception {
+    @WithUserDetails("TestUser")
 
+    public void testAnaswerIsIncludedWithQuestion () throws Exception {
+
+        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                .param("body", "What is the meaning of life?")
+                .param("userId", this.testUser.getId().toString()))
+                .andReturn();
+        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
+                .param("body", "No clue"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("No clue"));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + questionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.answer.body").value("No clue"));
+    }
+
+    public void testDeleteQuestionAsAmaSubject () throws Exception {
         MvcResult result =  mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
                 .param("body", "What is the meaning of life?")
                 .param("userId", this.testUser.getId().toString()))
@@ -234,6 +265,22 @@ public class AmaControllerTest {
                 .param("limit", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
+    }
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDeleteQuestionAsAuthor () throws Exception {
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("Don't avoid the question"));
+    }
+
+    @Test
+    @WithUserDetails("BadUser")
+    public void testDeleteQuestionUnauthorized () throws Exception {
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId()))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -259,6 +306,88 @@ public class AmaControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithUserDetails("BadUser")
+    public void testAnswerQuestionThatDoesNotExist () throws Exception {
+        mockMvc.perform(post("/ama/56/question/123/answer")
+                .param("body", "No clue"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testUpVoteQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testUpVoteSelfAuthoredQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDownVoteQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/downvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(1));
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testDownVoteSelfAuthoredQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/downvote"))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testDeleteVote () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(1))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/vote"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.upVotes").value(0))
+            .andExpect(jsonPath("$.downVotes").value(0));
+
+    }
+
+
+    @Test
+    @WithUserDetails("TestUser")
+    public void testGetAnswer() throws Exception {
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answer")
+                .param("body", "No clue"));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.body == \"No clue\")]").exists());
+    }
 
     /**
      * Sleeps the current process for the given number of milliseconds

@@ -99,9 +99,15 @@ webix.ready(function() {
         }
     }).view();
 
+    function logout() {
+    	window.location = "/logout";
+    }
+    
+    var logoutButton = new window.Logout.Button({ onClick: logout.bind(this)});
+
     var toolBar = {
         type : "line",
-        rows : [ newAmaButton, listAma ]
+        rows : [ logoutButton.view(), newAmaButton, listAma ]
     };
 
     // Create the modal window to create AMAs
