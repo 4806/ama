@@ -16,7 +16,6 @@ window.Question = (function (Question) {
         if (el.validate()) {
             el.getTopParentView().hide();
             params = el.getValues();
-            params.userId=1;
             webix.ajax().post('/ama/' + this.ama.id + '/question', params)
                 .then(this.onCreate.bind(this))
                 .fail(this.onError.bind(this));
