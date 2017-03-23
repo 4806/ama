@@ -1,7 +1,7 @@
 window.Question = (function (Question) {
     var removeIcon = '<span class="fa-trash-o webix_icon right"></span>';
-    var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn" type="button"' +
-        ' value="Answer Question">';
+    var answerButton = '<input class="webixtype_form webix_el_button right ans_bttn"'+
+    	'type="button" value="Answer Question">';
 
     function View (opts) {
         opts = opts || {};
@@ -10,17 +10,18 @@ window.Question = (function (Question) {
         webix.ui( new window.Ama.Dialog({
             id : 'win-create-answer',
             title: 'New Answer',
-            body : new window.Ama.createForm('create-answer-form','Answer',this.createAnswer.bind(this))
+            body : new window.Ama.createForm('create-answer-form','Answer',
+            		this.createAnswer.bind(this))
         }).view());
     }
     
-    View.prototype.createAnswer= function (event,id){
+    View.prototype.createAnswer= function (){
     	var params, el = $$('create-answer-form');
 
         if (el.validate()) {
             el.getTopParentView().hide();
             params = el.getValues();
-            webix.ajax().post('/ama/' + this.ama.id + '/question/'+params.id+'/answer',params)
+            webix.ajax().post('/ama/' + this.ama.id + '/question/'+params.id+'/answer',params);
 
         } else {
             webix.message({
@@ -56,7 +57,7 @@ window.Question = (function (Question) {
             onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'ans_bttn' 	 : function(event,id) {
-                	Ama.showDialog('win-create-answer');
+                	window.Ama.showDialog('win-create-answer');
                 	$$('create-answer-form').setValues({'id':id});
                 }
             }
