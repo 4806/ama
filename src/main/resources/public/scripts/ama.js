@@ -48,6 +48,7 @@ var Ama = (function (Ama) {
 
         var amaWindow = new webix.ui(new Ama.View({
             ama : amas.getItem(id),
+            questions :questions,
             onCreate : function() {
                 Ama.showDialog("win-create-question");
             }
