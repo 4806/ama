@@ -41,6 +41,7 @@ window.Question = (function (Question) {
             }else{
             	template += answerButton;
             }
+            template += '<br/>' + upvoteIcon + downvoteIcon;
             return template;
     };
 
