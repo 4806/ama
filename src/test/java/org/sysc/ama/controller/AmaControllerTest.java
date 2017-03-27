@@ -191,61 +191,7 @@ public class AmaControllerTest {
                 .andExpect(jsonPath("$.id").value(this.amaFoo.getId()));
     }
 
-    @Test
-    @WithUserDetails("TestUser")
-    public void testAddAnswer () throws Exception {
-        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
-                .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()))
-                .andReturn();
-        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
-
-        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
-                .param("body", "No clue"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").value("No clue"));
-    }
-
-    @Test
-    @WithUserDetails("TestUser")
-    public void testAnswerMultipleTimes () throws Exception {
-        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
-                .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()))
-                .andReturn();
-        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
-
-        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
-                .param("body", "No clue"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("No clue"));
-        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
-                .param("body", "No clue"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("No clue"));
-        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + questionId))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithUserDetails("TestUser")
-    public void testDeleteQuestionWithAnswer () throws Exception {
-        MvcResult result = mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
-                .param("body", "What is the meaning of life?")
-                .param("userId", this.testUser.getId().toString()))
-                .andReturn();
-        Integer questionId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.id");
-
-        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + questionId + "/answer")
-                .param("body", "No clue"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").value("No clue"));
-
-        mockMvc.perform(delete("/ama/" + this.amaFoo.getId() + "/question/" + questionId))
-                .andExpect(status().isOk());
-    }
-
-    @Test
+       @Test
     @WithUserDetails("BadUser")
     public void testOnlyAmaSubjectCanAnswerQuestion () throws Exception {
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + this.fooQuestion.getId() + "/answer")

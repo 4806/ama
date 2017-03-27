@@ -118,35 +118,6 @@ public class AmaController {
         return ama;
     }
 
-    @PostMapping("/{amaId}/question/{questionId}/answer")
-    public Answer answerQuestion(@PathVariable("amaId") Long amaId,
-                                   @PathVariable("questionId") Long questionId,
-                                   @RequestParam("body") String body,
-                                   @AuthenticationPrincipal CustomUserDetails principal)
-    {
-        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        Question question = questionRepo.findById(questionId).orElseThrow(()->new EntityNotFoundException("question"));
-
-        if (principal.getId() != ama.getSubject().getId()){
-            throw new UnauthorizedAccessException("Only the subject of an AMA may answer questions");
-        }
-        if (question.getAnswer() != null){
-            answerRepo.delete(question.getAnswer());
-        }
-
-        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
-        answerRepo.save(answer);
-        return answer;
-    }
-
-    @GetMapping("/{amaId}/question/{questionId}/answers")
-    public Answer viewAnswer(@PathVariable("amaId") Ama ama,
-                              @PathVariable("questionId") Question question
-    ){
-        Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
-        return answer;
-    }
-
     @PostMapping("/{amaId}/question/{questionId}/upvote")
     public Question upVoteQuestion (@PathVariable("amaId") Long amaId,
                                     @PathVariable("questionId") Long questionId,

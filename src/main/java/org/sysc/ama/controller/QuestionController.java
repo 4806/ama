@@ -92,7 +92,6 @@ public class QuestionController {
         return questionRepo.findByAma(ama, request);
     }
 
-
 }
 
 
