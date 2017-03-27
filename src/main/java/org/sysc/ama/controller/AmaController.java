@@ -18,6 +18,10 @@ import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.services.CustomUserDetails;
+import org.sysc.ama.controller.exception.UnauthorizedAccessException;
+import org.sysc.ama.controller.exception.EntityNotFoundException;
+import org.sysc.ama.controller.exception.UserHasVotedException;
+
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.sysc.ama.controller.EntityNotFoundException;
+
+import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.model.User;
 import org.sysc.ama.repo.UserRepository;
 
