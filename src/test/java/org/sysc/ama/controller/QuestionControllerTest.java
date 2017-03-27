@@ -98,6 +98,19 @@ public class QuestionControllerTest {
 
     @Test
     @WithUserDetails("TestUser")
+    public void testAddQuestionToAma () throws Exception {
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")
+                            .param("body", "What is the meaning of life?")
+                            .param("userId", this.testUser.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body").value("What is the meaning of life?"))
+                .andExpect(jsonPath("$.ama.id").value(this.amaFoo.getId()));
+    }
+
+
+    @Test
+    @WithUserDetails("TestUser")
     public void testViewQuestions () throws Exception {
 
         mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question")

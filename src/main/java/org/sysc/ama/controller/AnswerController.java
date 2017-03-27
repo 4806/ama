@@ -15,13 +15,6 @@ import org.sysc.ama.services.CustomUserDetails;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
-
-
 @RestController
 @RequestMapping("/ama/{amaId}/question/{qId}")
 public class AnswerController {
