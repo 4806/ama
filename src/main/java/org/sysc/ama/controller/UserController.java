@@ -9,6 +9,8 @@ import javax.validation.*;
 
 import org.sysc.ama.model.User;
 import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.controller.exception.EntityNotFoundException;
+
 
 @RestController
 @RequestMapping("/user")

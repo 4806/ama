@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.sysc.ama.controller.EntityNotFoundException;
-import org.sysc.ama.controller.UnauthorizedAccessException;
+import org.sysc.ama.controller.exception.EntityNotFoundException;
+import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;

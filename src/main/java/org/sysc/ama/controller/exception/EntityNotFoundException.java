@@ -1,4 +1,4 @@
-package org.sysc.ama.controller;
+package org.sysc.ama.controller.exception;
 
 
 import org.springframework.http.HttpStatus;
