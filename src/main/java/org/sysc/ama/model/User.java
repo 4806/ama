@@ -8,7 +8,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
 import javax.validation.constraints.Pattern;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class User {
@@ -32,6 +38,10 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<User> following = new ArrayList<User>();
 
     public User() {
 
@@ -81,4 +91,11 @@ public class User {
         this.passwordHash = new BCryptPasswordEncoder().encode(unhashedPassword);
     }
 
+    public List<User> getFollowing () {
+        return this.following;
+    }
+
+    public void follow (User user) {
+        this.following.add(user);
+    }
 }
