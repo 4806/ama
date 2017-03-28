@@ -17,28 +17,26 @@ import java.util.Map;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/user/{uId}")
+@RequestMapping("/user/")
 public class FollowController {
 
     @Autowired
     private UserRepository userRepo;
 
     @PostMapping("/follow/{target}")
-    public User follow (@PathVariable("uId") User user,
-                        @PathVariable("target") Long target,
+    public User follow (@PathVariable("target") Long target,
                         @AuthenticationPrincipal CustomUserDetails principal) {
         User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
-        user.follow(targetUser);
-        return user;
+        principal.getUser().follow(targetUser);
+	userRepo.save(principal.getUser());
+        return principal.getUser();
     }
 
     @GetMapping("/following")
-    public Map<Long, String> following (@PathVariable("uId") User user,
-                                @AuthenticationPrincipal CustomUserDetails principal) {
-
+    public Map<Long, String> following (@AuthenticationPrincipal CustomUserDetails principal) {
         HashMap<Long, String> following = new HashMap<Long, String>();
 
-        for (User u : user.getFollowing()) {
+        for (User u : principal.getUser().getFollowing()) {
             following.put(u.getId(), u.getName());
         }
 
