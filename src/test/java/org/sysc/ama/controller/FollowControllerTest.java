@@ -81,4 +81,19 @@ public class FollowControllerTest {
     }
 
 
+    @Test
+    @WithUserDetails("TestUser")
+    public void testUnfollowUser () throws Exception {
+        User targetUser = new User("TargetUser");
+
+        userRepo.save(targetUser);
+        testUser.follow(targetUser);
+        userRepo.save(testUser);
+
+        mockMvc.perform(delete("/user/follow/" + targetUser.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value(testUser.getName()));
+
+    }
+
 }

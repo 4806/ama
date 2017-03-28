@@ -27,10 +27,11 @@ public class FollowController {
     public User follow (@PathVariable("target") Long target,
                         @AuthenticationPrincipal CustomUserDetails principal) {
         User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("user"));
 
-        principal.getUser().follow(targetUser);
-        userRepo.save(principal.getUser());
-        return principal.getUser();
+        user.follow(targetUser);
+        userRepo.save(user);
+        return user;
     }
 
     @GetMapping("/following")
@@ -43,5 +44,17 @@ public class FollowController {
         }
 
         return following;
+    }
+
+    @DeleteMapping("follow/{target}")
+    public User unfollow (@PathVariable("target") Long target,
+                          @AuthenticationPrincipal CustomUserDetails principal) {
+        User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("user"));
+
+        user.unfollow(targetUser);
+        userRepo.save(user);
+        return user;
+
     }
 }
