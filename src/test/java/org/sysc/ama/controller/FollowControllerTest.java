@@ -46,7 +46,6 @@ public class FollowControllerTest {
         this.userRepo.save(this.testUser);
     }
 
-
     @Test
     @WithUserDetails("TestUser")
   	public void testFollowUser () throws Exception {

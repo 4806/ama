@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 
 import javax.persistence.Entity;
-import javax.persistence.ElementCollection;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,7 +39,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @ElementCollection
+    @ManyToMany
     @JsonIgnore
     private List<User> following = new ArrayList<User>();
 
