@@ -27,16 +27,18 @@ public class FollowController {
     public User follow (@PathVariable("target") Long target,
                         @AuthenticationPrincipal CustomUserDetails principal) {
         User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
+
         principal.getUser().follow(targetUser);
-	userRepo.save(principal.getUser());
+        userRepo.save(principal.getUser());
         return principal.getUser();
     }
 
     @GetMapping("/following")
     public Map<Long, String> following (@AuthenticationPrincipal CustomUserDetails principal) {
         HashMap<Long, String> following = new HashMap<Long, String>();
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("user"));
 
-        for (User u : principal.getUser().getFollowing()) {
+        for (User u : user.getFollowing()) {
             following.put(u.getId(), u.getName());
         }
 

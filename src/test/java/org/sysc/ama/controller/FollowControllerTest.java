@@ -38,7 +38,7 @@ public class FollowControllerTest {
     @Autowired
     private UserRepository userRepo;
 
-	private User testUser;	
+	private User testUser;
 
     @PostConstruct
     public void init() {
@@ -59,7 +59,7 @@ public class FollowControllerTest {
     }
 
     @Test
-   	@WithUserDetails("TestUser") 
+   	@WithUserDetails("TestUser")
     public void testFollowNonExistantUser () throws Exception {
         mockMvc.perform(post("/user/follow/1000" ))
             .andExpect(status().isNotFound());
@@ -67,12 +67,12 @@ public class FollowControllerTest {
     }
 
     @Test
-    @WithUserDetails("TestUser") 
+    @WithUserDetails("TestUser")
     public void testGetFollowingUsers () throws Exception {
         User targetUser = new User("TargetUser");
 
-        this.testUser.follow(targetUser);
         userRepo.save(targetUser);
+        this.testUser.follow(targetUser);
         userRepo.save(testUser);
 
         mockMvc.perform(get("/user/following"))

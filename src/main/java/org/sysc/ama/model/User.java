@@ -9,8 +9,8 @@ import javax.persistence.*;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
 import javax.validation.constraints.Pattern;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     private List<User> following = new ArrayList<User>();
 
