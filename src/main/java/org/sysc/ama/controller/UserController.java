@@ -58,26 +58,4 @@ public class UserController {
 
         return user;
     }
-
-    @PostMapping("/{id}/follow/{target}")
-    public User follow (@PathVariable("id") User user,
-                        @PathVariable("target") Long target,
-                        @AuthenticationPrincipal CustomUserDetails principal) {
-        User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
-        user.follow(targetUser);
-        return user;
-    }
-
-    @GetMapping("/{id}/following")
-    public Map<Long, String> following (@PathVariable("id") User user,
-                                @AuthenticationPrincipal CustomUserDetails principal) {
-
-        HashMap<Long, String> following = new HashMap<Long, String>();
-
-        for (User u : user.getFollowing()) {
-            following.put(u.getId(), u.getName());
-        }
-
-        return following;
-    }
 }
