@@ -112,4 +112,48 @@ public class UserControllerTest {
         mockMvc.perform(delete("/user/20/"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @WithMockUser
+    public void testFollowUser () throws Exception {
+        User testUser = new User("TestUser");
+        User targetUser = new User("TargetUser");
+
+        userRepo.save(testUser);
+        userRepo.save(targetUser);
+
+        mockMvc.perform(post("/user/" + testUser.getId() + "/follow/" + targetUser.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value(testUser.getName()));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void testFollowNonExistantUser () throws Exception {
+        User testUser = new User("TestUser");
+        userRepo.save(testUser);
+
+        mockMvc.perform(post("/user/" + testUser.getId() + "/follow/1000" ))
+            .andExpect(status().isNotFound());
+
+    }
+
+
+    @Test
+    @WithMockUser
+    public void testGetFollowingUsers () throws Exception {
+        User testUser = new User("TestUser");
+        User targetUser = new User("TargetUser");
+
+        testUser.follow(targetUser);
+        userRepo.save(targetUser);
+        userRepo.save(testUser);
+
+        mockMvc.perform(get("/user/" + testUser.getId() + "/following"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$['" + targetUser.getId() + "']").value(targetUser.getName()));
+    }
+
+
 }
