@@ -95,7 +95,29 @@ public class User {
         return this.following;
     }
 
-    public void follow (User user) {
+    public boolean follow (User user) {
+        if (user.getId() == this.getId()) {
+            return false;
+        }
+
+        for (User u : this.following) {
+            if (u.getId() == user.getId()) {
+                return false;
+            }
+        }
         this.following.add(user);
+        return true;
+    }
+
+    public boolean unfollow (User user) {
+        User u;
+        for (int i = 0; i < this.following.size(); i++) {
+            u = this.following.get(i);
+            if (u.getId() == user.getId()) {
+                this.following.remove(user);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -60,11 +60,34 @@ public class UserTest {
         User user = new User("BaseUser");
         User target = new User("Target");
 
-        user.follow(target);
+        user.setId((long)1);
+        target.setId((long)2);
 
+        assertTrue(user.follow(target));
         assertTrue(user.getFollowing().contains(target));
     }
 
+    @Test
+    public void testFollowAlreadyFollowedUser () throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        assertTrue(user.follow(target));
+        assertFalse(user.follow(target));
+        assertEquals(user.getFollowing().size(), 1);
+    }
+
+    @Test
+    public void testCannotFollowSelf () throws Exception {
+        User user = new User("TestUser");
+
+        user.setId((long)1);
+        assertFalse(user.follow(user));
+        assertEquals(user.getFollowing().size(), 0);
+    }
 
     @Test
     public void testJsonSerialization () throws Exception {
@@ -90,4 +113,32 @@ public class UserTest {
         assertNull(JsonPath.parse(jsonString).read("$.following"));
 
     }
+
+    @Test
+    public void testUnfollowFollowedUser () throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        assertTrue(user.follow(target));
+        assertTrue(user.unfollow(target));
+        assertEquals(user.getFollowing().size(), 0);
+    }
+
+
+    @Test
+    public void testUnfollowNonfollowedUser ()  throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        // Do not already follow target user. Immediately unfollow and expect no error
+        assertFalse(user.unfollow(target));
+        assertEquals(user.getFollowing().size(), 0);
+    }
+
 }
