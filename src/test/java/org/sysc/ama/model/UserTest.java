@@ -4,6 +4,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
+import com.jayway.jsonpath.PathNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -12,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.Validator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.sysc.ama.repo.UserRepository;
 
@@ -47,5 +53,41 @@ public class UserTest {
         entityManager.persist(user);
         entityManager.persist(user2);
         entityManager.flush();
+    }
+
+    @Test
+    public void testFollowUserAddsUserToFollowing() throws Exception {
+        User user = new User("BaseUser");
+        User target = new User("Target");
+
+        user.follow(target);
+
+        assertTrue(user.getFollowing().contains(target));
+    }
+
+
+    @Test
+    public void testJsonSerialization () throws Exception {
+        User user = new User("TestUser");
+        ObjectMapper mapper = new ObjectMapper();
+        ReadContext ctx;
+
+        user.setId((long)10);
+
+        ctx = JsonPath.parse(mapper.writeValueAsString(user));
+
+        assertEquals((int)ctx.read("$.id"), 10);
+        assertEquals(ctx.read("$.name"), "TestUser");
+        assertEquals(ctx.read("$.role"), "USER");
+    }
+
+    @Test(expected = com.jayway.jsonpath.PathNotFoundException.class)
+    public void testJsonSerializationIgnoreFollowing () throws Exception {
+        User user = new User("TestUser");
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(user);
+
+        assertNull(JsonPath.parse(jsonString).read("$.following"));
+
     }
 }
