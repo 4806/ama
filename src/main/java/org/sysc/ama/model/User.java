@@ -1,7 +1,6 @@
 package org.sysc.ama.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -11,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.FetchType;
 import javax.validation.constraints.Pattern;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import javax.validation.*;
 
+import org.sysc.ama.controller.exception.UserCreationException;
 import org.sysc.ama.model.User;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
@@ -35,6 +36,9 @@ public class UserController {
     @PostMapping("/create")
     // TODO: When the UI no longer attempts to create users without passwords, remove the default empty password value
     public User create( @RequestParam(value="name") String name, @RequestParam(value="password", defaultValue="") String password) {
+
+        userRepo.findByName(name).ifPresent(x->{throw new UserCreationException("A user with that name already exists");});
+
         User user = new User();
         user.setName(name);
         user.setPassword(password);
