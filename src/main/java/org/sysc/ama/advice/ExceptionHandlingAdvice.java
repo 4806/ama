@@ -52,18 +52,9 @@ public class ExceptionHandlingAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: " + ex.getMessage());
     }
 
-    @ExceptionHandler(UserFollowException.class)
-    public ResponseEntity<String> processFollowError (UserFollowException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
-    }
-
-    @ExceptionHandler(UserUnfollowException.class)
+    @ExceptionHandler({UserUnfollowException.class, UserCreationException.class, UserFollowException.class })
     public ResponseEntity<String> processUnfollowError (UserUnfollowException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
 
-    @ExceptionHandler(UserCreationException.class)
-    public ResponseEntity<String> processUserCreaationEWxception(UserCreationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: ");
-    }
 }
