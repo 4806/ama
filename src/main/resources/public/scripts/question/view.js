@@ -77,17 +77,17 @@ window.Question = (function (Question) {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'fa-arrow-circle-o-up' : (function(event,id) {
                 	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote')
-                	.then((function(result) {
+                	.then(function(result) {
                 		var question = result.json();
                 		this.questions.data.updateItem(question.id, question);
-                	}).bind(this)); 
+                	}.bind(this)); 
                 }).bind(this),
                 'fa-arrow-circle-o-down' : (function(event,id) {
                 	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote')
-                	.then((function(result) {
+                	.then(function(result) {
                 		var question = result.json();
                 		this.questions.data.updateItem(question.id, question);
-                	}).bind(this));  
+                	}.bind(this));  
                 }).bind(this),
                 'ans_bttn' 	 : function(event,id) {
                 	window.Ama.showDialog('win-create-answer');
