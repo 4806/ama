@@ -8,7 +8,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
 import javax.validation.constraints.Pattern;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class User {
@@ -32,6 +38,10 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<User> following = new ArrayList<User>();
 
     public User() {
 
@@ -81,4 +91,32 @@ public class User {
         this.passwordHash = new BCryptPasswordEncoder().encode(unhashedPassword);
     }
 
+    public List<User> getFollowing () {
+        return this.following;
+    }
+
+    public void follow (User user) throws UserFollowException {
+        if (user.getId() == this.getId()) {
+            throw new UserFollowException(user, "Cannot follow self");
+        }
+
+        for (User u : this.following) {
+            if (u.getId() == user.getId()) {
+                throw new UserFollowException(user, "Cannot follow already followed user");
+            }
+        }
+        this.following.add(user);
+    }
+
+    public void unfollow (User user) throws UserUnfollowException {
+        User u;
+        for (int i = 0; i < this.following.size(); i++) {
+            u = this.following.get(i);
+            if (u.getId() == user.getId()) {
+                this.following.remove(user);
+                return;
+            }
+        }
+        throw new UserUnfollowException(user, "User is not being followed");
+    }
 }

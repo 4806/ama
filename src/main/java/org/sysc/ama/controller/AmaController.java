@@ -1,6 +1,5 @@
 package org.sysc.ama.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,16 +12,13 @@ import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
-import org.sysc.ama.repo.AnswerRepository;
 import org.sysc.ama.repo.QuestionRepository;
-import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.services.CustomUserDetails;
+import org.sysc.ama.controller.exception.UnauthorizedAccessException;
+import org.sysc.ama.controller.exception.EntityNotFoundException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/ama")
@@ -32,16 +28,7 @@ public class AmaController {
     private AmaRepository amaRepo;
 
     @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
     private QuestionRepository questionRepo;
-
-    @Autowired
-    private AnswerRepository answerRepo;
-
-    @Autowired
-    private UserController userController;
 
     @PostMapping("")
     public Ama create (
@@ -113,147 +100,6 @@ public class AmaController {
     public Ama view ( @PathVariable("id") Long id ) {
         Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
         return ama;
-    }
-
-    @PostMapping("/{amaId}/question")
-    public Question addQuestion (@PathVariable("amaId") Long amaId,
-                                 @RequestParam(value="userId", defaultValue = "") Long userId,
-                                 @RequestParam("body") String body,
-                                 @AuthenticationPrincipal CustomUserDetails principal
-        ){
-        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        Question q = new Question(principal.getUser(), ama, body);
-
-        questionRepo.save(q);
-        return q;
-    }
-
-    @DeleteMapping("/{amaId}/question/{id}")
-    public Question deleteQuestion(@PathVariable("amaId") Long amaId,
-                                   @PathVariable("id") Long questionId,
-                                   @AuthenticationPrincipal CustomUserDetails principal
-        ){
-        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
-
-        if ((question.getAuthor().getId() != principal.getId()) && (ama.getSubject().getId() != principal.getId())){
-            throw new UnauthorizedAccessException("Only the author of a question or the AMA subject may delete the question");
-        }
-
-        Answer answer = answerRepo.findByQuestion(question).orElse(null);
-        if (answer != null){
-            answerRepo.delete(answer);
-        }
-
-        questionRepo.delete(question);
-        return question;
-    }
-
-    @GetMapping("/{amaId}/question/{id}")
-    public Question viewQuestion(@PathVariable("amaId") Long amId,
-                                   @PathVariable("id") Long id
-    ){
-
-        Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
-        return question;
-    }
-
-
-    @GetMapping("/{id}/questions")
-    public List<Question> viewQuestions(@PathVariable("id") Long id,
-                                        @RequestParam("page") Integer page,
-                                        @RequestParam("limit") Integer limit,
-                                        @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
-                                        @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
-    ) {
-
-        Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
-        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
-        PageRequest request = new PageRequest(page, limit, sort);
-
-        return questionRepo.findByAma(ama, request);
-    }
-
-    @PostMapping("/{amaId}/question/{questionId}/answer")
-    public Answer answerQuestion(@PathVariable("amaId") Long amaId,
-                                   @PathVariable("questionId") Long questionId,
-                                   @RequestParam("body") String body,
-                                   @AuthenticationPrincipal CustomUserDetails principal)
-    {
-        Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
-        Question question = questionRepo.findById(questionId).orElseThrow(()->new EntityNotFoundException("question"));
-
-        if (principal.getId() != ama.getSubject().getId()){
-            throw new UnauthorizedAccessException("Only the subject of an AMA may answer questions");
-        }
-        if (question.getAnswer() != null){
-            answerRepo.delete(question.getAnswer());
-        }
-
-        Answer answer = new Answer(principal.getUser(), question.getAma(), question,  body);
-        answerRepo.save(answer);
-        return answer;
-    }
-
-    @GetMapping("/{amaId}/question/{questionId}/answers")
-    public Answer viewAnswer(@PathVariable("amaId") Ama ama,
-                              @PathVariable("questionId") Question question
-    ){
-        Answer answer = answerRepo.findByQuestion(question).orElseThrow(() -> new EntityNotFoundException("answer"));
-        return answer;
-    }
-
-    @PostMapping("/{amaId}/question/{questionId}/upvote")
-    public Question upVoteQuestion (@PathVariable("amaId") Long amaId,
-                                    @PathVariable("questionId") Long questionId,
-                                    @AuthenticationPrincipal CustomUserDetails principal) {
-        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
-        User voter = principal.getUser();
-
-        if (question.getAuthor().getId() == principal.getId()){
-            throw new UnauthorizedAccessException("The author of a question may not vote on it");
-        }
-
-        if (question.hasVoted(voter)) {
-            throw new UserHasVotedException(voter);
-        }
-
-        question.upVote(voter);
-        questionRepo.save(question);
-        return question;
-    }
-
-
-    @PostMapping("/{amaId}/question/{questionId}/downvote")
-    public Question downVoteQuestion(@PathVariable("amaId") Long amaId,
-                                    @PathVariable("questionId") Long questionId,
-                                    @AuthenticationPrincipal CustomUserDetails principal) {
-
-        Question question = questionRepo.findById(questionId).orElseThrow(() -> new EntityNotFoundException("question"));
-        User voter = principal.getUser();
-
-        if (question.getAuthor().getId() == principal.getId()){
-            throw new UnauthorizedAccessException("The author of a question may not vote on it");
-        }
-
-        if (question.hasVoted(voter)) {
-            throw new UserHasVotedException(voter);
-        }
-
-        question.downVote(voter);
-        questionRepo.save(question);
-        return question;
-    }
-
-
-    @DeleteMapping("/{amaId}/question/{questionId}/vote")
-    public Question deleteVote (@PathVariable("amaId") Ama ama,
-                                @PathVariable("questionId") Question question,
-                                @AuthenticationPrincipal CustomUserDetails principal) {
-
-        question.removeVote(principal.getUser());
-        questionRepo.save(question);
-        return question;
     }
 }
 
