@@ -54,7 +54,7 @@ window.Question = (function (Question) {
             removeIcon + '<br/><span class="question">' + obj.body +'</span>';
             if(obj.answer){
             	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
-            }else{
+            }else if(window.getUserId() === obj.ama.subject.id){
             	template += answerButton;
             }
             template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
