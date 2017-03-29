@@ -63,11 +63,11 @@ public class UserTest {
         user.setId((long)1);
         target.setId((long)2);
 
-        assertTrue(user.follow(target));
+        user.follow(target);
         assertTrue(user.getFollowing().contains(target));
     }
 
-    @Test
+    @Test(expected = org.sysc.ama.model.UserFollowException.class)
     public void testFollowAlreadyFollowedUser () throws Exception {
         User user = new User("TestUser");
         User target = new User("Target");
@@ -75,18 +75,16 @@ public class UserTest {
         user.setId((long)1);
         target.setId((long)2);
 
-        assertTrue(user.follow(target));
-        assertFalse(user.follow(target));
-        assertEquals(user.getFollowing().size(), 1);
+        user.follow(target);
+        user.follow(target);
     }
 
-    @Test
+    @Test(expected = org.sysc.ama.model.UserFollowException.class)
     public void testCannotFollowSelf () throws Exception {
         User user = new User("TestUser");
 
         user.setId((long)1);
-        assertFalse(user.follow(user));
-        assertEquals(user.getFollowing().size(), 0);
+        user.follow(user);
     }
 
     @Test
@@ -122,14 +120,14 @@ public class UserTest {
         user.setId((long)1);
         target.setId((long)2);
 
-        assertTrue(user.follow(target));
-        assertTrue(user.unfollow(target));
+        user.follow(target);
+        user.unfollow(target);
         assertEquals(user.getFollowing().size(), 0);
     }
 
 
-    @Test
-    public void testUnfollowNonfollowedUser ()  throws Exception {
+    @Test(expected = org.sysc.ama.model.UserUnfollowException.class)
+    public void testUnfollowNonfollowedUser () throws Exception {
         User user = new User("TestUser");
         User target = new User("Target");
 
@@ -137,8 +135,7 @@ public class UserTest {
         target.setId((long)2);
 
         // Do not already follow target user. Immediately unfollow and expect no error
-        assertFalse(user.unfollow(target));
-        assertEquals(user.getFollowing().size(), 0);
+        user.unfollow(target);
     }
 
 }

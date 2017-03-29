@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import javax.validation.*;
 
 import org.sysc.ama.model.User;
+import org.sysc.ama.model.UserFollowException;
+import org.sysc.ama.model.UserUnfollowException;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
@@ -25,7 +27,7 @@ public class FollowController {
 
     @PostMapping("/follow/{target}")
     public User follow (@PathVariable("target") Long target,
-                        @AuthenticationPrincipal CustomUserDetails principal) {
+                        @AuthenticationPrincipal CustomUserDetails principal) throws UserFollowException {
         User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
         User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("user"));
 
@@ -48,7 +50,7 @@ public class FollowController {
 
     @DeleteMapping("follow/{target}")
     public User unfollow (@PathVariable("target") Long target,
-                          @AuthenticationPrincipal CustomUserDetails principal) {
+                          @AuthenticationPrincipal CustomUserDetails principal) throws UserUnfollowException {
         User targetUser = userRepo.findById(target).orElseThrow(() -> new EntityNotFoundException("user"));
         User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("user"));
 

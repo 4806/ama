@@ -59,6 +59,21 @@ public class FollowControllerTest {
     }
 
     @Test
+    @WithUserDetails("TestUser")
+  	public void testAlreadyFollowedUser () throws Exception {
+        User targetUser = new User("TargetUser");
+        userRepo.save(targetUser);
+
+        this.testUser.follow(targetUser);
+        userRepo.save(this.testUser);
+
+        mockMvc.perform(post("/user/follow/" + targetUser.getId()))
+            .andExpect(status().isBadRequest());
+
+    }
+
+
+    @Test
    	@WithUserDetails("TestUser")
     public void testFollowNonExistantUser () throws Exception {
         mockMvc.perform(post("/user/follow/1000" ))
@@ -95,5 +110,26 @@ public class FollowControllerTest {
             .andExpect(jsonPath("$.name").value(testUser.getName()));
 
     }
+
+    @Test
+    @WithUserDetails("TestUser")
+  	public void testUnfollowNonfollowedUser () throws Exception {
+        User targetUser = new User("TargetUser");
+        userRepo.save(targetUser);
+
+        mockMvc.perform(delete("/user/follow/" + targetUser.getId()))
+            .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @WithUserDetails("TestUser")
+  	public void testUnfollowNonExistantUser () throws Exception {
+        mockMvc.perform(delete("/user/follow/1000"))
+            .andExpect(status().isNotFound());
+
+    }
+
+
 
 }
