@@ -60,11 +60,32 @@ public class UserTest {
         User user = new User("BaseUser");
         User target = new User("Target");
 
-        user.follow(target);
+        user.setId((long)1);
+        target.setId((long)2);
 
+        user.follow(target);
         assertTrue(user.getFollowing().contains(target));
     }
 
+    @Test(expected = org.sysc.ama.model.UserFollowException.class)
+    public void testFollowAlreadyFollowedUser () throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        user.follow(target);
+        user.follow(target);
+    }
+
+    @Test(expected = org.sysc.ama.model.UserFollowException.class)
+    public void testCannotFollowSelf () throws Exception {
+        User user = new User("TestUser");
+
+        user.setId((long)1);
+        user.follow(user);
+    }
 
     @Test
     public void testJsonSerialization () throws Exception {
@@ -90,4 +111,31 @@ public class UserTest {
         assertNull(JsonPath.parse(jsonString).read("$.following"));
 
     }
+
+    @Test
+    public void testUnfollowFollowedUser () throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        user.follow(target);
+        user.unfollow(target);
+        assertEquals(user.getFollowing().size(), 0);
+    }
+
+
+    @Test(expected = org.sysc.ama.model.UserUnfollowException.class)
+    public void testUnfollowNonfollowedUser () throws Exception {
+        User user = new User("TestUser");
+        User target = new User("Target");
+
+        user.setId((long)1);
+        target.setId((long)2);
+
+        // Do not already follow target user. Immediately unfollow and expect no error
+        user.unfollow(target);
+    }
+
 }

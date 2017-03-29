@@ -95,7 +95,28 @@ public class User {
         return this.following;
     }
 
-    public void follow (User user) {
+    public void follow (User user) throws UserFollowException {
+        if (user.getId() == this.getId()) {
+            throw new UserFollowException(user, "Cannot follow self");
+        }
+
+        for (User u : this.following) {
+            if (u.getId() == user.getId()) {
+                throw new UserFollowException(user, "Cannot follow already followed user");
+            }
+        }
         this.following.add(user);
+    }
+
+    public void unfollow (User user) throws UserUnfollowException {
+        User u;
+        for (int i = 0; i < this.following.size(); i++) {
+            u = this.following.get(i);
+            if (u.getId() == user.getId()) {
+                this.following.remove(user);
+                return;
+            }
+        }
+        throw new UserUnfollowException(user, "User is not being followed");
     }
 }
