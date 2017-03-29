@@ -1,7 +1,5 @@
 package org.sysc.ama.advice;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
+import org.sysc.ama.controller.exception.UserCreationException;
 import org.sysc.ama.model.UserFollowException;
 import org.sysc.ama.model.UserUnfollowException;
 
@@ -51,13 +50,9 @@ public class ExceptionHandlingAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: " + ex.getMessage());
     }
 
-    @ExceptionHandler(UserFollowException.class)
-    public ResponseEntity<String> processFollowError (UserFollowException ex) {
+    @ExceptionHandler({UserUnfollowException.class, UserCreationException.class, UserFollowException.class })
+    public ResponseEntity<String> processBadRequestError (Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
 
-    @ExceptionHandler(UserUnfollowException.class)
-    public ResponseEntity<String> processUnfollowError (UserUnfollowException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
-    }
 }

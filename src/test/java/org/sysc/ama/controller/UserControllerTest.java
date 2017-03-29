@@ -49,6 +49,17 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
+    public void testCannotCreateUserThatAlreadyExists () throws Exception {
+        mockMvc.perform(post("/user/create").param("name", "TestUser"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("TestUser"))
+                .andExpect(jsonPath("$.id").isNumber());
+        mockMvc.perform(post("/user/create").param("name", "TestUser"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
     public void testUserNameMustNotBeEmpty () throws Exception {
         mockMvc.perform(post("/user/create").param("name", ""))
                 .andExpect(status().isBadRequest());
