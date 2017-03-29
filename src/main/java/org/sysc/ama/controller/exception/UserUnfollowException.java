@@ -1,6 +1,8 @@
-package org.sysc.ama.model;
+package org.sysc.ama.controller.exception;
 
-public class UserUnfollowException extends Exception {
+import org.sysc.ama.model.User;
+
+public class UserUnfollowException extends BadRequestError {
 
     private User user;
 
