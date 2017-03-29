@@ -11,9 +11,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.FetchType;
 import javax.validation.constraints.Pattern;
 
-import org.sysc.ama.controller.exception.UserFollowException;
-import org.sysc.ama.controller.exception.UserUnfollowException;
-
 import java.util.List;
 import java.util.ArrayList;
 

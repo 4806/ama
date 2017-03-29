@@ -15,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
-import org.sysc.ama.controller.exception.UserFollowException;
-import org.sysc.ama.controller.exception.UserUnfollowException;
 import org.sysc.ama.repo.UserRepository;
 
 @RunWith(SpringRunner.class)

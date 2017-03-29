@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.sysc.ama.model.User;
-import org.sysc.ama.controller.exception.UserFollowException;
-import org.sysc.ama.controller.exception.UserUnfollowException;
+import org.sysc.ama.model.UserFollowException;
+import org.sysc.ama.model.UserUnfollowException;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
 import org.sysc.ama.controller.exception.EntityNotFoundException;

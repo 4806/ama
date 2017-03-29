@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import org.sysc.ama.controller.exception.BadRequestError;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 import org.sysc.ama.controller.exception.UserCreationException;
-import org.sysc.ama.controller.exception.UserFollowException;
-import org.sysc.ama.controller.exception.UserUnfollowException;
+import org.sysc.ama.model.UserFollowException;
+import org.sysc.ama.model.UserUnfollowException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -52,7 +51,7 @@ public class ExceptionHandlingAdvice {
     }
 
     @ExceptionHandler({UserUnfollowException.class, UserCreationException.class, UserFollowException.class })
-    public ResponseEntity<String> processBadRequestError (RuntimeException ex) {
+    public ResponseEntity<String> processBadRequestError (Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
 
