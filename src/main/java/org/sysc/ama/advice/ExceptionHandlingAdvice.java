@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.sysc.ama.controller.EntityNotFoundException;
-import org.sysc.ama.controller.UnauthorizedAccessException;
+
+import org.sysc.ama.controller.exception.EntityNotFoundException;
+import org.sysc.ama.controller.exception.UnauthorizedAccessException;
+import org.sysc.ama.model.UserFollowException;
+import org.sysc.ama.model.UserUnfollowException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -46,5 +49,15 @@ public class ExceptionHandlingAdvice {
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<String> processAuthorizationError(UnauthorizedAccessException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(UserFollowException.class)
+    public ResponseEntity<String> processFollowError (UserFollowException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(UserUnfollowException.class)
+    public ResponseEntity<String> processUnfollowError (UserUnfollowException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
 }
