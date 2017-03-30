@@ -14,10 +14,10 @@ var AmaLogin = (function () {
         webix.ajax().post("/user/create", params).then(function() {
             submit();
         }).fail(function(xhr) {
-            var response = JSON.parse(xhr.response);
+            console.log(response);
             webix.message({
                 type : "error",
-                text : response.message
+                text : xhr.response
             });
         });
     }
