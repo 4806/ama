@@ -56,6 +56,7 @@ public class User {
     public User (User user) {
         this.id = user.id;
         this.role = user.role;
+        this.name = user.name;
         this.following = user.following;
         this.passwordHash = user.passwordHash;
     }

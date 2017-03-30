@@ -54,7 +54,6 @@ var Ama = (function (Ama) {
             onCreate : function() {
                 Ama.showDialog("win-create-question");
             }
-
         }).view());
 
         webix.ui(modalWindow);
@@ -99,6 +98,15 @@ webix.ready(function() {
         },
         onView : function(e, id) {
             Ama.viewAma(id);
+        },
+        onChange : function () {
+            webix.ajax().get("/ama/list?page=0&limit=10")
+                .then(function (res) {
+                    Ama.amas.clearAll();
+                    res.json().forEach(function (a) {
+                        Ama.amas.add(a);
+                    });
+                });
         }
     }).view();
     

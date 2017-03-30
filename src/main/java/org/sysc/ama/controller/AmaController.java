@@ -86,8 +86,6 @@ public class AmaController {
     }
 
 
-
-
     @GetMapping("/list")
     public List<Ama> list (
             @RequestParam("page") Integer page,
@@ -98,10 +96,11 @@ public class AmaController {
         ) {
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
         PageRequest request = new PageRequest(page, limit, sort);
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        return amaRepo.findByAllowedUsersOrIsPublic(principal.getUser(), true, request)
+        return amaRepo.findByAllowedUsersOrIsPublic(user, true, request)
             .stream()
-            .map((ama) -> new AmaResponse(ama, principal.getUser()))
+            .map((ama) -> new AmaResponse(ama, user))
             .collect(Collectors.toList());
     }
 

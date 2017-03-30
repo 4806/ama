@@ -1,19 +1,21 @@
 window.Ama = (function (Ama) {
-	var User = window.User;
-
+    var User = window.User;
+    
     function List (opts) {
         opts = opts || {};
         this.onDelete = opts.onDelete || function () {};
         this.onView = opts.onView || function () {};
+        this.onChange = opts.onChange || function () {};
     }
 
     List.prototype.view = function () {
-		var userView = new User.View({
-			user 	: {
-				id : window.getUserId() 
-			}
-		});		
-		
+        var userView = new User.View({
+            user 	: {
+                id : window.getUserId()
+            },
+            onChange : this.onChange
+        });
+
         return {
             id      : 'ama-list',
             view    : 'datatable',
@@ -27,7 +29,7 @@ window.Ama = (function (Ama) {
                 {
                     id       : 'author',
                     header   : 'Author',
-                    template : userView.repr.bind(userView) 
+                    template : userView.repr.bind(userView)
                 },
                 {
                     id       : 'icon',
@@ -49,8 +51,8 @@ window.Ama = (function (Ama) {
             onClick : {
                 'icon' : this.onDelete.bind(this),
                 'title' : this.onView.bind(this),
-				'fa-plus' : userView.onFollow.bind(userView),
-				'fa-close': userView.onUnfollow.bind(userView)
+                'fa-plus' : userView.onFollow.bind(userView),
+                'fa-close': userView.onUnfollow.bind(userView)
             }
         };
     };
