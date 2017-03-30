@@ -117,7 +117,8 @@ public class AmaControllerTest {
     @Test
     @WithUserDetails("TestUser")
     public void testCreateEndpointExists () throws Exception {
-        mockMvc.perform(post("/ama?title=Foo2&public=true"))
+        mockMvc.perform(post("/ama?title=Foo2&public=true")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.public").value("true"))
                 .andExpect(jsonPath("$.title").value("Foo2"))

@@ -44,9 +44,19 @@ public class AmaController {
             @RequestParam("title") String title,
             @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
-            @RequestBody(required=false) Optional<String[]> allowedUsers,
             @AuthenticationPrincipal CustomUserDetails user
         ) {
+        return create(title, userId, isPublic, Optional.empty() ,user);
+    }
+
+    @PostMapping(value = "", headers="Content-Type=application/json")
+    public Ama create (
+            @RequestParam("title") String title,
+            @RequestParam(value="userId", defaultValue = "") Long userId,
+            @RequestParam("public") Boolean isPublic,
+            @RequestBody Optional<String[]> allowedUsers,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         Ama ama = new Ama(title, user.getUser(), isPublic);
 
         if (!ama.isPublic()){
@@ -68,6 +78,8 @@ public class AmaController {
 
         return ama;
     }
+
+
 
 
     @GetMapping("/list")
