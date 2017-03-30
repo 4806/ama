@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.Answer;
+import org.sysc.ama.model.User;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.AmaRepository;
 import org.sysc.ama.repo.AnswerRepository;
@@ -19,6 +20,7 @@ import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ama/{amaId}")
@@ -33,6 +35,19 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepo;
 
+
+    private class QuestionWithUserInfo extends Question{
+        private String userVote;
+
+        public QuestionWithUserInfo(Question q, User user) {
+            super(q);
+            this.userVote = getUserVote(user).name();
+        }
+
+        public String getUserVote(){
+            return userVote;
+        }
+    }
 
     @PostMapping("/question")
     public Question addQuestion (@PathVariable("amaId") Long amaId,
@@ -69,27 +84,32 @@ public class QuestionController {
     }
 
     @GetMapping("/question/{id}")
-    public Question viewQuestion(@PathVariable("amaId") Long amId,
-                                   @PathVariable("id") Long id
+    public QuestionWithUserInfo viewQuestion(@PathVariable("amaId") Long amId,
+                                 @PathVariable("id") Long id,
+                                 @AuthenticationPrincipal CustomUserDetails principal
     ){
 
         Question question = questionRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("question"));
-        return question;
+        return new QuestionWithUserInfo(question, principal.getUser());
     }
 
     @GetMapping("/questions")
-    public List<Question> viewQuestions(@PathVariable("amaId") Long amaId,
+    public List<QuestionWithUserInfo> viewQuestions(@PathVariable("amaId") Long amaId,
                                         @RequestParam("page") Integer page,
                                         @RequestParam("limit") Integer limit,
                                         @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
-                                        @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
+                                        @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
+                                        @AuthenticationPrincipal CustomUserDetails principal
     ) {
 
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
         PageRequest request = new PageRequest(page, limit, sort);
+        List<Question> questions = questionRepo.findByAma(ama, request);
 
-        return questionRepo.findByAma(ama, request);
+        return questions.stream()
+            .map((x) -> new QuestionWithUserInfo(x, principal.getUser()))
+            .collect(Collectors.toList());
     }
 
 }
