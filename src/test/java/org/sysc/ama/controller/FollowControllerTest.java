@@ -26,10 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class FollowControllerTest {
 
     @Autowired
@@ -44,11 +44,6 @@ public class FollowControllerTest {
     public void init() {
         this.testUser = new User("TestUser");
         this.userRepo.save(this.testUser);
-    }
-
-    @After
-    public void after() {
-        this.userRepo.deleteAll();
     }
 
     @Test

@@ -1,7 +1,6 @@
 package org.sysc.ama.controller;
 
 import com.jayway.jsonpath.JsonPath;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -38,7 +37,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class VoteControllerTest {
 
     @Autowired
@@ -83,13 +82,6 @@ public class VoteControllerTest {
         this.amaFoo = new Ama("Foo", this.testUser, true);
 
         amaRepo.save(this.amaFoo);
-    }
-
-    @After
-    public void after() {
-        this.questionRepo.deleteAll();
-        this.amaRepo.deleteAll();
-        this.userRepo.deleteAll();
     }
 
     @Test
