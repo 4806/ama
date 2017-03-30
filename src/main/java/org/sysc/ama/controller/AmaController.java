@@ -84,8 +84,8 @@ public class AmaController {
 
     @GetMapping("/list")
     public List<Ama> list (
-            @RequestParam("page") Integer page,
-            @RequestParam("limit") Integer limit,
+            @RequestParam(value = "page", defaultValue="0") Integer page,
+            @RequestParam(value= "limit", defaultValue="10") Integer limit,
             @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
             @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
             @AuthenticationPrincipal CustomUserDetails principal

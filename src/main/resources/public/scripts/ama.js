@@ -1,7 +1,7 @@
 var Ama = (function (Ama) {
 
     var amas = new webix.DataCollection({
-        url : "/ama/list?page=0&limit=10",
+        url : "/ama/list",
         map : {
             author : "#subject.name#",
             icon : "<span class='fa-trash-o webix_icon'></span>"
@@ -115,7 +115,7 @@ webix.ready(function() {
     webix.ui(toolBar);
 
     // sync the ama list with the
-    $$("ama-list").sync(Ama.amas);
+    //$$("ama-list").sync(Ama.amas);
 
 
 });

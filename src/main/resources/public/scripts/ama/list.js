@@ -42,7 +42,15 @@ window.Ama = (function (Ama) {
             onClick : {
                 'icon' : this.onDelete.bind(this),
                 'title' : this.onView.bind(this)
-            }
+            },
+			datafetch: 10,
+			loadahead : 15,
+			pager: {
+					//template: "{common.prev()}{common.next()}Page {common.page()}",
+					autosize:true,
+					group: 5
+				},
+				url : "/ama/list"
         };
     };
 
