@@ -40,6 +40,7 @@ public class Question extends Post {
 
 
     public void upVote (User user) {
+        removeVote(user);
         if (!this.hasVoted(user)) {
             this.voters.put(user.getId(), Question.UP_VOTE);
             this.upVotes++;
@@ -47,6 +48,7 @@ public class Question extends Post {
     }
 
     public void downVote (User user) {
+        removeVote(user);
         if (!this.hasVoted(user)) {
             this.voters.put(user.getId(), Question.DOWN_VOTE);
             this.downVotes++;
