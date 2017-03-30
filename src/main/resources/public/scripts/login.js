@@ -11,15 +11,18 @@ var AmaLogin = (function () {
                 password    : formVals.password
             };
 
-        webix.ajax().post("/user/create", params).then(function() {
-            submit();
-        }).fail(function(xhr) {
+        webix.ajax().post("/user/create", params, {
+            success: function() {
+                submit();
+            }
+        ,
+            error: function(xhr) {
             console.log(response);
             webix.message({
                 type : "error",
                 text : xhr.response
             });
-        });
+        }});
     }
 
     return {
