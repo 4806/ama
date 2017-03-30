@@ -12,7 +12,7 @@ window.General = (function (General) {
                             value : 'Logout',
                             width : 70,
                             click : function () {
-                            	window.location = "/logout";
+                            	window.location = '/logout';
                             },
                             css   : 'right'
                         },
@@ -21,8 +21,8 @@ window.General = (function (General) {
                             value : 'Profile',
                             width : 70,
                             click : function () {
-                            	//window.location = "/profile";
-                            	this;
+                            	//window.location = '/profile';
+                            	
                             },
                             css   : 'right'
                         }
