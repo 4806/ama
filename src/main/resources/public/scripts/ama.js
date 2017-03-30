@@ -3,8 +3,9 @@ var Ama = (function (Ama) {
     var amas = new webix.DataCollection({
         url : "/ama/list?page=0&limit=10",
         map : {
-            author : "#subject.name#",
-            icon : "<span class='fa-trash-o webix_icon'></span>"
+			user 	: "#subject#",
+            author 	: "#subject.name#",
+            icon 	: "<span class='fa-trash-o webix_icon'></span>"
         },
 
         on : {
