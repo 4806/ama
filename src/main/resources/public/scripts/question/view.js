@@ -49,16 +49,18 @@ window.Question = (function (Question) {
 	}
 
 	View.prototype.repr = function (obj) {
-        // TODO add check if user created question
-        var template=  'Created Date: ' + obj.created +
+		console.log(obj);
+        var userId=window.getUserId();        
+		var template=  'Created Date: ' + obj.created +
             removeIcon + '<br/><span class="question">' + obj.body +'</span>';
             if(obj.answer){
             	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
-            }else if(window.getUserId() === obj.ama.subject.id){
+            }else if(userId === obj.ama.subject.id){
             	template += answerButton;
+            }else if (userId !== obj.author.id){
+            	template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
+            	template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
             }
-            template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
-            template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
             return template;
     };
 

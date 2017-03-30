@@ -34,7 +34,8 @@ describe('Question View', function () {
         expect(str).toMatch('Created Date: ' + this.question.created);
         expect(str).toMatch('fa-trash-o');
         expect(str).toMatch(this.question.body);
-        expect(str).toMatch('ans_bttn');       
+        expect(str).toMatch('ans_bttn');
+        expect(str).toMatch('Downvotes');
     });
 
     it('Checks that users who are not the subject of an ama can not view the answer button',
@@ -45,7 +46,8 @@ describe('Question View', function () {
         expect(str).toMatch('Created Date: ' + this.question.created);
         expect(str).toMatch('fa-trash-o');
         expect(str).toMatch(this.question.body);
-        expect(str).not.toMatch('ans_bttn');  
+        expect(str).not.toMatch('ans_bttn');
+        expect(str).not.toMatch('Downvotes');
     });
 
     it('Creates a view of the question', function () {
