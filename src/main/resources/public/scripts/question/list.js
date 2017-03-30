@@ -7,7 +7,7 @@ window.Question = (function (Question) {
         this.data = new webix.DataCollection({
             url : '/ama/' + this.ama.id + '/questions?page=0&limit=10',
             scheme : {
-                $init : function(obj) {
+                $change : function(obj) {
                     obj.created = (new Date(obj.created)).toLocaleString();
                 }
             },
