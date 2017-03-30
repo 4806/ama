@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserControllerTest {
 
     @Autowired
@@ -37,11 +37,6 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepo;
-
-    @After
-    public void after() {
-        this.userRepo.deleteAll();
-    }
 
     @Test
     @WithMockUser
