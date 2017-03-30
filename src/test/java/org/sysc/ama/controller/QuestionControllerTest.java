@@ -1,6 +1,7 @@
 package org.sysc.ama.controller;
 
 import com.jayway.jsonpath.JsonPath;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
 import org.sysc.ama.model.Ama;
 
+import org.sysc.ama.repo.AnswerRepository;
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.repo.AmaRepository;
@@ -37,7 +39,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class QuestionControllerTest {
 
     @Autowired
@@ -51,6 +53,9 @@ public class QuestionControllerTest {
 
     @Autowired
     private QuestionRepository questionRepo;
+
+    @Autowired
+    private AnswerRepository answerRepo;
 
     private User testUser;
 
@@ -94,6 +99,14 @@ public class QuestionControllerTest {
         amaRepo.save(this.amaBaz);
         this.fooQuestion = new Question(this.secondaryUser, this.amaFoo, "Don't avoid the question");
         questionRepo.save(this.fooQuestion);
+    }
+
+    @After
+    public void after() {
+        this.answerRepo.deleteAll();
+        this.questionRepo.deleteAll();
+        this.amaRepo.deleteAll();
+        this.userRepo.deleteAll();
     }
 
     @Test
