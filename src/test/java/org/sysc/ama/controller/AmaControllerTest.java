@@ -1,6 +1,7 @@
 package org.sysc.ama.controller;
 
 import com.jayway.jsonpath.JsonPath;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -38,8 +39,8 @@ import java.util.*;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AmaControllerTest {
 
     @Autowired
@@ -104,6 +105,13 @@ public class AmaControllerTest {
 
         this.fooQuestion = new Question(this.secondaryUser, this.amaFoo, "Don't avoid the question");
         questionRepo.save(this.fooQuestion);
+    }
+
+    @After
+    public void after() {
+        this.questionRepo.deleteAll();
+        this.amaRepo.deleteAll();
+        this.userRepo.deleteAll();
     }
 
     @Test
@@ -187,8 +195,8 @@ public class AmaControllerTest {
         mockMvc.perform(get("/ama/list?page=0&limit=2"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].title").value("Baz"))
-            .andExpect(jsonPath("$[1].title").value("Private"));
+            .andExpect(jsonPath("$[?(@.title==\"Baz\")]").exists())
+            .andExpect(jsonPath("$[?(@.title==\"Private\")]").exists());
     }
 
     @Test
