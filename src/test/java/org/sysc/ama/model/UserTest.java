@@ -1,22 +1,17 @@
 package org.sysc.ama.model;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
-import com.jayway.jsonpath.PathNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.validation.Validator;
 
 import static org.junit.Assert.*;
 
@@ -67,7 +62,7 @@ public class UserTest {
         assertTrue(user.getFollowing().contains(target));
     }
 
-    @Test(expected = org.sysc.ama.model.UserFollowException.class)
+    @Test(expected = UserFollowException.class)
     public void testFollowAlreadyFollowedUser () throws Exception {
         User user = new User("TestUser");
         User target = new User("Target");
@@ -79,7 +74,7 @@ public class UserTest {
         user.follow(target);
     }
 
-    @Test(expected = org.sysc.ama.model.UserFollowException.class)
+    @Test(expected = UserFollowException.class)
     public void testCannotFollowSelf () throws Exception {
         User user = new User("TestUser");
 
@@ -126,7 +121,7 @@ public class UserTest {
     }
 
 
-    @Test(expected = org.sysc.ama.model.UserUnfollowException.class)
+    @Test(expected = UserUnfollowException.class)
     public void testUnfollowNonfollowedUser () throws Exception {
         User user = new User("TestUser");
         User target = new User("Target");

@@ -8,6 +8,7 @@ window.Question = (function (Question) {
 	function View(opts) {
 		opts = opts || {};
 		this.ama = opts.ama;
+		this.questions = opts.questions ||{};
 		this.onDelete = opts.onDelete || function() {
 		};
 		webix.ui(new window.Ama.Dialog({
@@ -26,7 +27,7 @@ window.Question = (function (Question) {
 			webix.ajax().post(
 					'/ama/' + this.ama.id + '/question/' + params.id +
 							 '/answer', params).then(
-					onCreate.bind(null, params.id)).fail(function(xhr) {
+					onCreate.bind(this, params.id)).fail(function(xhr) {
 				webix.message({
 					type : 'error',
 					text : xhr.response
@@ -42,23 +43,28 @@ window.Question = (function (Question) {
 	};
 
 	function onCreate(id, result) {
-		var question = $$('questions').data.getItem(id);
+		var question = this.questions.data.getItem(id);
 		question.answer = result.json();
-		$$('questions').data.updateItem(id, question);
+		this.questions.data.updateItem(id, question);
 	}
 
 	View.prototype.repr = function (obj) {
-        // TODO add check if user created question
-        var template=  'Created Date: ' + obj.created +
-            removeIcon + '<br/><span class="question">' + obj.body +'</span>';
-            if(obj.answer){
-            	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
-            }else{
-            	template += answerButton;
-            }
-            template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
-            template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
-            return template;
+        var userId=window.getUserId();        
+		var template=  'Created Date: ' + obj.created;
+		if(userId === obj.author.id || userId === obj.ama.subject.id){
+			template += removeIcon;
+		}
+         template+= '<br/><span class="question">' + obj.body +'</span>';
+        if(obj.answer){
+        	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
+        }else if(userId === obj.ama.subject.id){
+        	template += answerButton;
+        }
+        if (userId !== obj.author.id){
+        	template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
+        	template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
+        }
+        return template;
     };
 
 	View.prototype.view = function() {
@@ -78,15 +84,15 @@ window.Question = (function (Question) {
                 	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/upvote')
                 	.then(function(result) {
                 		var question = result.json();
-                		$$('questions').data.updateItem(question.id, question).refresh();
-                	}); 
+                		this.questions.data.updateItem(question.id, question);
+                	}.bind(this)); 
                 }).bind(this),
                 'fa-arrow-circle-o-down' : (function(event,id) {
                 	webix.ajax().post('/ama/' + this.ama.id + '/question/' + id + '/downvote')
                 	.then(function(result) {
                 		var question = result.json();
-                		$$('questions').data.updateItem(question.id, question).refresh();
-                	});  
+                		this.questions.data.updateItem(question.id, question);
+                	}.bind(this));  
                 }).bind(this),
                 'ans_bttn' 	 : function(event,id) {
                 	window.Ama.showDialog('win-create-answer');

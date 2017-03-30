@@ -36,6 +36,7 @@ window.Ama = (function (Ama) {
                     toolbar.call(this),
                     new window.Question.View({
                         ama : this.ama,
+                        questions : this.questions,
                         onDelete : onDelete.bind(this)
                     }).view()
                 ]
