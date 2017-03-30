@@ -44,7 +44,6 @@ public class AmaController {
             @RequestParam("title") String title,
             @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
-            @RequestBody(required=false) Optional<String[]> allowedUsers,
             @AuthenticationPrincipal CustomUserDetails user
         ) {
         return create(title, userId, isPublic, Optional.empty() ,user);
