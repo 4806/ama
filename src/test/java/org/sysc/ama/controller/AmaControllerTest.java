@@ -131,7 +131,7 @@ public class AmaControllerTest {
     public void testCreateEndpointAcceptsAllowedUsers () throws Exception {
         mockMvc.perform(post("/ama?title=Foo2&public=false")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("[\"BadUser\", \"SecondaryUser\"]"))
+                        .content("[\"SecondaryUser\"]"))
                 .andExpect(status().isOk());
     }
 

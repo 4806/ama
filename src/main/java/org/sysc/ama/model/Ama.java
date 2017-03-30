@@ -7,10 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Ama {
@@ -39,6 +36,7 @@ public class Ama {
         this.isPublic = isPublic;
         this.created = new Date();
         this.updated = new Date();
+        this.allowedUsers = new HashSet<>();
     }
 
     public Ama (String title, User subject, boolean isPublic, Set<User> allowedUsers) {
@@ -95,6 +93,11 @@ public class Ama {
     }
 
     public boolean userIsAllowedToView(User user){
+
+        if (this.isPublic()){
+            return true;
+        }
+
         if (user.getId() == this.subject.getId())
             return true;
 

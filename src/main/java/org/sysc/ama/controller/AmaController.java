@@ -105,7 +105,7 @@ public class AmaController {
                       @AuthenticationPrincipal CustomUserDetails principal ) {
         Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        if (!(ama.isPublic() || ama.userIsAllowedToView(principal.getUser()))){
+        if (!ama.userIsAllowedToView(principal.getUser())){
             throw new UnauthorizedAccessException("User is not allowed to view this private AMA");
         }
 
