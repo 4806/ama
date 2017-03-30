@@ -21,7 +21,8 @@ window.General = (function (General) {
                             value : 'Profile',
                             width : 70,
                             click : function () {
-                            	window.location = "/profile";
+                            	//window.location = "/profile";
+                            	this;
                             },
                             css   : 'right'
                         }
