@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import org.sysc.ama.controller.exception.BadRequestError;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 import org.sysc.ama.controller.exception.UserCreationException;
@@ -51,7 +50,7 @@ public class ExceptionHandlingAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: " + ex.getMessage());
     }
 
-    @ExceptionHandler({BadRequestError.class, UserUnfollowException.class, UserCreationException.class, UserFollowException.class })
+    @ExceptionHandler({UserUnfollowException.class, UserCreationException.class, UserFollowException.class })
     public ResponseEntity<String> processBadRequestError (Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
