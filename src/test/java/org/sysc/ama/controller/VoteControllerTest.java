@@ -105,6 +105,22 @@ public class VoteControllerTest {
     }
 
     @Test
+    @WithUserDetails("SecondaryUser")
+    public void testVoteIsIncludedInQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.upVotes").value(1))
+                .andExpect(jsonPath("$.downVotes").value(0));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() ))
+                .andExpect(jsonPath("$.userVote").value("UP_VOTE"));
+    }
+
+
+    @Test
     @WithUserDetails("TestUser")
     public void testUpVoteSelfAuthoredQuestion () throws Exception {
         Question q = new Question(this.testUser, this.amaFoo, "Why?");

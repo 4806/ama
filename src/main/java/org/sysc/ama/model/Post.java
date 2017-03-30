@@ -17,7 +17,7 @@ public class Post {
 
     @Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 
     @ManyToOne
     private User author;
