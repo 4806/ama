@@ -49,17 +49,22 @@ window.Question = (function (Question) {
 	}
 
 	View.prototype.repr = function (obj) {
-        // TODO add check if user created question
-        var template=  'Created Date: ' + obj.created +
-            removeIcon + '<br/><span class="question">' + obj.body +'</span>';
-            if(obj.answer){
-            	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
-            }else if(window.getUserId() === obj.ama.subject.id){
-            	template += answerButton;
-            }
-            template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
-            template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
-            return template;
+        var userId=window.getUserId();        
+		var template=  'Created Date: ' + obj.created;
+		if(userId === obj.author.id || userId === obj.ama.subject.id){
+			template += removeIcon;
+		}
+         template+= '<br/><span class="question">' + obj.body +'</span>';
+        if(obj.answer){
+        	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
+        }else if(userId === obj.ama.subject.id){
+        	template += answerButton;
+        }
+        if (userId !== obj.author.id){
+        	template += '<br/>' + upvoteIcon + downvoteIcon + '<br/> Upvotes: ' + obj.upVotes;
+        	template += '<br/><p> Downvotes: ' + obj.downVotes + '</p>';
+        }
+        return template;
     };
 
 	View.prototype.view = function() {

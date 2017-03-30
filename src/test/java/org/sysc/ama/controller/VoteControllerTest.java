@@ -1,6 +1,7 @@
 package org.sysc.ama.controller;
 
 import com.jayway.jsonpath.JsonPath;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class VoteControllerTest {
 
     @Autowired
@@ -84,6 +85,13 @@ public class VoteControllerTest {
         amaRepo.save(this.amaFoo);
     }
 
+    @After
+    public void after() {
+        this.questionRepo.deleteAll();
+        this.amaRepo.deleteAll();
+        this.userRepo.deleteAll();
+    }
+
     @Test
     @WithUserDetails("SecondaryUser")
     public void testUpVoteQuestion () throws Exception {
@@ -95,6 +103,22 @@ public class VoteControllerTest {
             .andExpect(jsonPath("$.upVotes").value(1))
             .andExpect(jsonPath("$.downVotes").value(0));
     }
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testVoteIsIncludedInQuestion () throws Exception {
+        Question q = new Question(this.testUser, this.amaFoo, "Why?");
+        this.questionRepo.save(q);
+
+        mockMvc.perform(post("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() + "/upvote"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.upVotes").value(1))
+                .andExpect(jsonPath("$.downVotes").value(0));
+
+        mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/question/" + q.getId() ))
+                .andExpect(jsonPath("$.userVote").value("UP_VOTE"));
+    }
+
 
     @Test
     @WithUserDetails("TestUser")

@@ -1,11 +1,13 @@
 package org.sysc.ama.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import java.util.Date;
+import javax.persistence.*;
+
+import java.util.*;
 
 @Entity
 public class Ama {
@@ -16,6 +18,10 @@ public class Ama {
 
     @ManyToOne
     private User subject;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<User> allowedUsers;
 
     private boolean isPublic;
     private String title;
@@ -30,6 +36,12 @@ public class Ama {
         this.isPublic = isPublic;
         this.created = new Date();
         this.updated = new Date();
+        this.allowedUsers = new HashSet<>();
+    }
+
+    public Ama (String title, User subject, boolean isPublic, Set<User> allowedUsers) {
+        this(title, subject, isPublic);
+        this.allowedUsers = allowedUsers;
     }
 
     public Ama (Ama ama) {
@@ -79,5 +91,30 @@ public class Ama {
 
     public Date getUpdated () {
         return this.updated;
+    }
+
+    public Set<User> getAllowedUsers() {
+        return allowedUsers;
+    }
+
+    public void setAllowedUsers(Set<User> allowedUsers) {
+        this.allowedUsers = allowedUsers;
+    }
+
+    public boolean userIsAllowedToView(User user){
+
+        if (this.isPublic()){
+            return true;
+        }
+
+        if (user.getId() == this.subject.getId())
+            return true;
+
+        for (User u : this.allowedUsers){
+            if (u.getId() == user.getId()){
+                return true;
+            }
+        }
+        return false;
     }
 }

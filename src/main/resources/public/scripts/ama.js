@@ -27,6 +27,7 @@ var Ama = (function (Ama) {
             text : xhr.response
         });
     }
+   
     function viewAma(id) {
 
         var questions = new window.Question.List({
@@ -100,16 +101,12 @@ webix.ready(function() {
             Ama.viewAma(id);
         }
     }).view();
-
-    function logout() {
-    	window.location = "/logout";
-    }
     
-    var logoutButton = new window.Logout.Button({ onClick: logout.bind(this)});
+    var generalToolbar = new window.General.createToolbar();
 
     var toolBar = {
         type : "line",
-        rows : [ logoutButton.view(), newAmaButton, listAma ]
+        rows : [ generalToolbar, newAmaButton, listAma ]
     };
 
     // Create the modal window to create AMAs
