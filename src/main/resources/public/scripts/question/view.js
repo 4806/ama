@@ -49,7 +49,6 @@ window.Question = (function (Question) {
 	}
 
 	View.prototype.repr = function (obj) {
-		console.log(obj);
         var userId=window.getUserId();        
 		var template=  'Created Date: ' + obj.created +
             removeIcon + '<br/><span class="question">' + obj.body +'</span>';
