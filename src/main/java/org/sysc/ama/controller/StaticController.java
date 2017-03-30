@@ -19,5 +19,11 @@ public class StaticController {
 	public String login(){
 		return "login";
 	}
+	
+	@RequestMapping("/profile")
+	public String profile(@AuthenticationPrincipal CustomUserDetails principal, Model model) {
+		model.addAttribute("userId", principal.getUser().getId());
+		return "profile";
+	}
 
 }
