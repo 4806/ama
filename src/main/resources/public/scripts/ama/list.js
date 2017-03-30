@@ -34,7 +34,12 @@ window.Ama = (function (Ama) {
                 {
                     id       : 'icon',
                     header   : '',
-                    template : '<div class="icon">#icon#</div>'
+                    template : function (ama){
+                        if(window.getUserId() === ama.subject.id){
+                           return '<div class="icon">'+ama.icon+'</div>';
+                        }
+                        return '';
+                    }
                 }
             ],
             on : {
