@@ -12,14 +12,14 @@ describe('Ama View', function () {
         }];
     });
 
-    it('Creates a list of amas displayed to ama subject', function () {
+    it('Create a list of amas that a ama subject can remove', function () {
         window.getUserId = function () { return 1; };
         var listAma = new window.Ama.List({}).view();
         listAma.data = this.amas;
         webix.ui(listAma);
         expect($$('ama-list').getText(1, 'icon')).toMatch('fa-trash');
     });
-    it('Creates a list of amas displayed to non ama subject', function () {
+    it('Create a list of amas that a non-ama subject cannot remove', function () {
         window.getUserId = function () { return 2; };
         var listAma = new window.Ama.List({}).view();
         listAma.data = this.amas;
