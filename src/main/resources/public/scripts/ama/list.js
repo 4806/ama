@@ -1,5 +1,4 @@
 window.Ama = (function (Ama) {
-    var User = window.User;
     
     function List (opts) {
         opts = opts || {};
@@ -9,7 +8,7 @@ window.Ama = (function (Ama) {
     }
 
     List.prototype.view = function () {
-        var userView = new User.View({
+        var userView = new window.User.View({
             user 	: {
                 id : window.getUserId()
             },
