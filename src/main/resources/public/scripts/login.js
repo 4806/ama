@@ -16,7 +16,6 @@ var AmaLogin = (function () {
                 submit();
             },
             error: function(xhr) {
-            console.log(xhr);
             webix.message({
                 type : "error",
                 text : xhr

@@ -27,13 +27,13 @@ public class ExceptionHandlingAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public String processValidationError(ConstraintViolationException ex) {
-        String message = "";
+        StringBuilder message = new StringBuilder();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations())
         {
             String propertyPath = violation.getPropertyPath().toString();
-            message +=  "Error in value \"" +  violation.getInvalidValue() + "\" : " +violation.getMessage()  + "\n";
+            message.append("Error in value \"").append(violation.getInvalidValue()).append("\" : ").append(violation.getMessage()).append("\n");
         }
-        return message;
+        return message.toString();
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
