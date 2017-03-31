@@ -26,17 +26,14 @@ public class ExceptionHandlingAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public List<FieldError> processValidationError(ConstraintViolationException ex) {
-        List<FieldError> errors = new ArrayList<FieldError>();
+    public String processValidationError(ConstraintViolationException ex) {
+        StringBuilder message = new StringBuilder();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations())
         {
             String propertyPath = violation.getPropertyPath().toString();
-            String message = violation.getMessage()  + " Invalid value is: " + violation.getInvalidValue();
-            errors.add(new FieldError("name",propertyPath,
-
-                    "Invalid "+ propertyPath + "(" + message + ")" ));
+            message.append("Error in value \"").append(violation.getInvalidValue()).append("\" : ").append(violation.getMessage()).append("\n");
         }
-        return errors;
+        return message.toString();
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

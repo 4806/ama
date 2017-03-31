@@ -11,15 +11,16 @@ var AmaLogin = (function () {
                 password    : formVals.password
             };
 
-        webix.ajax().post("/user/create", params).then(function() {
-            submit();
-        }).fail(function(xhr) {
-            var response = JSON.parse(xhr.response);
+        webix.ajax().post("/user/create", params, {
+            success: function() {
+                submit();
+            },
+            error: function(xhr) {
             webix.message({
                 type : "error",
-                text : response.message
+                text : xhr
             });
-        });
+        }});
     }
 
     return {
@@ -43,6 +44,6 @@ webix.ready(function() {
     });
 
     if (window.location.search.indexOf("?error") > -1) {
-        webix.message("Invalid Credentials");
+        webix.message({ type: "error", text: "Invalid Credentials"});
     }
 });
