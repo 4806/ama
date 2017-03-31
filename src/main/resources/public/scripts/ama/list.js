@@ -1,12 +1,20 @@
 window.Ama = (function (Ama) {
-
+    
     function List (opts) {
         opts = opts || {};
         this.onDelete = opts.onDelete || function () {};
         this.onView = opts.onView || function () {};
+        this.onChange = opts.onChange || function () {};
     }
 
     List.prototype.view = function () {
+        var userView = new window.User.View({
+            user 	: {
+                id : window.getUserId()
+            },
+            onChange : this.onChange
+        });
+
         return {
             id      : 'ama-list',
             view    : 'datatable',
@@ -20,12 +28,17 @@ window.Ama = (function (Ama) {
                 {
                     id       : 'author',
                     header   : 'Author',
-                    template : '<div class="author">#author#</div>'
+                    template : userView.repr.bind(userView)
                 },
                 {
                     id       : 'icon',
                     header   : '',
-                    template : '<div class="icon">#icon#</div>'
+                    template : function (ama){
+                        if(window.getUserId() === ama.subject.id){
+                           return '<div class="icon">'+ama.icon+'</div>';
+                        }
+                        return '';
+                    }
                 }
             ],
             on : {
@@ -41,7 +54,9 @@ window.Ama = (function (Ama) {
             },
             onClick : {
                 'icon' : this.onDelete.bind(this),
-                'title' : this.onView.bind(this)
+                'title' : this.onView.bind(this),
+                'fa-plus' : userView.onFollow.bind(userView),
+                'fa-close': userView.onUnfollow.bind(userView)
             }
         };
     };

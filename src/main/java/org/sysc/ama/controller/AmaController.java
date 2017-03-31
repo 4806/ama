@@ -8,17 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import org.sysc.ama.controller.exception.BadRequestError;
 import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
+
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.AmaRepository;
+
+import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
+
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 
+import org.sysc.ama.controller.response.AmaResponse;
+
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/ama")
@@ -30,32 +42,44 @@ public class AmaController {
     @Autowired
     private QuestionRepository questionRepo;
 
-    @PostMapping("")
+    @Autowired
+    private UserRepository userRepo;
+
+    @PostMapping(value = "")
     public Ama create (
             @RequestParam("title") String title,
             @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
             @AuthenticationPrincipal CustomUserDetails user
         ) {
+        return create(title, userId, isPublic, Optional.empty() ,user);
+    }
+
+    @PostMapping(value = "", headers="Content-Type=application/json")
+    public Ama create (
+            @RequestParam("title") String title,
+            @RequestParam(value="userId", defaultValue = "") Long userId,
+            @RequestParam("public") Boolean isPublic,
+            @RequestBody Optional<String[]> allowedUsers,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         Ama ama = new Ama(title, user.getUser(), isPublic);
 
-        // TODO Check that AMA title and user pair is unique
-        // If the Ama is not unique then an error must be returned. This error should be a
-        // `400 Bad Request` error with a body reporting that the title field is already in
-        // use for this user.
-        //
-        // Example:
-        //
-        // ```json
-        // {
-        //      "error"     : true,
-        //      "message"   : "The given AMA title is already in use for the given user"
-        // }
-        // ```
-        //
+        if (!ama.isPublic()){
+            Set<User> allowed = new HashSet<>();
+            for (String name : allowedUsers.orElseThrow(()->new BadRequestError("List of allowed users must be specified for private AMAs"))){
+                allowed.add(userRepo.findByName(name).orElseThrow(()->new BadRequestError("User with name " + name + " does not exist")));
+            }
+            User currentUser = userRepo.findById(user.getUser().getId()).orElseThrow(()-> new EntityNotFoundException("user"));
+            allowed.add(currentUser);
+            ama.setAllowedUsers(allowed);
+        }
 
-        // At this point, the AMA should have passed all validation checks. It can be added
-        // to the repository and a successful response could be returned.
+        amaRepo.findByTitle(title).ifPresent(x->{
+            if (x.getSubject().getId() == user.getId())
+                throw new BadRequestError("The user has already created an AMA with that title");
+        });
+
         amaRepo.save(ama);
 
         return ama;
@@ -67,16 +91,17 @@ public class AmaController {
             @RequestParam("page") Integer page,
             @RequestParam("limit") Integer limit,
             @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
-            @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc
+            @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
+            @AuthenticationPrincipal CustomUserDetails principal
         ) {
-        // TODO Ensure user has permission to view AMAs
-        List<Ama> results;
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
         PageRequest request = new PageRequest(page, limit, sort);
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        results = amaRepo.findAllByIsPublic(true, request);
-        return results;
-
+        return amaRepo.findByAllowedUsersOrIsPublic(user, true, request)
+            .stream()
+            .map((ama) -> new AmaResponse(ama, user))
+            .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")
@@ -97,9 +122,16 @@ public class AmaController {
     }
 
     @GetMapping("/{id}")
-    public Ama view ( @PathVariable("id") Long id ) {
+    public Ama view ( @PathVariable("id") Long id,
+                      @AuthenticationPrincipal CustomUserDetails principal ) {
         Ama ama = amaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ama"));
+
+        if (!ama.userIsAllowedToView(principal.getUser())){
+            throw new UnauthorizedAccessException("User is not allowed to view this private AMA");
+        }
+
         return ama;
     }
+
 }
 
