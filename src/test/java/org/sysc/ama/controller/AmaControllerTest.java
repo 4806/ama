@@ -127,6 +127,15 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("TestUser")
+    public void testAmaTitleMayNotBeBlank () throws Exception {
+        mockMvc.perform(post("/ama?title=    &public=true")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @WithUserDetails("TestUser")
     public void testUserCannotCreateTwoAmasWithSameTitle () throws Exception {
         mockMvc.perform(post("/ama?title=Foo2&public=true"))
                 .andExpect(status().isOk());
