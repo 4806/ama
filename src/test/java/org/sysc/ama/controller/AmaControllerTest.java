@@ -200,6 +200,18 @@ public class AmaControllerTest {
             .andExpect(jsonPath("$[?(@.title==\"Private\")]").exists());
     }
 
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testListAmaFollowedUser () throws Exception {
+        secondaryUser.follow(testUser);
+        userRepo.save(secondaryUser);
+
+        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].subject.followed").value(true));
+    }
+
     @Test
     @WithUserDetails("TestUser")
     public void testListAmaPaging () throws Exception {

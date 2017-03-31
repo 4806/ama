@@ -46,6 +46,15 @@ public class Ama {
         this.allowedUsers = allowedUsers;
     }
 
+    public Ama (Ama ama) {
+        this.id = ama.id;
+        this.title = ama.title;
+        this.isPublic = ama.isPublic;
+        this.created = ama.created;
+        this.updated = ama.updated;
+    }
+
+
     public Long getId(){
         return this.id;
     }
