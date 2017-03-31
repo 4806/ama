@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import javax.persistence.*;
 
@@ -31,7 +33,7 @@ public class Ama {
     public Ama () {}
 
     public Ama (String title, User subject, boolean isPublic) {
-        this.title = title;
+        this.title = Jsoup.clean(title, Whitelist.simpleText());
         this.subject = subject;
         this.isPublic = isPublic;
         this.created = new Date();
@@ -69,7 +71,7 @@ public class Ama {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = Jsoup.clean(title, Whitelist.simpleText());;
     }
 
     public Date getCreated () {

@@ -2,6 +2,8 @@ package org.sysc.ama.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -50,7 +52,7 @@ public class User {
 
     public User(String name) {
         this();
-        this.name = name;
+        this.name = Jsoup.clean(name, Whitelist.simpleText());
     }
 
     public Long getId(){
@@ -66,7 +68,7 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Jsoup.clean(name, Whitelist.simpleText());
     }
 
     public Role getRole() {
