@@ -1,29 +1,34 @@
 package org.sysc.ama.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-import org.sysc.ama.controller.exception.BadRequestError;
-import org.sysc.ama.model.Ama;
-import org.sysc.ama.model.Answer;
-import org.sysc.ama.model.Question;
-import org.sysc.ama.model.User;
-import org.sysc.ama.repo.QuestionRepository;
-import org.sysc.ama.repo.AmaRepository;
-import org.sysc.ama.repo.UserRepository;
-import org.sysc.ama.services.CustomUserDetails;
-import org.sysc.ama.controller.exception.UnauthorizedAccessException;
-import org.sysc.ama.controller.exception.EntityNotFoundException;
-
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.sysc.ama.controller.exception.BadRequestError;
+import org.sysc.ama.controller.exception.EntityNotFoundException;
+import org.sysc.ama.controller.exception.UnauthorizedAccessException;
+import org.sysc.ama.model.Ama;
+import org.sysc.ama.model.Question;
+import org.sysc.ama.model.User;
+import org.sysc.ama.repo.AmaRepository;
+import org.sysc.ama.repo.QuestionRepository;
+import org.sysc.ama.repo.UserRepository;
+import org.sysc.ama.services.CustomUserDetails;
 
 
 @RestController
@@ -83,19 +88,23 @@ public class AmaController {
 
 
     @GetMapping("/list")
-    public List<Ama> list (
-            @RequestParam(value = "page", defaultValue="0") Integer page,
-            @RequestParam(value= "limit", defaultValue="10") Integer limit,
+    public Map<String,Object> list (
+            @RequestParam(value = "start", defaultValue="0") Integer start,
+            @RequestParam(value= "count", defaultValue="10") Integer count,
             @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
             @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
             @AuthenticationPrincipal CustomUserDetails principal
         ) {
+    	Map<String,Object> vals= new HashMap<String,Object>();
         List<Ama> results;
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
-        PageRequest request = new PageRequest(page, limit, sort);
+        PageRequest request = new PageRequest(start, count, sort);
 
         results = amaRepo.findByAllowedUsersOrIsPublic(principal.getUser(), true, request);
-        return results;
+        vals.put("data", results);
+        vals.put("total_count", amaRepo.countByAllowedUsersOrIsPublic(principal.getUser(), true));
+        vals.put("pos", start);
+        return vals;
 
     }
 

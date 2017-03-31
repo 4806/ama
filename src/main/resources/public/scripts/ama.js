@@ -98,6 +98,10 @@ webix.ready(function() {
         },
         onView : function(e, id) {
             Ama.viewAma(id);
+        },
+        onLoad: function (start,count){
+            var page= parseInt(start/ $$('ama-pager').data.size)
+            Ama.amas.loadNext(count,page);
         }
     }).view();
     
@@ -115,7 +119,7 @@ webix.ready(function() {
     webix.ui(toolBar);
 
     // sync the ama list with the
-    //$$("ama-list").sync(Ama.amas);
+    $$("ama-list").sync(Ama.amas);
 
 
 });
