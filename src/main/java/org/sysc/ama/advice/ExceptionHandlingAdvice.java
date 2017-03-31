@@ -31,7 +31,7 @@ public class ExceptionHandlingAdvice {
         for (ConstraintViolation<?> violation : ex.getConstraintViolations())
         {
             String propertyPath = violation.getPropertyPath().toString();
-            message +=  violation.getConstraintDescriptor() + " " + violation.getMessage()  + "\n";
+            message +=  "Error in value \"" +  violation.getInvalidValue() + "\" : " +violation.getMessage()  + "\n";
         }
         return message;
     }

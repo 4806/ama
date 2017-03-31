@@ -14,13 +14,12 @@ var AmaLogin = (function () {
         webix.ajax().post("/user/create", params, {
             success: function() {
                 submit();
-            }
-        ,
+            },
             error: function(xhr) {
-            console.log(response);
+            console.log(xhr);
             webix.message({
                 type : "error",
-                text : xhr.response
+                text : xhr
             });
         }});
     }
@@ -46,6 +45,6 @@ webix.ready(function() {
     });
 
     if (window.location.search.indexOf("?error") > -1) {
-        webix.message("Invalid Credentials");
+        webix.message({ type: "error", text: "Invalid Credentials"});
     }
 });
