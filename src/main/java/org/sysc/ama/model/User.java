@@ -53,6 +53,15 @@ public class User {
         this.name = name;
     }
 
+    public User (User user) {
+        this.id = user.id;
+        this.role = user.role;
+        this.name = user.name;
+        this.following = user.following;
+        this.passwordHash = user.passwordHash;
+    }
+
+
     public Long getId(){
         return this.id;
     }
@@ -91,6 +100,15 @@ public class User {
 
     public List<User> getFollowing () {
         return this.following;
+    }
+
+    public boolean isFollowing (User user) {
+        for (User u : this.following) {
+            if (u.getId() == user.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void follow (User user) throws UserFollowException {
