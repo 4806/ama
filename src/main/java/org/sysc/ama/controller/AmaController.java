@@ -13,17 +13,23 @@ import org.sysc.ama.model.Ama;
 import org.sysc.ama.model.Answer;
 import org.sysc.ama.model.Question;
 import org.sysc.ama.model.User;
+
 import org.sysc.ama.repo.QuestionRepository;
 import org.sysc.ama.repo.AmaRepository;
+
 import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
+
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 
-import java.util.HashSet;
+import org.sysc.ama.controller.response.AmaResponse;
+
 import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -80,8 +86,6 @@ public class AmaController {
     }
 
 
-
-
     @GetMapping("/list")
     public List<Ama> list (
             @RequestParam("page") Integer page,
@@ -90,13 +94,14 @@ public class AmaController {
             @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
             @AuthenticationPrincipal CustomUserDetails principal
         ) {
-        List<Ama> results;
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
         PageRequest request = new PageRequest(page, limit, sort);
+        User user = userRepo.findById(principal.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("ama"));
 
-        results = amaRepo.findByAllowedUsersOrIsPublic(principal.getUser(), true, request);
-        return results;
-
+        return amaRepo.findByAllowedUsersOrIsPublic(user, true, request)
+            .stream()
+            .map((ama) -> new AmaResponse(ama, user))
+            .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")
@@ -127,5 +132,6 @@ public class AmaController {
 
         return ama;
     }
+
 }
 
