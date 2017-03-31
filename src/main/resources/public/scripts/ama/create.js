@@ -13,6 +13,7 @@ window.Ama = (function (Ama) {
             el.getTopParentView().hide();
 
             params = el.getValues();
+            params.public = $$('public').getValue();
             webix.ajax().post('/ama', params)
                 .then(this.onCreate.bind(this))
                 .fail(this.onError.bind(this));
@@ -34,9 +35,10 @@ window.Ama = (function (Ama) {
                     required    : true
                 },
                 {
-                    view    : 'checkbox',
+                	id      : 'public',
+                    view    : 'checkbox',  
                     label   : 'Public',
-                    name    : 'public'
+                    value   : 1,                
                 },
                 {
                     view    : 'button',
