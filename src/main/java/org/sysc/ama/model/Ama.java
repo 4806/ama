@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 
@@ -24,7 +26,10 @@ public class Ama {
     private Set<User> allowedUsers;
 
     private boolean isPublic;
+
+    @NotBlank
     private String title;
+
     private Date created;
     private Date updated;
 

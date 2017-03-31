@@ -1,5 +1,6 @@
 package org.sysc.ama.model;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class Post {
 
     private Date updated;
 
-    @NotEmpty
+    @NotBlank
     private String body;
 
     private boolean edited;
