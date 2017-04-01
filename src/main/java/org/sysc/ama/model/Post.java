@@ -1,4 +1,5 @@
 package org.sysc.ama.model;
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Cleaner;
@@ -29,7 +30,7 @@ public class Post {
 
     private Date updated;
 
-    @NotEmpty
+    @NotBlank
     private String body;
 
     private boolean edited;
