@@ -1,6 +1,9 @@
 package org.sysc.ama.model;
-
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,7 +30,7 @@ public class Post {
 
     private Date updated;
 
-    @NotEmpty
+    @NotBlank
     private String body;
 
     private boolean edited;
@@ -40,7 +43,7 @@ public class Post {
     public Post (User author, Ama ama, String body) {
         this.author = author;
         this.ama    = ama;
-        this.body   = body;
+        this.body  = Jsoup.clean(body, Whitelist.simpleText());
 
         // After running into many issues during testing, it appears that if we use the default Date() constructor,
         // the @Past constraint on created date is sometimes violated. The default constructor is deprecated
@@ -76,7 +79,7 @@ public class Post {
 
     public void setBody (String body) {
         this.edited = true;
-        this.body = body;
+        this.body = Jsoup.clean(body, Whitelist.simpleText());
     }
 
     public void setUpdated (Date updated) {

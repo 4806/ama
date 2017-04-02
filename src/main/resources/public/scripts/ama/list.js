@@ -5,9 +5,16 @@ window.Ama = (function (Ama) {
         this.onDelete = opts.onDelete || function () {};
         this.onView = opts.onView || function () {};
         this.onLoad = opts.onLoad || function () {};
+        this.onChange = opts.onChange || function () {};
     }
 
     List.prototype.view = function () {
+         var userView = new window.User.View({
+            user 	: {
+                id : window.getUserId()
+            },
+            onChange : this.onChange
+        });
         return { rows: [{
             id      : 'ama-list',
             view    : 'datatable',
@@ -21,7 +28,7 @@ window.Ama = (function (Ama) {
                 {
                     id       : 'author',
                     header   : 'Author',
-                    template : '<div class="author">#author#</div>'
+                    template : userView.repr.bind(userView)
                 },
                 {
                     id       : 'icon',
@@ -48,7 +55,9 @@ window.Ama = (function (Ama) {
             },
             onClick : {
                 'icon' : this.onDelete.bind(this),
-                'title' : this.onView.bind(this)
+                'title' : this.onView.bind(this),
+                'fa-plus' : userView.onFollow.bind(userView),
+                'fa-close': userView.onUnfollow.bind(userView)
             },
 			pager : 'ama-pager',
             datafetch : 10

@@ -32,10 +32,6 @@ public class VoteController {
             throw new UnauthorizedAccessException("The author of a question may not vote on it");
         }
 
-        if (question.hasVoted(voter)) {
-            throw new UserHasVotedException(voter);
-        }
-
         question.upVote(voter);
         questionRepo.save(question);
         return question;
@@ -52,10 +48,6 @@ public class VoteController {
 
         if (question.getAuthor().getId() == principal.getId()){
             throw new UnauthorizedAccessException("The author of a question may not vote on it");
-        }
-
-        if (question.hasVoted(voter)) {
-            throw new UserHasVotedException(voter);
         }
 
         question.downVote(voter);

@@ -2,6 +2,8 @@ package org.sysc.ama.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -50,8 +52,17 @@ public class User {
 
     public User(String name) {
         this();
-        this.name = name;
+        this.name = Jsoup.clean(name, Whitelist.simpleText());
     }
+
+    public User (User user) {
+        this.id = user.id;
+        this.role = user.role;
+        this.name = user.name;
+        this.following = user.following;
+        this.passwordHash = user.passwordHash;
+    }
+
 
     public Long getId(){
         return this.id;
@@ -66,7 +77,7 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Jsoup.clean(name, Whitelist.simpleText());
     }
 
     public Role getRole() {
@@ -91,6 +102,15 @@ public class User {
 
     public List<User> getFollowing () {
         return this.following;
+    }
+
+    public boolean isFollowing (User user) {
+        for (User u : this.following) {
+            if (u.getId() == user.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void follow (User user) throws UserFollowException {

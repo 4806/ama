@@ -127,6 +127,15 @@ public class AmaControllerTest {
 
     @Test
     @WithUserDetails("TestUser")
+    public void testAmaTitleMayNotBeBlank () throws Exception {
+        mockMvc.perform(post("/ama?title=    &public=true")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @WithUserDetails("TestUser")
     public void testUserCannotCreateTwoAmasWithSameTitle () throws Exception {
         mockMvc.perform(post("/ama?title=Foo2&public=true"))
                 .andExpect(status().isOk());
@@ -200,6 +209,18 @@ public class AmaControllerTest {
             .andExpect(jsonPath("$.data[?(@.title==\"Private\")]").exists())
             .andExpect(jsonPath("$.total_count").value(4))
             .andExpect(jsonPath("$.pos").value(0));
+    }
+
+
+    @Test
+    @WithUserDetails("SecondaryUser")
+    public void testListAmaFollowedUser () throws Exception {
+        secondaryUser.follow(testUser);
+        userRepo.save(secondaryUser);
+
+        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].subject.followed").value(true));
     }
 
     @Test

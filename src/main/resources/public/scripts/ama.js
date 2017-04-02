@@ -3,8 +3,9 @@ var Ama = (function (Ama) {
     var amas = new webix.DataCollection({
         url : "/ama/list",
         map : {
-            author : "#subject.name#",
-            icon : "<span class='fa-trash-o webix_icon'></span>"
+			user 	: "#subject#",
+            author 	: "#subject.name#",
+            icon 	: "<span class='fa-trash-o webix_icon'></span>"
         },
 
         on : {
@@ -53,7 +54,6 @@ var Ama = (function (Ama) {
             onCreate : function() {
                 Ama.showDialog("win-create-question");
             }
-
         }).view());
 
         webix.ui(modalWindow);
@@ -100,10 +100,18 @@ webix.ready(function() {
             Ama.viewAma(id);
         },
         onLoad: function (start,count){
-            console.log(start+" " +count);
             var page= parseInt(start/ $$('ama-pager').data.size)
             Ama.amas.loadNext(count,page);
 
+        },
+        onChange : function () {
+            webix.ajax().get("/ama/list")
+                .then(function (res) {
+                    Ama.amas.clearAll();
+                    res.json().data.forEach(function (a) {
+                        Ama.amas.add(a);
+                    });
+                });
         }
     }).view();
     
