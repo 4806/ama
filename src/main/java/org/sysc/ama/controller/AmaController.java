@@ -103,7 +103,7 @@ public class AmaController {
         results = amaRepo.findByAllowedUsersOrIsPublic(principal.getUser(), true, request);
         vals.put("data", results);
         vals.put("total_count", amaRepo.countByAllowedUsersOrIsPublic(principal.getUser(), true));
-        vals.put("pos", start);
+        vals.put("pos", start*count);
         return vals;
 
     }

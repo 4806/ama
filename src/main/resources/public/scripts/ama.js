@@ -73,7 +73,7 @@ webix.ready(function() {
     var modalWindow = new Ama.Window({
         onCreate : function (result) {
             Ama.amas.add(result.json());
-            Ama.amas.sort("id", "desc");
+            Ama.amas.sort("#id#", "desc","int");
         },
         onError : Ama.onError
     }).view();
@@ -100,8 +100,10 @@ webix.ready(function() {
             Ama.viewAma(id);
         },
         onLoad: function (start,count){
+            console.log(start+" " +count);
             var page= parseInt(start/ $$('ama-pager').data.size)
             Ama.amas.loadNext(count,page);
+
         }
     }).view();
     
@@ -120,6 +122,6 @@ webix.ready(function() {
 
     // sync the ama list with the
     $$("ama-list").sync(Ama.amas);
-
+    
 
 });
