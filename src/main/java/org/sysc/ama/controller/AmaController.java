@@ -90,7 +90,7 @@ public class AmaController {
     @GetMapping("/list")
     public Map<String,Object> list (
             @RequestParam(value = "start", defaultValue="0") Integer start,
-            @RequestParam(value= "count", defaultValue="10") Integer count,
+            @RequestParam(value= "count", defaultValue="100") Integer count,
             @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
             @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
             @AuthenticationPrincipal CustomUserDetails principal
