@@ -100,7 +100,7 @@ webix.ready(function() {
             Ama.viewAma(id);
         },
         onLoad: function (start,count){
-            var page= parseInt(start/ $$('ama-pager').data.size)
+            var page= parseInt(start/ $$("ama-pager").data.size);
             Ama.amas.loadNext(count,page);
 
         },
