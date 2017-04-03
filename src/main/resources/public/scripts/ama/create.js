@@ -21,8 +21,9 @@ window.Ama = (function (Ama) {
             params.allowedUsers = amaAllowedUsers;
             params.public = $$('public').getValue();
             webix.ajax().headers({
-                "Content-type":"application/json"
-            }).post('/ama?title=' + params.title + '&public=' + params.public, JSON.stringify(amaAllowedUsers))
+                'Content-type':'application/json'
+            }).post('/ama?title=' + params.title + '&public=' + params.public,
+                        JSON.stringify(amaAllowedUsers))
                 .then(this.onCreate.bind(this))
                 .fail(this.onError.bind(this));
         } else {
@@ -42,11 +43,11 @@ window.Ama = (function (Ama) {
     };
 
     Create.prototype.removeFromAllowedUsersList = function(name) {
-        object = $$('allowedUsersList').data.find(function(x) {
+        var object = $$('allowedUsersList').data.find(function(x) {
             return name === x.name;
         });
         $$('allowedUsersList').data.remove(object.id);
-    }
+    };
 
     Create.prototype.form = function () {
         return {
@@ -54,9 +55,9 @@ window.Ama = (function (Ama) {
             id      : 'create-ama-form',
             activeContent: {
                 deleteButton:{
-                    id:"deleteButtonId",
-                    view:"button",
-                    label:"Delete",
+                    id:'deleteButtonId',
+                    view:'button',
+                    label:'Delete',
                     width:120
                 }
             },
@@ -86,7 +87,9 @@ window.Ama = (function (Ama) {
                         label   : '+',
                         disabled: true,
                         click   : function() {
-                            var id = $$('allowedUsersList').add({ name :$$('allowedUser').getValue() });
+                            $$('allowedUsersList').add({
+                                name :$$('allowedUser').getValue()
+                            });
                             $$('allowedUser').setValue('');
                         }
                     }]
@@ -96,7 +99,7 @@ window.Ama = (function (Ama) {
                     id      : 'allowedUsersList',
                     width   : 320,
                     height  : 100,
-                    template: "#name#<span class='info fa-trash-o webix_icon'></span>",
+                    template: '#name#<span class=\'info fa-trash-o webix_icon\'></span>',
                     onClick:{
                         info:function(e, id){
                             this.remove(id);
