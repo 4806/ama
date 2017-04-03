@@ -43,6 +43,10 @@ webix.ready(function() {
         ]
     });
 
+    webix.UIManager.addHotKey("enter", function(){
+        AmaLogin.submit();
+    });
+
     if (window.location.search.indexOf("?error") > -1) {
         webix.message({ type: "error", text: "Invalid Credentials"});
     }
