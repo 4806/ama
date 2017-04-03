@@ -96,7 +96,13 @@ window.Ama = (function (Ama) {
                     id      : 'allowedUsersList',
                     width   : 320,
                     height  : 100,
-                    template: "#name#",
+                    template: "#name#<span class='info fa-trash-o webix_icon'></span>",
+                    onClick:{
+                        info:function(e, id){
+                            this.remove(id);
+                            return false;
+                        }
+                    },
                     type:{
                         height: 50
                     }
