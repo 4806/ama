@@ -18,4 +18,6 @@ public interface AmaRepository extends CrudRepository<Ama, Long> {
     Optional<Ama> findByTitle(String name);
 
     List<Ama> findByAllowedUsersOrIsPublic(User user, boolean isPublic, Pageable request);
+    
+    int countByAllowedUsersOrIsPublic(User user, boolean isPublic);
 }
