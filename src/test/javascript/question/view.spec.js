@@ -67,7 +67,7 @@ describe('Question View', function () {
 
         expect(view.view).toEqual('dataview');
         expect(view.id).toEqual('questions');
-        expect(view.type).toEqual({ height : 300, width : 'auto' });
+        expect(view.type).toEqual({ height : '300', width : 'auto' });
     });
 
     it('Deletes a question', function () {
