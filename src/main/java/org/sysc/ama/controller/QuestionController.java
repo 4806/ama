@@ -99,7 +99,7 @@ public class QuestionController {
     public Map<String,Object> viewQuestions(@PathVariable("amaId") Long amaId,
     									@RequestParam(value = "start", defaultValue="0") Integer start,
     									@RequestParam(value= "count", defaultValue="20") Integer count,
-                                        @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
+                                        @RequestParam(value = "sort", defaultValue = "upVotes", required = false) String column,
                                         @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
                                         @AuthenticationPrincipal CustomUserDetails principal
     ) {
