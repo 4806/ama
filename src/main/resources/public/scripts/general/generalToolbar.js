@@ -15,16 +15,6 @@ window.General = (function (General) {
                             	window.location = '/logout';
                             },
                             css   : 'right'
-                        },
-                        {
-                            view : 'button',
-                            value : 'Profile',
-                            width : 70,
-                            click : function () {
-                            	//window.location = '/profile';
-                            	
-                            },
-                            css   : 'right'
                         }
                     ]
 
