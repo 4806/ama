@@ -54,6 +54,7 @@ window.Question = (function (Question) {
 		if(userId === obj.author.id || userId === obj.ama.subject.id){
 			template += removeIcon;
 		}
+		 template += '<p>Asked by: <b>' + obj.author.name + '</b></p>';
          template+= '<br/><span class="question">' + obj.body +'</span>';
         if(obj.answer){
         	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
@@ -73,11 +74,14 @@ window.Question = (function (Question) {
 			id : 'questions',
 			template : this.repr.bind(this),
 			type : {
-				height : 300,
+				height : '300',
 				width : 'auto'
 			},
 			xCount : 1,
-			yCount : 10,
+			yCount : 'auto',
+			datafetch :10,
+			datathrottle: 500,
+			loadahead: 100,
 			onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'fa-arrow-circle-o-up' : (function(event,id) {
@@ -98,6 +102,12 @@ window.Question = (function (Question) {
                 	window.Ama.showDialog('win-create-answer');
                 	$$('create-answer-form').setValues({'id':id});
                 }
+            },
+            on :{
+            	onDataRequest :function (start,count){
+            		var page= parseInt(start/ count);
+                    this.questions.data.loadNext(count,page);
+            	}.bind(this)
             }
 		};
 	};

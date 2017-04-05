@@ -15,14 +15,15 @@ describe('Ama View', function () {
     it('Create a list of amas that a ama subject can remove', function () {
         window.getUserId = function () { return 1; };
         var listAma = new window.Ama.List({}).view();
-        listAma.data = this.amas;
+        listAma.rows[0].data = this.amas;
         webix.ui(listAma);
+        expect($$('ama-list').getText(1,'title')).toMatch('Ask Me');
         expect($$('ama-list').getText(1, 'icon')).toMatch('fa-trash');
     });
     it('Create a list of amas that a non-ama subject cannot remove', function () {
         window.getUserId = function () { return 2; };
         var listAma = new window.Ama.List({}).view();
-        listAma.data = this.amas;
+        listAma.rows[0].data = this.amas;
         webix.ui(listAma);
         expect($$('ama-list').getText(1, 'icon')).not.toMatch('fa-trash');
     });

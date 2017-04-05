@@ -1,21 +1,21 @@
 window.Ama = (function (Ama) {
-    
+
     function List (opts) {
         opts = opts || {};
         this.onDelete = opts.onDelete || function () {};
         this.onView = opts.onView || function () {};
+        this.onLoad = opts.onLoad || function () {};
         this.onChange = opts.onChange || function () {};
     }
 
     List.prototype.view = function () {
-        var userView = new window.User.View({
+         var userView = new window.User.View({
             user 	: {
                 id : window.getUserId()
             },
             onChange : this.onChange
         });
-
-        return {
+        return { rows: [{
             id      : 'ama-list',
             view    : 'datatable',
             columns : [
@@ -50,15 +50,24 @@ window.Ama = (function (Ama) {
                     if (!this.count()) {
                         this.showOverlay('There are no AMAs');
                     }
-                }
+                },
+                 onDataRequest:this.onLoad.bind(this)
             },
             onClick : {
                 'icon' : this.onDelete.bind(this),
                 'title' : this.onView.bind(this),
                 'fa-plus' : userView.onFollow.bind(userView),
                 'fa-close': userView.onUnfollow.bind(userView)
-            }
-        };
+            },
+			pager : 'ama-pager',
+            datafetch : 10
+        },
+        {
+            view : 'pager',
+            id   :  'ama-pager',
+			autosize : true,
+		    group: 5
+        }]};
     };
 
     Ama.List = List;
