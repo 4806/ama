@@ -77,7 +77,7 @@ window.Question = (function (Question) {
 				width : 'auto'
 			},
 			xCount : 1,
-			yCount : 10,
+			yCount : 'auto',
 			onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'fa-arrow-circle-o-up' : (function(event,id) {
