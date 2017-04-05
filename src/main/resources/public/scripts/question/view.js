@@ -54,6 +54,7 @@ window.Question = (function (Question) {
 		if(userId === obj.author.id || userId === obj.ama.subject.id){
 			template += removeIcon;
 		}
+		 template += '<p>Asked by: <b>' + obj.author.name + '</b></p>';
          template+= '<br/><span class="question">' + obj.body +'</span>';
         if(obj.answer){
         	template +='<span class="answer"><br/><p>'+obj.answer.body+'</p></span>';
@@ -73,7 +74,7 @@ window.Question = (function (Question) {
 			id : 'questions',
 			template : this.repr.bind(this),
 			type : {
-				height : 300,
+				height : '300',
 				width : 'auto'
 			},
 			xCount : 1,
