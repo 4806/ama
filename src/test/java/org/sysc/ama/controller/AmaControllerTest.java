@@ -220,7 +220,7 @@ public class AmaControllerTest {
 
         mockMvc.perform(get("/ama/list?page=0&limit=2"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].subject.followed").value(true));
+            .andExpect(jsonPath("$.data[0].subject.followed").value(true));
     }
 
     @Test
