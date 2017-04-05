@@ -156,25 +156,25 @@ public class AmaControllerTest {
     @Test
     @WithUserDetails("BadUser")
     public void testUninvitedUserCannotSeePrivateAmaInList () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+        mockMvc.perform(get("/ama/list?start=0&count=2"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("[?(@.id == " + this.privateAma.getId() + ")]").doesNotExist());
+            .andExpect(jsonPath("$.data[?(@.id == " + this.privateAma.getId() + ")]").doesNotExist());
     }
 
     @Test
     @WithUserDetails("TestUser")
     public void testOwnerCanSeePrivateAmaInList () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+        mockMvc.perform(get("/ama/list?start=0&count=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[?(@.id == " + this.privateAma.getId() + ")]").exists());
+                .andExpect(jsonPath("$.data[?(@.id == " + this.privateAma.getId() + ")]").exists());
     }
 
     @Test
     @WithUserDetails("SecondaryUser")
     public void testInvitedUserCanSeePrivateAmaInList () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+        mockMvc.perform(get("/ama/list?start=0&count=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[?(@.id == " + this.privateAma.getId() + ")]").exists());
+                .andExpect(jsonPath("$.data[?(@.id == " + this.privateAma.getId() + ")]").exists());
     }
 
     @Test
@@ -202,11 +202,13 @@ public class AmaControllerTest {
     @Test
     @WithUserDetails("TestUser")
     public void testListAma () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2"))
+        mockMvc.perform(get("/ama/list?start=0&count=2"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[?(@.title==\"Baz\")]").exists())
-            .andExpect(jsonPath("$[?(@.title==\"Private\")]").exists());
+            .andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[?(@.title==\"Baz\")]").exists())
+            .andExpect(jsonPath("$.data[?(@.title==\"Private\")]").exists())
+            .andExpect(jsonPath("$.total_count").value(4))
+            .andExpect(jsonPath("$.pos").value(0));
     }
 
 
@@ -218,36 +220,36 @@ public class AmaControllerTest {
 
         mockMvc.perform(get("/ama/list?page=0&limit=2"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].subject.followed").value(true));
+            .andExpect(jsonPath("$.data[0].subject.followed").value(true));
     }
 
     @Test
     @WithUserDetails("TestUser")
     public void testListAmaPaging () throws Exception {
-        mockMvc.perform(get("/ama/list?page=1&limit=2"))
+        mockMvc.perform(get("/ama/list?start=1&count=2"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].title").value("Bar"));
+            .andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[0].title").value("Bar"));
     }
 
     @Test
     @WithUserDetails("TestUser")
     public void testListAmaOrdering () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2&asc=true"))
+        mockMvc.perform(get("/ama/list?start=0&count=2&asc=true"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].title").value("Foo"))
-            .andExpect(jsonPath("$[1].title").value("Bar"));
+            .andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[0].title").value("Foo"))
+            .andExpect(jsonPath("$.data[1].title").value("Bar"));
     }
 
     @Test
     @WithUserDetails("TestUser")
     public void testListAmaSorting () throws Exception {
-        mockMvc.perform(get("/ama/list?page=0&limit=2&sort=title&asc=true"))
+        mockMvc.perform(get("/ama/list?start=0&count=2&sort=title&asc=true"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].title").value("Bar"))
-            .andExpect(jsonPath("$[1].title").value("Baz"));
+            .andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[0].title").value("Bar"))
+            .andExpect(jsonPath("$.data[1].title").value("Baz"));
     }
 
 
