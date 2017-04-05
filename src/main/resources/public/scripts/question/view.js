@@ -74,7 +74,7 @@ window.Question = (function (Question) {
 			id : 'questions',
 			template : this.repr.bind(this),
 			type : {
-				height : '350',
+				height : '300',
 				width : 'auto'
 			},
 			xCount : 1,
