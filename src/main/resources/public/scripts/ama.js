@@ -1,7 +1,7 @@
 var Ama = (function (Ama) {
 
     var amas = new webix.DataCollection({
-        url : "/ama/list?page=0&limit=10",
+        url : "/ama/list",
         map : {
 			user 	: "#subject#",
             author 	: "#subject.name#",
@@ -73,7 +73,7 @@ webix.ready(function() {
     var modalWindow = new Ama.Window({
         onCreate : function (result) {
             Ama.amas.add(result.json());
-            Ama.amas.sort("id", "desc");
+            Ama.amas.sort("#id#", "desc","int");
         },
         onError : Ama.onError
     }).view();
@@ -99,13 +99,20 @@ webix.ready(function() {
         onView : function(e, id) {
             Ama.viewAma(id);
         },
+        onLoad: function (start,count){
+            var page= parseInt(start/ $$("ama-pager").data.size);
+            Ama.amas.loadNext(count,page);
+
+        },
         onChange : function () {
-            webix.ajax().get("/ama/list?page=0&limit=10")
+            webix.ajax().get("/ama/list")
                 .then(function (res) {
+                	var page=$$("ama-pager").data.page;
                     Ama.amas.clearAll();
-                    res.json().forEach(function (a) {
+                    res.json().data.forEach(function (a) {
                         Ama.amas.add(a);
                     });
+                    $$("ama-list").setPage(page);
                 });
         }
     }).view();
@@ -125,6 +132,6 @@ webix.ready(function() {
 
     // sync the ama list with the
     $$("ama-list").sync(Ama.amas);
-
+    
 
 });
