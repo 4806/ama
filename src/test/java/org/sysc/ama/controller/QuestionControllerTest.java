@@ -137,11 +137,11 @@ public class QuestionControllerTest {
                 .andReturn();
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
-                            .param("page", "0")
-                            .param("limit", "2"))
+                            .param("start", "0")
+                            .param("count", "2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[?(@.body == \"Is that a hippo?\")]").exists())
-                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").exists())
+                .andExpect(jsonPath("$.data[?(@.body == \"Is that a hippo?\")]").exists())
+                .andExpect(jsonPath("$.data[?(@.body == \"What is the meaning of life?\")]").exists())
                 .andReturn();
     }
 
@@ -191,10 +191,10 @@ public class QuestionControllerTest {
                 .andExpect(jsonPath("$.body").value("What is the meaning of life?"));
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
-                .param("page", "0")
-                .param("limit", "2"))
+                .param("start", "0")
+                .param("count", "2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
+                .andExpect(jsonPath("$.data[?(@.body == \"What is the meaning of life?\")]").doesNotExist());
     }
 
     @Test

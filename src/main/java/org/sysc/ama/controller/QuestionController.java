@@ -19,7 +19,9 @@ import org.sysc.ama.services.CustomUserDetails;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 import org.sysc.ama.controller.exception.UnauthorizedAccessException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -94,22 +96,24 @@ public class QuestionController {
     }
 
     @GetMapping("/questions")
-    public List<QuestionWithUserInfo> viewQuestions(@PathVariable("amaId") Long amaId,
-                                        @RequestParam("page") Integer page,
-                                        @RequestParam("limit") Integer limit,
+    public Map<String,Object> viewQuestions(@PathVariable("amaId") Long amaId,
+    									@RequestParam(value = "start", defaultValue="0") Integer start,
+    									@RequestParam(value= "count", defaultValue="20") Integer count,
                                         @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
                                         @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
                                         @AuthenticationPrincipal CustomUserDetails principal
     ) {
-
+    	Map<String,Object> vals= new HashMap<String,Object>();
         Ama ama = amaRepo.findById(amaId).orElseThrow(() -> new EntityNotFoundException("ama"));
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, column);
-        PageRequest request = new PageRequest(page, limit, sort);
+        PageRequest request = new PageRequest(start, count, sort);
         List<Question> questions = questionRepo.findByAma(ama, request);
-
-        return questions.stream()
-            .map((x) -> new QuestionWithUserInfo(x, principal.getUser()))
-            .collect(Collectors.toList());
+        List<QuestionWithUserInfo>infoQuestions= questions.stream().map((x) -> new QuestionWithUserInfo(x, principal.getUser()))
+        .collect(Collectors.toList());
+        vals.put("data", infoQuestions);
+        vals.put("total_count", questionRepo.countByAma(ama));
+        vals.put("pos", start*count);
+        return vals;
     }
 
 }

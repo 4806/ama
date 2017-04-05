@@ -79,6 +79,9 @@ window.Question = (function (Question) {
 			},
 			xCount : 1,
 			yCount : 'auto',
+			datafetch :10,
+			datathrottle: 500,
+			loadahead: 100,
 			onClick : {
                 'fa-trash-o' : this.onDelete.bind(this),
                 'fa-arrow-circle-o-up' : (function(event,id) {
@@ -99,6 +102,12 @@ window.Question = (function (Question) {
                 	window.Ama.showDialog('win-create-answer');
                 	$$('create-answer-form').setValues({'id':id});
                 }
+            },
+            on :{
+            	onDataRequest :function (start,count){
+            		var page= parseInt(start/ count);
+                    this.questions.data.loadNext(count,page);
+            	}.bind(this)
             }
 		};
 	};
