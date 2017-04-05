@@ -97,7 +97,7 @@ public class QuestionController {
     public List<QuestionWithUserInfo> viewQuestions(@PathVariable("amaId") Long amaId,
                                         @RequestParam("page") Integer page,
                                         @RequestParam("limit") Integer limit,
-                                        @RequestParam(value = "sort", defaultValue = "updated", required = false) String column,
+                                        @RequestParam(value = "sort", defaultValue = "upVotes", required = false) String column,
                                         @RequestParam(value = "asc", defaultValue = "false", required = false) Boolean asc,
                                         @AuthenticationPrincipal CustomUserDetails principal
     ) {
