@@ -107,10 +107,12 @@ webix.ready(function() {
         onChange : function () {
             webix.ajax().get("/ama/list")
                 .then(function (res) {
+                	var page=$$("ama-pager").data.page;
                     Ama.amas.clearAll();
                     res.json().data.forEach(function (a) {
                         Ama.amas.add(a);
                     });
+                    $$("ama-list").setPage(page);
                 });
         }
     }).view();
