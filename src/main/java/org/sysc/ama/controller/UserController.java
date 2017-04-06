@@ -14,6 +14,8 @@ import org.sysc.ama.repo.UserRepository;
 import org.sysc.ama.services.CustomUserDetails;
 import org.sysc.ama.controller.exception.EntityNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -31,6 +33,13 @@ public class UserController {
     {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+    }
+
+    @GetMapping("/nameList")
+    public List<String> getUsernames() {
+        List<String> usernames = new ArrayList<String>();
+        userRepo.findAll().forEach((x)->usernames.add(x.getName()));
+        return usernames;
     }
 
     @PostMapping("/create")

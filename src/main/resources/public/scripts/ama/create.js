@@ -80,6 +80,7 @@ window.Ama = (function (Ama) {
                     cols : [{
                         view    : 'text',
                         id      : 'allowedUser',
+                        suggest : '/user/nameList',
                         disabled  : true
                     }, {
                         view    : 'button',
