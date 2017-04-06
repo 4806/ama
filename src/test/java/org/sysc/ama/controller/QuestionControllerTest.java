@@ -138,7 +138,7 @@ public class QuestionControllerTest {
 
         mockMvc.perform(get("/ama/" + this.amaFoo.getId() + "/questions")
                             .param("start", "0")
-                            .param("count", "2"))
+                            .param("count", "3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[?(@.body == \"Is that a hippo?\")]").exists())
                 .andExpect(jsonPath("$.data[?(@.body == \"What is the meaning of life?\")]").exists())

@@ -34,11 +34,15 @@ window.Ama = (function (Ama) {
 
     Create.prototype.toggleAllowedUsers = function() {
         if ($$('public').getValue() === 1){
-            $$('allowedUser').disable();
-            $$('addToList').disable();
+            $$('allowedUser').hide();
+            $$('addToList').hide(); 
+            $$('allowedUsersList').hide();
+            $$('user-persmission-label').hide();
         }else{
-            $$('allowedUser').enable();
-            $$('addToList').enable();
+            $$('allowedUser').show();
+            $$('addToList').show();
+            $$('allowedUsersList').show();
+            $$('user-persmission-label').show();
         }
     };
 
@@ -53,6 +57,8 @@ window.Ama = (function (Ama) {
         return {
             view    : 'form',
             id      : 'create-ama-form',
+            hight: 'auto',
+            width: 400,
             activeContent: {
                 deleteButton:{
                     id:'deleteButtonId',
@@ -75,23 +81,36 @@ window.Ama = (function (Ama) {
                     label   : 'Public',
                     value   : 1,
                     click   : this.toggleAllowedUsers.bind(this)
+                },{
+                	view : 'label',
+                	id  :  'user-persmission-label',
+                	label : 'Allowed Users',
+                	hidden : true
                 },
                 {
                     cols : [{
                         view    : 'text',
+                        placeholder : 'username',
                         id      : 'allowedUser',
+                        hidden  : true,
                         suggest : '/user/nameList',
-                        disabled  : true
                     }, {
                         view    : 'button',
                         id      : 'addToList',
                         label   : '+',
-                        disabled: true,
+                        hidden: true,
                         click   : function() {
-                            $$('allowedUsersList').add({
-                                name :$$('allowedUser').getValue()
-                            });
-                            $$('allowedUser').setValue('');
+                        	if('' !== $$('allowedUser').getValue()){
+                        		$$('allowedUsersList').add({
+                        			name :$$('allowedUser').getValue()
+                        		});
+                        		$$('allowedUser').setValue('');
+                        	}else{
+                        		webix.message({
+                        			type : 'error',
+                        			text : 'username can\'t be empty'
+                        		});
+                        	}
                         }
                     }]
                 },
@@ -100,6 +119,7 @@ window.Ama = (function (Ama) {
                     id      : 'allowedUsersList',
                     width   : 320,
                     height  : 100,
+                    hidden : true,
                     template: '#name#<span class=\'info fa-trash-o webix_icon\'></span>',
                     onClick:{
                         info:function(e, id){
