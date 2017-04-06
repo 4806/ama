@@ -93,6 +93,7 @@ window.Ama = (function (Ama) {
                         placeholder : 'username',
                         id      : 'allowedUser',
                         hidden  : true
+                        suggest : '/user/nameList',
                     }, {
                         view    : 'button',
                         id      : 'addToList',
