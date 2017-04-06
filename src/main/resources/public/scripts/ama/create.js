@@ -100,7 +100,7 @@ window.Ama = (function (Ama) {
                         label   : '+',
                         hidden: true,
                         click   : function() {
-                        	if('' != $$('allowedUser').getValue()){
+                        	if('' !== $$('allowedUser').getValue()){
                         		$$('allowedUsersList').add({
                         			name :$$('allowedUser').getValue()
                         		});
