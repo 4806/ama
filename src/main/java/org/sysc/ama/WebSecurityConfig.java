@@ -34,12 +34,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers( "/user/create").permitAll()
                     .anyRequest().authenticated()
                     .and()
+                .authorizeRequests().antMatchers("/console/**").permitAll()
+                .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
                     .and()
                 .logout()
                     .permitAll();
+
+        http.headers().frameOptions().disable();
     }
 
     @Autowired

@@ -1,5 +1,8 @@
 package org.sysc.ama.controller;
 
+import io.swagger.annotations.ApiParam;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,17 +51,15 @@ public class AmaController {
     @PostMapping(value = "")
     public Ama create (
             @RequestParam("title") String title,
-            @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
             @AuthenticationPrincipal CustomUserDetails user
         ) {
-        return create(title, userId, isPublic, Optional.empty() ,user);
+        return create(title, isPublic, Optional.empty() ,user);
     }
 
     @PostMapping(value = "", headers="Content-Type=application/json")
     public Ama create (
             @RequestParam("title") String title,
-            @RequestParam(value="userId", defaultValue = "") Long userId,
             @RequestParam("public") Boolean isPublic,
             @RequestBody Optional<String[]> allowedUsers,
             @AuthenticationPrincipal CustomUserDetails user
